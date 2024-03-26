@@ -3,15 +3,11 @@
 
 import PackageDescription
 
-/// ignore this kind of jank on linux
-var p = [SupportedPlatform]()
-#if os(macOS)
-p.append(.macOS(.v13))
-#else
-#endif
 let package = Package(
   name: "ExampleBot",
-  platforms: p,
+  platforms: [
+    .macOS(.v13)
+  ],
   dependencies: [
     .package(url: "https://github.com/llsc12/DDBKit", branch: "main"), 
     /// you'll want to use a version tag instead, use the below line
