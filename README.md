@@ -32,7 +32,7 @@ let package = Package(
 )
 ```
 
-You’ve now configured the package to use DDBKit! Next, rename the file at `./Sources/main.swift` to anything that isn’t `main.swift` such as `Bot.swift`.
+You’ve now configured the package to use DDBKit! Next, rename the file at `./Sources/main.swift` to anything that isn’t `main.swift`, such as `Bot.swift`.
 <details>
 <summary>Why do this?</summary>
 Having a file named `main.swift` makes it the entrypoint, and code is executed at the top level. DDBKit uses a protocol that declares it’s own entrypoint, you’ll declare a struct conforming to the protocol and you’ll prefix the struct with `@main`. This does also mean that you can only run a single bot per executable.
