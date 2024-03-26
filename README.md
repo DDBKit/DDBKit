@@ -57,13 +57,23 @@ struct MyNewBot: DiscordBotApp {
     )
   }
   
-  var clientManager: DiscordGateway.BotGatewayManager
-  
-  var body: some BotScene {
-    Event(on: .ready) { payload in
+  var body: [any BotScene] {
+    Event(on: .ready) { data in
       print("hi mom")
     }
   }
+
+  var bot: Bot
 }
 ```
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
+
+If you want to read the ready data, use this to parse it.
+```swift
+let ready = data?.asType(Gateway.Ready.self)
+```
+Then, you can use it like this!
+```swift
+let ready = data?.asType(Gateway.Ready.self)
+print("\(ready?.user.username ?? "") is gaming in \(ready?.guilds.count ?? 0) servers fr")
+```
