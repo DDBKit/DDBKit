@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:DDBKitExample/DDBKitExample.xcodeproj">
+      location = "group:Example">
    </FileRef>
    <FileRef
-      location = "group:DDBKit">
+      location = "group:">
    </FileRef>
 </Workspace>
