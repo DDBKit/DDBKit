@@ -47,7 +47,7 @@ struct MyNewBot: DiscordBotApp {
   init() async {
     let httpClient = HTTPClient()
     // Edit this as needed.
-    clientManager = await BotGatewayManager(
+    bot = await BotGatewayManager(
       eventLoopGroup: httpClient.eventLoopGroup,
       httpClient: httpClient,
       token: "Token Here", // Do not store your token in your code in production.
