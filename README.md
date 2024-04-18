@@ -58,8 +58,14 @@ struct MyNewBot: DiscordBotApp {
   }
   
   var body: [any BotScene] {
-    Event(on: .ready) { data in
+    ReadyEvent { ready in
       print("hi mom")
+    }
+    
+    MessageCreateEvent { msg in
+      if let msg {
+        print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
+      }
     }
   }
 
