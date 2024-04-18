@@ -73,13 +73,3 @@ struct MyNewBot: DiscordBotApp {
 }
 ```
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
-
-If you want to read the ready data, use this to parse it.
-```swift
-let ready = data?.asType(Gateway.Ready.self)
-```
-Then, you can use it like this!
-```swift
-let ready = data?.asType(Gateway.Ready.self)
-print("\(ready?.user.username ?? "") is gaming in \(ready?.guilds.count ?? 0) servers fr")
-```
