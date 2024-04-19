@@ -18,14 +18,14 @@ extension DiscordBotApp {
   public func run() async throws {
     // first init the environment to capture events and process commands
     let sceneData = readScene(scenes: self.body)
-    BotInstance.i = .init(bot: self.bot, rawEvents: sceneData.events)
+    BotInstance.shared = .init(bot: self.bot, rawEvents: sceneData.events)
     
     // then connect the bot
     await bot.connect()
     
     // and finally, begin receiving events
     for await event in await self.bot.events {
-      BotInstance.i.sendEvent(event)
+      BotInstance.shared.sendEvent(event)
     }
   }
 }
@@ -34,13 +34,11 @@ internal extension DiscordBotApp {
   /// Reads the declared scene
   /// - Parameter scenes: Scene data
   /// - Returns: Separated scenes
-  func readScene(scenes: [any BotScene]) -> (events: [Event], a: Void) {
-    var events = [Event]()
+  func readScene(scenes: [any BotScene]) -> (events: [any BaseEvent], a: Void) {
+    var events = [any BaseEvent]()
     scenes.forEach { scene in
       switch true {
-        
-      case scene is Event: events.append(scene as! Event)
-        
+      case scene is any BaseEvent: events.append(scene as! any BaseEvent) // register raw event handlers
       default: break
       }
     }

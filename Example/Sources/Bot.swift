@@ -2,30 +2,33 @@
 import DDBKit
 
 @main
-struct ExampleBot: DiscordBotApp {
+struct MyNewBot: DiscordBotApp {
   init() async {
-    let http = HTTPClient()
-    self.bot = await .init(
-      eventLoopGroup: http.eventLoopGroup,
-      httpClient: http,
-      token: "MTE0NDY2OTI3MDg2MTY4ODkxMw.G9Ux68.nkUhL1VQpfJYKVj2J1ahczq6B-JOj570BZSJvs",
+    let httpClient = HTTPClient()
+    // Edit this as needed.
+    bot = await BotGatewayManager(
+      eventLoopGroup: httpClient.eventLoopGroup,
+      httpClient: httpClient,
+      /// Do not store your token in your code in production.
+      token: "MTE0NDY2OTI3MDg2MTY4ODkxMw.G84agA.646SbKYYM4oUxxdzGoUJSC4PZ8QD5NexD4fItc",
+      /// replace the above with your own token, but only for testing
+      largeThreshold: 250,
+      presence: .init(activities: [], status: .online, afk: false),
       intents: [.messageContent, .guildMessages]
     )
   }
   
-  var bot: Bot
-  
   var body: [any BotScene] {
-    Event(on: .ready) { data in
-      let ready = data?.asType(Gateway.Ready.self)
-      print("\(ready?.user.username ?? "") is gaming in \(ready?.guilds.count ?? 0) servers fr")
+    ReadyEvent { ready in
+      print("hi mom")
     }
     
-    Event(on: .messageCreate) { data in
-      let msg = data?.asType(Gateway.MessageCreate.self)
+    MessageCreateEvent { msg in
       if let msg {
         print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
       }
     }
   }
+
+  var bot: Bot
 }

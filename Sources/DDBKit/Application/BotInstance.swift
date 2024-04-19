@@ -9,16 +9,16 @@ import Foundation
 
 // this internal class keeps track of declared events and handles actions 
 class BotInstance {
-  static var i = BotInstance()
+  static var shared = BotInstance()
   private init() { self.bot = nil; self.rawEvents = [] }
   
   /// bot instance we keep to interact with if needed
-  let bot: BotGatewayManager?
+  let bot: GatewayManager?
   
   // declared events the user wants to receive
-  let rawEvents: [Event]
+  let rawEvents: [any BaseEvent]
   
-  init(bot: BotGatewayManager, rawEvents: [Event]) {
+  init(bot: GatewayManager, rawEvents: [any BaseEvent]) {
     self.bot = bot
     self.rawEvents = rawEvents
   }
@@ -30,7 +30,7 @@ class BotInstance {
     // now we have all appropriate events. go through them all and trigger action
     matchedEvents.forEach { match in
       Task(priority: .userInitiated) { /// we use a task because we don't want many of the same event doing long tasks and blocking the event queue
-        await match.action(event.data) // FIXME: how do we get type safety based on chosen event
+        await match.handle(event.data) // FIXME: how do we get type safety based on chosen event
       }
     }
   }

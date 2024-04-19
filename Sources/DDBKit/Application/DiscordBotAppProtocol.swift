@@ -13,7 +13,7 @@ import SwiftUI
 /// This protocol is applied to the struct that your bot runs with.
 public protocol DiscordBotApp {
   var bot: Bot { get set }
-  typealias Bot = BotGatewayManager
+  typealias Bot = GatewayManager
   @BotSceneBuilder var body: [BotScene] { get }
   
   init() async

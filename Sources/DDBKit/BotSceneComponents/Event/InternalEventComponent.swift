@@ -7,17 +7,25 @@
 
 import DiscordBM
 
-public struct Event: BotScene {
-  var eventType: Gateway.Event.EventType
-  
-  public init(on type: Gateway.Event.EventType, action: @escaping (Gateway.Event.Payload?) async -> Void) {
-    self.eventType = type
-    self.action = action
+// this protocol is used to give all events conformance to receive events.
+protocol BaseEvent<T>: BotScene {
+  associatedtype T: Codable
+  init(_ action: @escaping (T?) async -> Void)
+  var action: (T?) async -> Void { get set }
+  var eventType: Gateway.Event.EventType? { get }
+  func typeMatchesEvent(_ event: Gateway.Event) -> Bool
+}
+
+extension BaseEvent {
+  func typeMatchesEvent(_ event: Gateway.Event) -> Bool {
+    if let eventType {
+      event.isOfType(eventType)
+    } else { false }
   }
-  
-  var action: (Gateway.Event.Payload?) async -> Void
-  
-  func typeMatchesEvent(_ event: Gateway.Event) -> Bool { event.isOfType(self.eventType) }
+  func handle(_ data: Gateway.Event.Payload?) async {
+    let ix = data?.asType(T.self)
+    await self.action(ix)
+  }
 }
 
 public extension Gateway.Event.Payload {

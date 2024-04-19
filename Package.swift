@@ -13,7 +13,7 @@ let package = Package(
     .library(
       name: "DDBKit",
       targets: ["DDBKit"]
-    ),
+    )
   ],
   dependencies: [
     .package(url: "https://github.com/DiscordBM/DiscordBM", from: "1.10.0"),
@@ -28,10 +28,6 @@ let package = Package(
         "DiscordBM",
         .product(name: "AsyncHTTPClient", package: "async-http-client")
       ]
-    ),
-    .testTarget(
-      name: "DDBKitTests",
-      dependencies: ["DDBKit"]
-    ),
+    )
   ]
 )
