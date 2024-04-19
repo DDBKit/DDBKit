@@ -73,3 +73,5 @@ struct MyNewBot: DiscordBotApp {
 }
 ```
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
+> [!NOTE]
+> You cannot use logic in the `body` property; The property is only read once on startup.
