@@ -31,10 +31,6 @@ public struct Message {
     self.content = .init(message: message)
     self.embeds = []
   }
-  
-  /// Parses string input into structured message content
-  /// - Parameter str: The string
-  public init(_ str: String) { self.content = .init(str); self.embeds = [] }
 }
 
 public protocol MessageComponent {

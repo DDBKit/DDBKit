@@ -30,30 +30,45 @@ struct MyNewBot: DiscordBotApp {
         if msg.content == "!gm" && ["llsc12", "tobias112", "james.op", "deckyboiii"].contains(msg.author?.username) {
           let a = Message {
             MessageContent {
-              Text("Italic: ")
-              Text("true story", fmt: .italic)
+              Heading {
+                Text {
+                  Text("Welcome to ")
+                  Text("The Test")
+                    .italic()
+                  Text("!")
+                }
+                .underlined()
+              }
+              Heading("We're testing the Message DSL")
+                .medium()
+              Text("Actually scratch that")
+                .strikethrough()
               NewLine()
-              Text("Bold: ")
-              Text("true story", fmt: .bold)
-              NewLine()
-              Text("true story", fmt: .strikethrough)
-              NewLine()
-              Text("Bold + Strikethrough: ")
-              Text("true story", fmt: [.bold, .strikethrough])
+              URL("https://llsc12.me")
+                .disableLinking()
+                .maskedWith {
+                  Text("check out this!")
+                    .bold()
+                }
             }
           }
           
           let _ = try? await bot.client.createMessage(
             channelId: msg.channel_id,
             payload: .init(
-              content: a.content.textualRepresentation,
-              embeds: [Embed(title: "gm")]
+              content: a.content.textualRepresentation
             )
           )
         }
       }
     }
   }
-
+  
   var bot: Bot
+}
+
+import SwiftUI
+
+class egg {
+  @State var egg = false
 }
