@@ -1,13 +1,13 @@
 {
-  "originHash" : "d44e70cf73a9e49ad85df5e26deb43b4ef4e9749a298d1e8f7ceb5e600b29061",
+  "originHash" : "2a9f15e27e4754a14670d822b25112d8978abf84b91a5dc2acef2f2540bb4290",
   "pins" : [
     {
       "identity" : "async-http-client",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client",
       "state" : {
-        "revision" : "291438696abdd48d2a83b52465c176efbd94512b",
-        "version" : "1.20.1"
+        "revision" : "fb308ee72f3d4c082a507033f94afa7395963ef3",
+        "version" : "1.21.0"
       }
     },
     {
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordBM",
       "state" : {
-        "revision" : "39230ff31dc7a4fbc7345bb0ff335723999c233f",
-        "version" : "1.10.0"
+        "revision" : "ddce0d02aa46102499eb713c9b4a8efd3ad6fa87",
+        "version" : "1.10.1"
       }
     },
     {

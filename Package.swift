@@ -16,7 +16,7 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/DiscordBM/DiscordBM", from: "1.10.0"),
+    .package(url: "https://github.com/DiscordBM/DiscordBM", from: "1.10.1"),
     .package(url: "https://github.com/swift-server/async-http-client", from: "1.20.1"),
   ],
   targets: [
@@ -27,6 +27,12 @@ let package = Package(
       dependencies: [
         "DiscordBM",
         .product(name: "AsyncHTTPClient", package: "async-http-client")
+      ]
+    ),
+    .testTarget(
+      name: "DDBKitTests",
+      dependencies: [
+        "DDBKit"
       ]
     )
   ]

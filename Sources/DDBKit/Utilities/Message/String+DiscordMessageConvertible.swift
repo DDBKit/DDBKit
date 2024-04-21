@@ -7,6 +7,12 @@
 
 import Foundation
 
+protocol DiscordMessageConvertible {
+  var message: Message { get }
+}
+
 extension String: DiscordMessageConvertible {
-  var message: Message { .init(content: self) }
+  var message: Message {
+    Message(self)
+  }
 }

@@ -14,6 +14,7 @@ public struct Command: BotScene {
   var name: String
   var description: String?
   
+  
   // we let the user define action, but we control the before and after actions.
   // we internally execute proxyAction which executes before, user-def and after actions.
   var action: (Interaction) async -> Void

@@ -26,6 +26,32 @@ struct MyNewBot: DiscordBotApp {
     MessageCreateEvent { msg in
       if let msg {
         print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
+        
+        if msg.content == "!gm" && msg.author?.username == "llsc12" {
+          let a = Message {
+            MessageContent {
+              Heading("wagwan")
+              Heading("true story", size: .medium)
+              Text("rate my testing")
+              UnorderedList {
+                "hi"
+                "im"
+                "a"
+                "list"
+              }
+            }
+            
+            MessageEmbed()
+          }
+          
+          let _ = try? await bot.client.createMessage(
+            channelId: msg.channel_id,
+            payload: .init(
+              content: a.content.textualRepresentation,
+              embeds: [Embed(title: "gm")]
+            )
+          )
+        }
       }
     }
   }
