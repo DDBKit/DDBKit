@@ -16,6 +16,9 @@ Open `Package.swift` in your preferred editor, and copy this configuration.
 
 let package = Package(
   name: "MyNewBot",
+  platforms: [
+    .macOS(.v13)
+  ],
   dependencies: [
     .package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0"),
   ],
