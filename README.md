@@ -17,7 +17,7 @@ Open `Package.swift` in your preferred editor, and copy this configuration.
 let package = Package(
   name: "MyNewBot",
   dependencies: [
-    .package(url: "https://github.com/llsc12/DDBKit", from: “0.1.0”),
+    .package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
