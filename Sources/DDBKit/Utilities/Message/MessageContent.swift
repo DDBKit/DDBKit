@@ -22,35 +22,85 @@ public struct Text: MessageContentComponent {
   var txt: String
   var fmt: FMTOptions
   
-  public init(_ str: String, fmt: FMTOptions = []) { self.txt = str; self.fmt = fmt }
+  public init(
+    _ str: String,
+    fmt: FMTOptions = []
+  ) {
+    self.fmt = fmt
+    self.txt = str
+  }
   
-  public var textualRepresentation: String { txt }
+  public init(
+    fmt: FMTOptions = [],
+    @MessageUtilityBuilder<Text> components: () -> [Text]
+  ) {
+    self.fmt = fmt
+    self.txt = components().reduce("", { partialResult, txt in
+      return partialResult + txt.textualRepresentation
+    })
+  }
+  
+  public var textualRepresentation: String {
+    "\(fmt.startKey)\(txt)\(fmt.endKey)"
+  }
   
   public struct FMTOptions: OptionSet {
     public init(rawValue: UInt) { self.rawValue = rawValue }
     public let rawValue: UInt
     
-    static let bold = Self(rawValue: 1 << 0)
+    public static let bold = Self(rawValue: 1 << 0)
+    public static let italic = Self(rawValue: 1 << 1)
+    public static let strikethrough = Self(rawValue: 1 << 2)
+    
+    // rest in piece
+    // here lies raunak
+    public var startKey: String {
+      var key: String = ""
+      if self.contains(.bold) { key += "**" }
+      if self.contains(.italic) { key += "*" }
+      if self.contains(.strikethrough) { key += "~~" }
+      return key
+    }
+    public var endKey: String {
+      var key: String = ""
+      if self.contains(.bold) { key += "**" }
+      if self.contains(.italic) { key += "*" }
+      if self.contains(.strikethrough) { key += "~~" }
+      return String(key.reversed())
+    }
   }
 }
 
+extension Text {
+  func bold() -> Self { var txt = self; txt.fmt.insert(.bold); return txt }
+  func italic() -> Self { var txt = self; txt.fmt.insert(.italic); return txt }
+  func strikethrough() -> Self { var txt = self; txt.fmt.insert(.strikethrough); return txt }
+}
+
+public struct NewLine: MessageContentComponent {
+  public var textualRepresentation: String { "\n" }
+  public init() {}
+}
 
 public struct Heading: MessageContentComponent {
   public var textualRepresentation: String {
-    "\(size.rawValue) \(txt)"
+    "\(size.rawValue) \(txt.textualRepresentation)"
   }
   
   var size: HeadingSize
-  var txt: String
+  var txt: Text
   
   public init(_ str: String, size: HeadingSize = .large) {
-    self.txt = str
+    self.txt = .init(str)
     self.size = size
   }
   
-  init(txt: () -> Text, size: HeadingSize = .large) {
+  public init(
+    size: HeadingSize = .large,
+    _ txt: () -> Text
+  ) {
     self.size = size
-    self.txt = txt().textualRepresentation
+    self.txt = txt()
   }
   
   public enum HeadingSize: String {

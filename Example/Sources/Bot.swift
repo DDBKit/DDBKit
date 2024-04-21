@@ -10,7 +10,7 @@ struct MyNewBot: DiscordBotApp {
       eventLoopGroup: httpClient.eventLoopGroup,
       httpClient: httpClient,
       /// Do not store your token in your code in production.
-      token: "MTE0NDY2OTI3MDg2MTY4ODkxMw.G84agA.646SbKYYM4oUxxdzGoUJSC4PZ8QD5NexD4fItc",
+      token: token,
       /// replace the above with your own token, but only for testing
       largeThreshold: 250,
       presence: .init(activities: [], status: .online, afk: false),
@@ -27,21 +27,20 @@ struct MyNewBot: DiscordBotApp {
       if let msg {
         print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
         
-        if msg.content == "!gm" && msg.author?.username == "llsc12" {
+        if msg.content == "!gm" && ["llsc12", "tobias112", "james.op", "deckyboiii"].contains(msg.author?.username) {
           let a = Message {
             MessageContent {
-              Heading("wagwan")
-              Heading("true story", size: .medium)
-              Text("rate my testing")
-              UnorderedList {
-                "hi"
-                "im"
-                "a"
-                "list"
-              }
+              Text("Italic: ")
+              Text("true story", fmt: .italic)
+              NewLine()
+              Text("Bold: ")
+              Text("true story", fmt: .bold)
+              NewLine()
+              Text("true story", fmt: .strikethrough)
+              NewLine()
+              Text("Bold + Strikethrough: ")
+              Text("true story", fmt: [.bold, .strikethrough])
             }
-            
-            MessageEmbed()
           }
           
           let _ = try? await bot.client.createMessage(
