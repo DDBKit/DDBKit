@@ -9,7 +9,7 @@ import Foundation
 
 public struct Heading: MessageContentComponent {
   public var textualRepresentation: String {
-    "\(size.rawValue) \(txt.textualRepresentation)"
+    "\(size.rawValue) \(txt.textualRepresentation.trimmingCharacters(in: .newlines))\n"
   }
   
   var size: HeadingSize

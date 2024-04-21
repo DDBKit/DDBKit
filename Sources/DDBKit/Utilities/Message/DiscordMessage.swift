@@ -50,17 +50,9 @@ public struct MessageContent: MessageComponent {
   /// Combines all components into a final string to use in discord
   public var textualRepresentation: String {
     self.components.reduce("") { partialResult, component in
-      // ensure linebreak prior to adding these components
-      if component is OrderedList || component is UnorderedList || component is Heading {
-        var str: String = ""
-        if !partialResult.trimmingCharacters(in: .whitespaces).hasSuffix("\n") && !partialResult.isEmpty { str += "\n" }
-        str += component.textualRepresentation
-        return partialResult + str + "\n"
-      }
-      
-      // no need for special work, just return 
       return partialResult + component.textualRepresentation
     }
+    .trimmingCharacters(in: .whitespacesAndNewlines)
   }
 }
 

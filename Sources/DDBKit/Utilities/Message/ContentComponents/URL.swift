@@ -1,5 +1,5 @@
 //
-//  URL.swift
+//  Link.swift
 //
 //
 //  Created by Lakhan Lothiyi on 21/04/2024.
@@ -7,14 +7,15 @@
 
 import Foundation
 
-public struct URL: MessageContentComponent {
+public struct Link: MessageContentComponent {
   public var textualRepresentation: String {
     var url = self.url
     if disableLink { url = "<\(url)>" }
     if let maskedText {
-      url = "[\(maskedText.textualRepresentation)](\(url))"
+      let mask = maskedText.textualRepresentation.trimmingCharacters(in: .newlines)
+      url = "[\(mask)](\(url))"
     }
-    return url
+    return url + "\n"
   }
   
   var url: String
@@ -28,7 +29,7 @@ public struct URL: MessageContentComponent {
   }
 }
 
-public extension URL {
+public extension Link {
   func disableLinking() -> Self { var u = self; u.disableLink = true; return u }
   func maskedWith(_ txt: () -> Text) -> Self { var u = self; u.maskedText = txt(); return u }
 }

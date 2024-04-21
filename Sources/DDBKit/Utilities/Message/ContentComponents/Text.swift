@@ -13,10 +13,13 @@ public struct Text: MessageContentComponent {
   var txt: String
   var fmt: FMTOptions
   
+  var isGroup: Bool
+  
   public init(
     _ str: String,
     fmt: FMTOptions = []
   ) {
+    self.isGroup = false
     self.fmt = fmt
     self.txt = str
   }
@@ -25,14 +28,15 @@ public struct Text: MessageContentComponent {
     fmt: FMTOptions = [],
     @MessageUtilityBuilder<Text> components: () -> [Text]
   ) {
+    self.isGroup = true
     self.fmt = fmt
     self.txt = components().reduce("", { partialResult, txt in
-      return partialResult + txt.textualRepresentation
+      return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines)
     })
   }
   
   public var textualRepresentation: String {
-    "\(fmt.startKey)\(txt)\(fmt.endKey)"
+    "\(fmt.startKey)\(txt)\(fmt.endKey)\n"
   }
   
   public struct FMTOptions: OptionSet {
