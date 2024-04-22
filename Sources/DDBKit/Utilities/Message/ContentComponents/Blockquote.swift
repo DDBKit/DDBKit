@@ -10,7 +10,7 @@ import Foundation
 public struct Blockquote: MessageContentComponent {
   var txt: String
   public init(
-    @MessageUtilityBuilder<MessageContentComponent>
+    @MessageContentBuilder
     components: () -> [MessageContentComponent]
   ) {
     self.txt = components().reduce("", { partialResult, txt in

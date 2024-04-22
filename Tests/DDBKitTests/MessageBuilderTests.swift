@@ -11,7 +11,7 @@ import XCTest
 @testable import DDBKit
 
 final class DDBKitTests: XCTestCase {
-  func testMessageBuilderSimple() throws {
+  func testMessageBuilderSimpleContent() throws {
     let msg = Message {
       MessageContent {
         Text {
@@ -48,7 +48,7 @@ Bold + Strikethrough: **~~true story~~**
     XCTAssertEqual(msg.content.textualRepresentation, expected1)
   }
   
-  func testMessageBuilderComplex() throws {
+  func testMessageBuilderComplexContent() throws {
     let msg = Message {
       MessageContent {
         Heading {
@@ -83,7 +83,7 @@ Bold + Strikethrough: **~~true story~~**
     XCTAssertEqual(msg.content.textualRepresentation, expected)
   }
   
-  func testMessageBuilderLineBreaks() throws {
+  func testMessageBuilderLineBreaksContent() throws {
     let msg = Message {
       MessageContent {
         Text {
@@ -104,7 +104,39 @@ text 2
     XCTAssertEqual(msg.content.textualRepresentation, expected)
   }
   
-  func testMessageBuilderComplexBlocks() throws {
+  func testMessageBuilderConditionalBranches() throws {
+    let random = Bool.random()
+    let msg = Message {
+      MessageContent {
+        if random {
+          Text {
+            Text("1, 2")
+            Text(", 3, 4")
+          }
+        }
+        Text("text 1")
+        Text("text 2")
+      }
+    }
+    
+    let expected1 = """
+text 1
+text 2
+"""
+    
+    let expected2 = """
+1, 2, 3, 4
+text 1
+text 2
+"""
+    if random {
+      XCTAssertEqual(msg.content.textualRepresentation, expected2)
+    } else {
+      XCTAssertEqual(msg.content.textualRepresentation, expected1)
+    }
+  }
+  
+  func testMessageBuilderComplexBlocksContent() throws {
     let msg = Message {
       MessageContent {
         Heading {
@@ -163,5 +195,15 @@ print("done!")
 """
     
     XCTAssertEqual(msg.content.textualRepresentation, expected)
+  }
+  
+  func testMessageBuilderEmbed() throws {
+    let msg = Message {
+      MessageEmbed {
+        Title("wagwan")
+      }
+    }
+    
+    XCTAssertEqual(msg.embeds[0].title, "wagwan")
   }
 }

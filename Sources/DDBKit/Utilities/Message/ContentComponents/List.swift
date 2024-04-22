@@ -9,7 +9,7 @@ import Foundation
 
 public struct OrderedList: MessageContentComponent {
   var items: [Text]
-  public init(@MessageUtilityBuilder<Text> listItems: () -> [Text]) {
+  public init(@TextBuilder listItems: () -> [Text]) {
     self.items = listItems()
   }
   public var textualRepresentation: String {
@@ -22,7 +22,7 @@ public struct OrderedList: MessageContentComponent {
 
 public struct UnorderedList: MessageContentComponent {
   var items: [Text]
-  public init(@MessageUtilityBuilder<Text> listItems: () -> [Text]) {
+  public init(@TextBuilder listItems: () -> [Text]) {
     self.items = listItems()
   }
   public var textualRepresentation: String {

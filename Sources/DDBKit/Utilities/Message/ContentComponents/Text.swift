@@ -7,28 +7,43 @@
 
 import Foundation
 
-/// https://www.markdownguide.org/tools/discord/
+// https://www.markdownguide.org/tools/discord/
+
+@resultBuilder
+public struct TextBuilder {
+  public static func buildBlock(_ components: Text...) -> [Text] { components }
+  public static func buildOptional(_ component: [Text]?) -> Text { Text.init(components: component ?? []) }
+  public static func buildEither(first component: [Text]) -> Text { Text.init(components: component) }
+  public static func buildEither(second component: [Text]) -> Text { Text.init(components: component) }
+}
 
 public struct Text: MessageContentComponent {
   var txt: String
   var fmt: FMTOptions
   
-  var isGroup: Bool
   
   public init(
     _ str: String,
     fmt: FMTOptions = []
   ) {
-    self.isGroup = false
     self.fmt = fmt
     self.txt = str
   }
   
+  init(
+    fmt: FMTOptions = [],
+    components: [Text]
+  ) {
+    self.fmt = fmt
+    self.txt = components.reduce("", { partialResult, txt in
+      return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines)
+    })
+  }
+  
   public init(
     fmt: FMTOptions = [],
-    @MessageUtilityBuilder<Text> components: () -> [Text]
+    @TextBuilder components: () -> [Text]
   ) {
-    self.isGroup = true
     self.fmt = fmt
     self.txt = components().reduce("", { partialResult, txt in
       return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines)
@@ -36,7 +51,7 @@ public struct Text: MessageContentComponent {
   }
   
   public var textualRepresentation: String {
-    "\(fmt.startKey)\(txt)\(fmt.endKey)\n"
+    "\(fmt.startKey)\(txt)\(fmt.endKey)\(txt.isEmpty ? "" : "\n")"
   }
   
   public struct FMTOptions: OptionSet {
