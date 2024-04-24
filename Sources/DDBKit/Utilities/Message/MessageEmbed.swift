@@ -14,7 +14,19 @@ public protocol MessageEmbedComponent {
 /// making an embed object.
 public struct MessageEmbed: MessageComponent {
   public init(@MessageEmbedBuilder components: () -> [MessageEmbedComponent]) {
-    let components = components()
+    let componentsArray = components()
+    var components: [MessageEmbedComponent] = []
+    func r(from c: [MessageEmbedComponent]) {
+      for component in c {
+        if let tuple = component as? MessageEmbedBuilder.EmbedTuple {
+          r(from: tuple.contained)
+        } else {
+          components.append(component)
+        }
+      }
+    }
+    r(from: componentsArray)
+    
     self.title = (components.last(where: {$0 is Title}) as? Title)?.text
   }
   
