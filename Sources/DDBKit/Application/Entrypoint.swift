@@ -11,11 +11,13 @@ extension DiscordBotApp {
   
   public static func main() async throws {
     // Default implementation for main function
-    let bot = await Self.init()
-    try await bot.run()
+    try await Self.init().run()
   }
   
   public func run() async throws {
+    if BotInstance.shared.bot != nil {
+      fatalError("A bot is already running in this process, DDBKit does not yet support multiple clients per process.")
+    }
     // first init the environment to capture events and process commands
     let sceneData = readScene(scenes: self.body)
     BotInstance.shared = .init(bot: self.bot, rawEvents: sceneData.events)

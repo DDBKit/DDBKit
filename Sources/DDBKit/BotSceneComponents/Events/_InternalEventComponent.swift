@@ -28,6 +28,11 @@ extension BaseEvent {
   }
 }
 
+// below is what i wouldn't wish upon anyone else no matter what
+// terrible things they may have done
+
+// i couldn't find a better way to do this
+
 public extension Gateway.Event.Payload {
   func asType<T>(_ type: T.Type) -> T? {
     switch self {

@@ -23,25 +23,16 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/DiscordBM/DiscordBM", from: "1.10.1"),
     .package(url: "https://github.com/swift-server/async-http-client", from: "1.20.1"),
-    .package(url: "https://github.com/apple/swift-syntax", from: "509.0.0")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
-    .macro(
-      name: "DDBKitMacros",
-      dependencies: [
-        .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-        .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-      ]
-    ),
     .target(
       name: "DDBKit",
       dependencies: [
         "DiscordBM",
         "Database",
         .product(name: "AsyncHTTPClient", package: "async-http-client"),
-        "DDBKitMacros"
       ]
     ),
     .target(
