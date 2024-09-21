@@ -2,6 +2,8 @@
 ## What is it?
 DDBKit stands for Declarative Discord Bot Kit, name proposed by [Tobias](https://github.com/tobiasdickinson). DDBKit is designed to abstract away the complexities of Discord’s API into something that feels right at home. Similar to SwiftUI, DDBKit lets you declare commands and add modifiers to create functionality in your bot. It’s kinda like [Commando](https://github.com/discordjs/commando). DDBKit relies on [DiscordBM](https://github.com/DiscordBM/DiscordBM) under the hood.
 
+
+
 ## Getting started
 Begin by making a new project directory with
 ```sh
@@ -38,7 +40,7 @@ let package = Package(
 You’ve now configured the package to use DDBKit! Next, rename the file at `./Sources/main.swift` to anything that isn’t `main.swift`, such as `Bot.swift`.
 <details>
 <summary>Why do this?</summary>
-Having a file named <code>main.swift</code> makes it the entrypoint, and code is executed at the top level. DDBKit uses a protocol that declares it’s own entrypoint, you’ll declare a struct conforming to the protocol and you’ll prefix the struct with <code>@main</code>. This does also mean that you can only run a single bot per executable.
+Having a file named <code>main.swift</code> makes it the entrypoint, and code is executed at the top level. DDBKit uses a protocol that declares it’s own entrypoint, you’ll declare a struct conforming to the protocol and you’ll prefix the struct with <code>@main</code>. This is the simplest setup for a discord bot with DDBKit. You can run multiple clients by executing the `run() async throws` method on each `DiscordBotApp` struct you've defined.
 </details>
 
 You can now replace any existing code in your Swift file with
@@ -58,6 +60,13 @@ struct MyNewBot: DiscordBotApp {
       presence: .init(activities: [], status: .online, afk: false),
       intents: [.messageContent, .guildMessages]
     )
+    // Will be useful
+    cache = await .init(
+      gatewayManager: bot,
+      intents: .all, // it's better to minimise cached data to your needs
+      requestAllMembers: .enabledWithPresences,
+      messageCachingPolicy: .saveEditHistoryAndDeleted
+    )
   }
   
   var body: [any BotScene] {
@@ -73,13 +82,17 @@ struct MyNewBot: DiscordBotApp {
   }
 
   var bot: Bot
+  var cache: Cache
 }
 ```
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
-> [!NOTE]
+> [!WARNING]
 > You cannot use logic in the `body` property; The property is only read once on startup.
+> Commands are registered in batch globally or per groups with guild targets (TBA)
 
 <details>
 <summary>Need another entrypoint? (iOS etc.)</summary>
 You can run a DiscordBotApp instance with the `run() async throws` function available on your Bot struct. You can use this to run multiple clients at once if needed.
 </details>
+
+You've now got a solid place to start with your bot. Check out the wiki for more information!
