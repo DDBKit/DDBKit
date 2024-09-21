@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DiscordModels
 
 @resultBuilder
 public struct MessageComponentBuilder {
@@ -56,6 +57,19 @@ public struct Message {
   public var content: MessageContent
   public var embeds: [MessageEmbed]
   
+//  public var nonce: StringOrInt?
+  public var tts: Bool?
+//  public var embeds: [Embed]?
+//  public var allowed_mentions: AllowedMentions?
+  public var message_reference: DiscordChannel.Message.MessageReference?
+//  public var components: [Interaction.ActionRow]?
+  public var sticker_ids: [String]?
+  public var files: [RawFile]?
+//  public var attachments: [Attachment]?
+  public var flags: IntBitField<DiscordChannel.Message.Flag>?
+  public var enforce_nonce: Bool?
+//  public var poll: CreatePollRequest?
+  
   /// Initializes a message with content and embeds
   /// - Parameter components: Message components
   public init(
@@ -80,3 +94,25 @@ public struct Message {
 
 /// All kinds of data in a `message` object must conform to this
 public protocol MessageComponent { }
+
+
+// MARK: - Convert to DiscordBM message
+//public extension Message {
+//  var _createMessage: Payloads.CreateMessage {
+//    .init(
+//      content: <#T##String?#>,
+//      nonce: <#T##StringOrInt?#>,
+//      tts: <#T##Bool?#>,
+//      embeds: <#T##[Embed]?#>,
+//      allowed_mentions: <#T##Payloads.AllowedMentions?#>,
+//      message_reference: <#T##DiscordChannel.Message.MessageReference?#>,
+//      components: <#T##[Interaction.ActionRow]?#>,
+//      sticker_ids: <#T##[String]?#>,
+//      files: <#T##[RawFile]?#>,
+//      attachments: <#T##[Payloads.Attachment]?#>,
+//      flags: <#T##IntBitField<DiscordChannel.Message.Flag>?#>,
+//      enforce_nonce: <#T##Bool?#>,
+//      poll: <#T##Payloads.CreatePollRequest?#>
+//    )
+//  }
+//}

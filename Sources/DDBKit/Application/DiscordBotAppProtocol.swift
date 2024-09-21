@@ -14,7 +14,9 @@ import SwiftUI
 public protocol DiscordBotApp {
   /// Set this to either a `BotGatewayManager` or `ShardingGatewayManager`
   var bot: Bot { get set }
+  var cache: Cache { get set }
   typealias Bot = GatewayManager
+  typealias Cache = DiscordCache
   @BotSceneBuilder var body: [BotScene] { get }
   
   init() async

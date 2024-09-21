@@ -5,7 +5,7 @@
 //  Created by Lakhan Lothiyi on 16/09/2024.
 //
 
-import Foundations
+import Foundation
 
 public struct StageInstanceCreateEvent: BaseEvent {
   var action: (T?) async -> Void

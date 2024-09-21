@@ -11,7 +11,7 @@ import XCTest
 @testable import DDBKit
 @testable import Database
 
-final class DDBKitTests: XCTestCase {
+final class MessageBuilderTests: XCTestCase {
   func testMessageBuilderSimpleContent() throws {
     let msg = Message {
       MessageContent {
@@ -66,7 +66,7 @@ Bold + Strikethrough: **~~true story~~**
         Text("Actually scratch that")
           .strikethrough()
         Link("https://llsc12.me")
-          .disableLinking()
+          .disableEmbedding()
           .maskedWith {
             Text("check out this!")
               .bold()
@@ -154,7 +154,7 @@ text 2
         Text("Actually scratch that")
           .strikethrough()
         Link("https://llsc12.me")
-          .disableLinking()
+          .disableEmbedding()
           .maskedWith {
             Text("check out this!")
               .bold()
@@ -209,33 +209,5 @@ print("done!")
     }
     
     XCTAssertEqual(msg.embeds[0].title, random ? "wagwan" : nil)
-  }
-  
-  func testEgg() async {
-    // define a model to store data with
-    struct UserNotes: DatabaseModel {
-      var notes: [String]
-    }
-    
-    let db = Database.shared // singleton instance
-    // prepare a request for user llsc12
-    let req = Database.FetchRequest.requestFor(user: .init("381538809180848128"), ofType: UserNotes.self)
-    
-    // transactions give us access to the model instance for the lifetime of this closure
-    // we shouldn't do anything aside from reading and writing data in this closure
-    // or else other transactions to this model have to wait until you're done
-    // hence why we use await when instanciating a transaction
-    await db.transaction(req) { notesObject in
-      var obj = notesObject ?? .init(notes: []) // init if it doesnt exist already
-      // make changes to our instance
-      obj.notes = [
-        "finish the db",
-        "show echo an example of transaction"
-      ]
-      // return the instance we've changed and the db will save it
-      return obj
-    }
-    // now that we're done, another pending transaction can initiate :3
-    
   }
 }

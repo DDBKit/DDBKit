@@ -10,7 +10,6 @@ import DiscordBM
 // this protocol is used to give all events conformance to receive events.
 protocol BaseEvent<T>: BotScene {
   associatedtype T: Codable
-  init(_ action: @escaping (T?) async -> Void)
   var action: (T?) async -> Void { get set }
   var eventType: Gateway.Event.EventType? { get }
   func typeMatchesEvent(_ event: Gateway.Event) -> Bool
@@ -148,6 +147,10 @@ public extension Gateway.Event.Payload {
       return messageReactionRemoveAll as? T
     case .messageReactionRemoveEmoji(let messageReactionRemoveEmoji):
       return messageReactionRemoveEmoji as? T
+    case .messagePollVoteAdd(let messagePollVoteAdd):
+      return messagePollVoteAdd as? T
+    case .messagePollVoteRemove(let messagePollVoteRemove):
+      return messagePollVoteRemove as? T
     case .presenceUpdate(let presenceUpdate):
       return presenceUpdate as? T
     case .requestPresenceUpdate(let presence):
@@ -303,6 +306,10 @@ extension Gateway.Event {
       return type == .messageReactionRemoveAll
     case .messageReactionRemoveEmoji(_):
       return type == .messageReactionRemoveEmoji
+    case .messagePollVoteAdd(_):
+      return type == .messagePollVoteAdd
+    case .messagePollVoteRemove(_):
+      return type == .messagePollVoteRemove
     case .presenceUpdate(_):
       return type == .presenceUpdate
     case .requestPresenceUpdate(_):
@@ -399,6 +406,8 @@ extension Gateway.Event {
     case messageReactionRemove
     case messageReactionRemoveAll
     case messageReactionRemoveEmoji
+    case messagePollVoteAdd
+    case messagePollVoteRemove
     case presenceUpdate
     case requestPresenceUpdate
     case stageInstanceCreate

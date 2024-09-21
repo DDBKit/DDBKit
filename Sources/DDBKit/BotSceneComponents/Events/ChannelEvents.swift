@@ -7,23 +7,30 @@
 
 import Foundation
 
-public struct ThreadCreateEvent: BaseEvent {
+public struct ChannelCreateEvent: BaseEvent {
   var action: (T?) async -> Void
   public typealias T = DiscordChannel
-  var eventType: Gateway.Event.EventType? = .threadCreate
+  var eventType: Gateway.Event.EventType? = .channelCreate
   public init(_ action: @escaping (T?) async -> Void) { self.action = action }
 }
 
-public struct ThreadUpdateEvent: BaseEvent {
+public struct ChannelUpdateEvent: BaseEvent {
   var action: (T?) async -> Void
   public typealias T = DiscordChannel
-  var eventType: Gateway.Event.EventType? = .threadUpdate
+  var eventType: Gateway.Event.EventType? = .channelUpdate
   public init(_ action: @escaping (T?) async -> Void) { self.action = action }
 }
 
-public struct ThreadDeleteEvent: BaseEvent {
+public struct ChannelDeleteEvent: BaseEvent {
   var action: (T?) async -> Void
-  public typealias T = Gateway.ThreadDelete
-  var eventType: Gateway.Event.EventType? = .threadDelete
+  public typealias T = DiscordChannel
+  var eventType: Gateway.Event.EventType? = .channelDelete
+  public init(_ action: @escaping (T?) async -> Void) { self.action = action }
+}
+
+public struct ChannelPinsUpdateEvent: BaseEvent {
+  var action: (T?) async -> Void
+  public typealias T = Gateway.ChannelPinsUpdate
+  var eventType: Gateway.Event.EventType? = .channelPinsUpdate
   public init(_ action: @escaping (T?) async -> Void) { self.action = action }
 }

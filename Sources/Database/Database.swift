@@ -50,7 +50,7 @@ public actor Database {
   /// `Int` is a Hash of the filepath that is being used. These tasks
   /// contain the reading and writing being done to the database.
   /// Only one transaction can be active at a time
-  var transactions = [Int: Task<Void, Never>]()
+  var transactions = [Int: Task<Any?, Never>]()
 
   /// Reads file from the file in the db
   /// - Parameter url: URL of file to read
@@ -81,7 +81,10 @@ public actor Database {
   /// and other tasks or else other instances awaiting a chance for reading and writing
   /// will have to wait long.
   /// - Parameter transaction: A closure where you can read the data and return modified data
-  public func transaction<T: DatabaseModel>(_ req: FetchRequest<T>, transaction: @escaping (T?) async -> T?) async {
+  /// - Parameter req: The request to the DB you want to perform
+  /// - Returns: The returned value from the transaction closure
+  @discardableResult
+  public func transaction<T: DatabaseModel>(_ req: FetchRequest<T>, transaction: @escaping (T?) async -> T?) async -> T? {
     let id = req.datahash
     /// suspend this transaction request until the existing one is done
     
@@ -99,11 +102,12 @@ public actor Database {
       let current = request(req)
       let modified = await transaction(current)
       write(req, data: modified)
-      return
+      return modified as Any?
     }
     transactions[id] = task
-    let _ = await transactions[id]?.value
+    let retValue = await transactions[id]?.value
     transactions.removeValue(forKey: id)
+    return retValue as? T
   }
 }
 

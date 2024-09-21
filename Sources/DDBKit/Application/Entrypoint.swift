@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DiscordBM
 
 extension DiscordBotApp {
   
@@ -15,35 +16,45 @@ extension DiscordBotApp {
   }
   
   public func run() async throws {
-    if BotInstance.shared.bot != nil {
-      fatalError("A bot is already running in this process, DDBKit does not yet support multiple clients per process.")
-    }
+//    if BotInstance.shared.bot != nil {
+//      fatalError("A bot is already running in this process, DDBKit does not yet support multiple clients per process.")
+//    }
+    
     // first init the environment to capture events and process commands
     let sceneData = readScene(scenes: self.body)
-    BotInstance.shared = .init(bot: self.bot, rawEvents: sceneData.events)
+    let instance: BotInstance = .init(bot: self.bot, events: sceneData.events, commands: sceneData.commands)
+    
+    // register commands
+    let cmds = sceneData.commands.map(\.baseInfo)
+    try await bot.client
+      .bulkSetApplicationCommands(payload: cmds)
+      .guardSuccess()
     
     // then connect the bot
     await bot.connect()
     
     // and finally, begin receiving events
     for await event in await self.bot.events {
-      BotInstance.shared.sendEvent(event)
+      instance.sendEvent(event)
     }
   }
+  
 }
 
 internal extension DiscordBotApp {
   /// Reads the declared scene
   /// - Parameter scenes: Scene data
   /// - Returns: Separated scenes
-  func readScene(scenes: [any BotScene]) -> (events: [any BaseEvent], a: Void) {
+  func readScene(scenes: [any BotScene]) -> (events: [any BaseEvent], commands: [any BaseCommand]) {
     var events = [any BaseEvent]()
+    var commands = [any BaseCommand]()
     scenes.forEach { scene in
       switch true {
-      case scene is any BaseEvent: events.append(scene as! any BaseEvent) // register raw event handlers
+      case scene is any BaseEvent: events.append(scene as! any BaseEvent) // register event handlers
+      case scene is any BaseCommand: commands.append(scene as! any BaseCommand) // register commands
       default: break
       }
     }
-    return (events, ())
+    return (events, commands)
   }
 }

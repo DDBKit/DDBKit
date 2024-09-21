@@ -30,6 +30,6 @@ public struct Link: MessageContentComponent {
 }
 
 public extension Link {
-  func disableLinking() -> Self { var u = self; u.disableLink = true; return u }
+  func disableEmbedding() -> Self { var u = self; u.disableLink = true; return u }
   func maskedWith(_ txt: () -> Text) -> Self { var u = self; u.maskedText = txt(); return u }
 }

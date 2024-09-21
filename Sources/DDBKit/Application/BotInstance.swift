@@ -7,30 +7,110 @@
 
 import Foundation
 
-// this internal class keeps track of declared events and handles actions 
+// this internal class keeps track of declared events and handles actions.
+// the entrypoint file contains a local declaration of it in the run() func.
 class BotInstance {
-  static var shared = BotInstance()
-  private init() { self.bot = nil; self.rawEvents = [] }
+  private init() {
+    self.bot = nil;
+    self.events = []
+    self.commands = []
+  }
   
   /// bot instance we keep to interact with if needed
   let bot: GatewayManager?
   
   // declared events the user wants to receive
-  let rawEvents: [any BaseEvent]
+  let events: [any BaseEvent]
+  let commands: [any BaseCommand]
   
-  init(bot: GatewayManager, rawEvents: [any BaseEvent]) {
+  
+  init(bot: GatewayManager, events: [any BaseEvent], commands: [any BaseCommand]) {
     self.bot = bot
-    self.rawEvents = rawEvents
+    self.events = events
+    self.commands = commands
   }
   
   func sendEvent(_ event: Gateway.Event) {
+    // MARK: - Interactions (cmds etc.)
+    if event.isOfType(.interactionCreate) {
+      // get interaction
+      switch event.data {
+      case .interactionCreate(let interaction):
+        // get interaction types and respond as needed
+        switch interaction.data {
+          
+          // MARK: - Handling START
+          
+          // slash command
+        case .applicationCommand(let cmd):
+          // trigger base commands named `cmd.name` (autocomplete handler)
+          if interaction.type == .applicationCommandAutocomplete {
+            self.handleCommandAutocomplete(interaction, cmd: cmd)
+          }
+          // trigger base commands named `cmd.name` (trigger
+          if interaction.type == .applicationCommand {
+            self.handleCommand(interaction, cmd: cmd)
+          }
+          break
+          
+          // message component (buttons, pickers etc.)
+        case .messageComponent(let msg):
+          // trigger component callback
+          break
+          
+          // modals (form sheets)
+        case .modalSubmit(let modal):
+          // handle submission
+          break
+          
+          // MARK: Handling END -
+          
+        default: break
+        }
+      default: break
+      }
+    }
+    
+    // MARK: - Events (anything else)
     // now that we got an event, we should look for all events that match
-    let matchedEvents = rawEvents.filter { $0.typeMatchesEvent(event) }
+    let matchedEvents = events.filter { $0.typeMatchesEvent(event) }
     
     // now we have all appropriate events. go through them all and trigger action
     matchedEvents.forEach { match in
       Task(priority: .userInitiated) { /// we use a task because we don't want many of the same event doing long tasks and blocking the event queue
         await match.handle(event.data) // FIXME: how do we get type safety based on chosen event
+      }
+    }
+  }
+  
+//case applicationCommand(ApplicationCommand)
+//case messageComponent(MessageComponent)
+//case modalSubmit(ModalSubmit)
+  
+  func handleCommand(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
+    // find all commands that fit criteria
+    let cmds = commands.filter { command in
+      command.baseInfo.name == cmd.name
+    }
+    cmds.forEach { command in
+      Task(priority: .userInitiated) {
+        await command.trigger(i)
+      }
+    }
+  }
+  
+  func handleCommandAutocomplete(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
+    // find all commands that fit criteria
+    let cmds = commands.filter { command in
+      command.baseInfo.name == cmd.name
+    }
+    cmds.forEach { command in
+      guard
+        let option = cmd.options?.first(where: {$0.focused == true}),
+        let client = bot?.client
+      else { return }
+      Task(priority: .userInitiated) {
+        await command.autocompletion(i, cmd: cmd, opt: option, client: client)
       }
     }
   }

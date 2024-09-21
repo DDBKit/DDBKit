@@ -15,6 +15,18 @@ public protocol BotScene {
 @resultBuilder 
 public struct BotSceneBuilder {
   public static func buildBlock(_ components: BotScene...) -> [BotScene] {
-    components
+    var scenes = [BotScene]()
+    components.forEach { scene in
+      if let group = scene as? Group {
+        // scene was group, extract
+        scenes.append(contentsOf: expandGroup(group: group))
+      } else {
+        // scene didnt contain children
+        scenes.append(scene)
+      }
+    }
+    return scenes
   }
+  
+  private static func expandGroup(group: Group) -> [BotScene] { group.scene }
 }

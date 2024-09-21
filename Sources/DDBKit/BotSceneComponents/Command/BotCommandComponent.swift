@@ -9,34 +9,59 @@ import Foundation
 import RegexBuilder
 import DiscordBM
 
-public struct Command: BotScene {
-  // basic required data
-  var name: String
-  var description: String?
+/// A basic command thats easy and fast to declare and program
+public struct Command: BaseCommand {
+  // autocompletion related things
+  func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
+    guard let value = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
+    // find autocompletable options
+    let autocompletableOptions = self.options.compactMap { $0 as? _AutocompletableOption }
+    
+    // find applicable option in autocompletable options
+    let option = autocompletableOptions.first(where: {$0.optionData.name == opt.name})
+    // run autocompletions callback
+    
+    let autocompletions = option?.autocompletion?(value)
+    // return these choices
+    let _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletions ?? [])))
+  }
   
+  var options: [Option] = []
+  
+  // command data
+  var baseInfo: DiscordModels.Payloads.ApplicationCommandCreate
+  
+  func trigger(_ i: DiscordModels.Interaction) async {
+    switch i.data {
+    case .applicationCommand(let j): await proxyAction(i, j)
+    default: break
+    }
+  }
   
   // we let the user define action, but we control the before and after actions.
   // we internally execute proxyAction which executes before, user-def and after actions.
-  var action: (Interaction) async -> Void
-  func proxyAction(_ i: Interaction) async {
+  var action: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void
+  func proxyAction(_ i: Interaction, _ j: Interaction.ApplicationCommand) async {
+    let dbReqs: DatabaseBranches = .init(i)
+    
     await preAction(i)
-    await action(i)
+    await action(i, j, dbReqs)
     await postAction(i)
   }
   
-  // external options
-  var options: [Option]
-  // extra internal options
-  
-  public init(_ commandName: String, action: @escaping (Interaction) async -> Void) {
+  public init(_ commandName: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void) {
     guard (1...32).contains(commandName.count) else { preconditionFailure("[\(commandName)] Command name must be 1-32 characters") }
     let name = commandName.trimmingCharacters(in: .whitespacesAndNewlines)
     guard name.wholeMatch(of: nameRegex) != nil else { preconditionFailure("[\(commandName)] Command name contains invalid characters")}
     
-    self.name = commandName
     self.action = action
-    self.options = []
+    
+    self.baseInfo = .init(
+      name: commandName
+    )
   }
+  
+  // MARK: - These pre and post actions are for use internally
   
   func preAction(_ interaction: Interaction) async {
     // do things like sending defer, processing, idk
@@ -50,10 +75,9 @@ fileprivate var nameRegex = Regex {
   ZeroOrMore {
     CharacterClass(
       .anyOf("-"),
-      ("A"..."Z"),
-      ("a"..."z"),
-      .whitespace
+      ("a"..."z")
     )
   }
 }
 .anchorsMatchLineEndings()
+
