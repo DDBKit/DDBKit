@@ -78,3 +78,8 @@ struct MyNewBot: DiscordBotApp {
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
 > [!NOTE]
 > You cannot use logic in the `body` property; The property is only read once on startup.
+
+<details>
+<summary>Need another entrypoint? (iOS etc.)</summary>
+You can run a DiscordBotApp instance with the `run() async throws` function available on your Bot struct. You can use this to run multiple clients at once if needed.
+</details>
