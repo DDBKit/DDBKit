@@ -40,7 +40,7 @@ let package = Package(
 You’ve now configured the package to use DDBKit! Next, rename the file at `./Sources/main.swift` to anything that isn’t `main.swift`, such as `Bot.swift`.
 <details>
 <summary>Why do this?</summary>
-Having a file named <code>main.swift</code> makes it the entrypoint, and code is executed at the top level. DDBKit uses a protocol that declares it’s own entrypoint, you’ll declare a struct conforming to the protocol and you’ll prefix the struct with <code>@main</code>. This is the simplest setup for a discord bot with DDBKit. You can run multiple clients by executing the `run() async throws` method on each `DiscordBotApp` struct you've defined.
+Having a file named <code>main.swift</code> makes it the entrypoint, and code is executed at the top level. DDBKit uses a protocol that declares it’s own entrypoint, you’ll declare a struct conforming to the protocol and you’ll prefix the struct with <code>@main</code>. This is the simplest setup for a discord bot with DDBKit. You can run multiple clients by executing the <code>run() async throws</code> method on each <code>DiscordBotApp</code> struct you've defined.
 </details>
 
 You can now replace any existing code in your Swift file with
@@ -85,6 +85,11 @@ struct MyNewBot: DiscordBotApp {
   var cache: Cache
 }
 ```
+<details>
+<summary>Using linux?</summary>
+Run <code>swift run</code> in the project directory.
+</details>
+
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
 > [!WARNING]
 > You cannot use logic in the `body` property; The property is only read once on startup.
@@ -92,7 +97,7 @@ Congratulations! You’ve connected to Discord as your bot and reacted to an eve
 
 <details>
 <summary>Need another entrypoint? (iOS etc.)</summary>
-You can run a DiscordBotApp instance with the `run() async throws` function available on your Bot struct. You can use this to run multiple clients at once if needed.
+You can run a DiscordBotApp instance with the <code>run() async throws</code> function available on your Bot struct. You can use this to run multiple clients at once if needed.
 </details>
 
 You've now got a solid place to start with your bot. Check out the [wiki](https://github.com/llsc12/DDBKit/wiki) for more information!
