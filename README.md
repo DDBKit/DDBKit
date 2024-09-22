@@ -95,4 +95,18 @@ Congratulations! You’ve connected to Discord as your bot and reacted to an eve
 You can run a DiscordBotApp instance with the `run() async throws` function available on your Bot struct. You can use this to run multiple clients at once if needed.
 </details>
 
-You've now got a solid place to start with your bot. Check out the wiki for more information!
+You've now got a solid place to start with your bot. Check out the [wiki](https://github.com/llsc12/DDBKit/wiki) for more information!
+
+# Contributing
+Feel free to work on providing more abstractions and adding general utilities.
+My code isn't exactly amazing so if you'd like to improve it for everyone else, be sure to make a PR!
+I have a silly database thing going on. I think it might be useful but it also might be dumb. If someone rewrites it to use a real database behind the scenes whilst also providing more utilities, it would be much appreciated.
+
+I only ask that contributions are somewhat commented in cases of dense code or wherever fit. 
+Use `self` explicitly whenever it's used.
+Someone should PR a linter :3
+
+# Sponsoring
+If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
+Afterwards, feel free to sponsor the development of DDBKit and my other projects!
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/llsc12)
