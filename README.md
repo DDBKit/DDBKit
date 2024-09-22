@@ -106,6 +106,15 @@ I only ask that contributions are somewhat commented in cases of dense code or w
 Use `self` explicitly whenever it's used.
 Someone should PR a linter :3
 
+## Goals
+- [ ] Using builders for composable objects (main bot logic, messages etc.)
+- [ ] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
+- [ ] Swift Playgrounds book-based guide for younger demographics
+- [ ] Swift playground app for bots developed on iPad with in-app console and runs in background
+- [ ] Feature parity with Discord
+- [ ] Make database good
+- [ ] Add linter
+
 # Sponsoring
 If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
 Afterwards, feel free to sponsor the development of DDBKit and my other projects!
