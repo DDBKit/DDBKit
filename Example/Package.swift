@@ -5,11 +5,9 @@ import PackageDescription
 
 let package = Package(
   name: "ExampleBot",
-  platforms: [
-    .macOS(.v13)
-  ],
   dependencies: [
-    .package(path: "./../../DDBKit")
+//    .package(path: "./../../DDBKit"),
+    .package(url: "https://github.com/llsc12/DDBKit", branch: "main")
     /// you'll want to use a version tag instead, use the below line
     /// `.package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0")`
     /// i happen to also use this example project to test the package :3
