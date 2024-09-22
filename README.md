@@ -114,6 +114,7 @@ Someone should PR a linter :3
 - [ ] Feature parity with Discord
 - [ ] Make database good
 - [ ] Add linter
+- [ ] Links in DocC comments of objects to thorough wiki docs
 
 # Sponsoring
 If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
