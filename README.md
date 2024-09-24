@@ -93,7 +93,8 @@ Run <code>swift run</code> in the project directory.
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
 > [!WARNING]
 > You cannot use logic in the `body` property; The property is only read once on startup.
-> Commands are registered in batch globally or per groups with guild targets (TBA)
+> Commands are registered in batch globally or per groups with [guild targets](https://github.com/llsc12/DDBKit/wiki/2.-Getting-Started#first-command).
+> Logic is only evaluated in defined events and commands, and their respective modifiers that accept code.
 
 <details>
 <summary>Need another entrypoint? (iOS etc.)</summary>
