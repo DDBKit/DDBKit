@@ -54,8 +54,11 @@ public struct MessageEmbedBuilder {
 
 /// Stores things like message content, any embeds, etc
 public struct Message {
+  /// our types we keep track of the message state with
   public var content: MessageContent
   public var embeds: [MessageEmbed]
+  
+  /// discord types we'll be sending off
   
 //  public var nonce: StringOrInt?
   public var tts: Bool?
@@ -65,54 +68,16 @@ public struct Message {
 //  public var components: [Interaction.ActionRow]?
   public var sticker_ids: [String]?
   public var files: [RawFile]?
-//  public var attachments: [Attachment]?
+  public var attachments: [Payloads.Attachment]?
   public var flags: IntBitField<DiscordChannel.Message.Flag>?
   public var enforce_nonce: Bool?
 //  public var poll: CreatePollRequest?
-  
-  /// Initializes a message with content and embeds
-  /// - Parameter components: Message components
-  public init(
-    @MessageComponentBuilder
-    components: () -> [MessageComponent]
-  ) {
-    let components = components()
-    self.content = (components.last(where: {$0 is MessageContent}) as? MessageContent) ?? .init(message: { })
-    self.embeds = components.filter { $0 is MessageEmbed } as? [MessageEmbed] ?? []
-  }
-  
-  /// Initializes a message's content
-  /// - Parameter message: Message content components
-  public init(
-    @MessageContentBuilder
-    message: () -> [MessageContentComponent]
-  ) {
-    self.content = .init(message: message)
-    self.embeds = []
-  }
 }
 
-/// All kinds of data in a `message` object must conform to this
+public extension Message {
+  
+}
+
+/// All kinds of data in a `Message` object must conform to this
 public protocol MessageComponent { }
 
-
-// MARK: - Convert to DiscordBM message
-//public extension Message {
-//  var _createMessage: Payloads.CreateMessage {
-//    .init(
-//      content: <#T##String?#>,
-//      nonce: <#T##StringOrInt?#>,
-//      tts: <#T##Bool?#>,
-//      embeds: <#T##[Embed]?#>,
-//      allowed_mentions: <#T##Payloads.AllowedMentions?#>,
-//      message_reference: <#T##DiscordChannel.Message.MessageReference?#>,
-//      components: <#T##[Interaction.ActionRow]?#>,
-//      sticker_ids: <#T##[String]?#>,
-//      files: <#T##[RawFile]?#>,
-//      attachments: <#T##[Payloads.Attachment]?#>,
-//      flags: <#T##IntBitField<DiscordChannel.Message.Flag>?#>,
-//      enforce_nonce: <#T##Bool?#>,
-//      poll: <#T##Payloads.CreatePollRequest?#>
-//    )
-//  }
-//}

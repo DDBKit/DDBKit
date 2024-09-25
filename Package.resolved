@@ -1,5 +1,5 @@
 {
-  "originHash" : "005b221d3351233a674b7b591cb3e34921abd11342075e5e856e7944e499d3e3",
+  "originHash" : "01210eeb88a83c513ff4d03c0eaae0c1e54fcc3488de1fd1bf51a6e78ce5868e",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -15,8 +15,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordBM",
       "state" : {
-        "revision" : "ddce0d02aa46102499eb713c9b4a8efd3ad6fa87",
-        "version" : "1.10.1"
+        "revision" : "52fe13121d24dc9a250fec4fc969ccec06357961"
       }
     },
     {

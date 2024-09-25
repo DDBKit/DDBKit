@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
   name: "ExampleBot",
+  platforms: [
+    .macOS(.v14)
+  ],
   dependencies: [
 //    .package(path: "./../../DDBKit"),
     .package(url: "https://github.com/llsc12/DDBKit", branch: "main")

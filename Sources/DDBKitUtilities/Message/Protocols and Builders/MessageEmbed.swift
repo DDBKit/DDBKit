@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DiscordModels
 
 public protocol MessageEmbedComponent {
 }
@@ -47,14 +48,6 @@ public struct MessageEmbed: MessageComponent {
 }
 
 public extension MessageEmbed {
-  func setKind(_ kind: Embed.Kind) -> Self { var e = self; e.kind = kind; return e }
-  func setTimestamp(_ date: Date) -> Self { var e = self; e.timestamp = date; return e }
-  func setColor(_ color: DiscordColor) -> Self { var e = self; e.color = color; return e }
-  func setURL(_ url: String) -> Self { var e = self; e.url = url; return e }
-  func setProvider(_ name: String, url: String? = nil) -> Self { var e = self; e.provider = .init(name: name, url: url); return e }
-}
-
-public extension MessageEmbed {
   var embed: Embed {
     return .init(
       title: self.title,
@@ -72,4 +65,12 @@ public extension MessageEmbed {
       fields: self.fields
     )
   }
+}
+
+public extension MessageEmbed {
+  func setKind(_ kind: Embed.Kind) -> Self { var e = self; e.kind = kind; return e }
+  func setTimestamp(_ date: Date) -> Self { var e = self; e.timestamp = date; return e }
+  func setColor(_ color: DiscordColor) -> Self { var e = self; e.color = color; return e }
+  func setURL(_ url: String) -> Self { var e = self; e.url = url; return e }
+  func setProvider(_ name: String, url: String? = nil) -> Self { var e = self; e.provider = .init(name: name, url: url); return e }
 }
