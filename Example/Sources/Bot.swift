@@ -1,5 +1,6 @@
 // hi mom
 import DDBKit
+import DDBKitUtilities
 import Foundation
 import Database
 
@@ -71,22 +72,25 @@ struct MyNewBot: DiscordBotApp {
     }
     .description("Toggles a value stored for this current channel context")
     
+    Command("embeds") { i, cmd, dbreq in
+      try? await bot.createInteractionResponse(to: i, type: Payloads.InteractionResponse.pong)
+    }
+    .description("Test embeds")
     
     Command("increment") { interaction, cmd, db in
       let number = Double((try? cmd.requireOption(named: "number").value?.asString) ?? "0") ?? 0
       
-      // an easier way of sending messages without directly using http client
-      // is going to arrive soon dw :3
       do {
-        let _ = try await bot.client.createInteractionResponse(
-          id: interaction.id,
-          token: interaction.token,
-          payload: .deferredChannelMessageWithSource()
+        try await bot.createInteractionResponse(
+          to: interaction,
+          type: .deferredChannelMessageWithSource(isEphemeral: true)
         )
-        let _ = try await bot.client.updateOriginalInteractionResponse(
-            token: interaction.token,
-            payload: .init(content: "\(number + 1)")
-          )
+        
+        try await bot.updateOriginalInteractionResponse(of: interaction) {
+          Message {
+            Text("\((number + 1).formatted(.number))")
+          }
+        }
       } catch {
         // :3
       }

@@ -6,28 +6,36 @@
 //
 
 import Foundation
+import DiscordBM
 
 // this internal class keeps track of declared events and handles actions.
 // the entrypoint file contains a local declaration of it in the run() func.
-class BotInstance {
+public class BotInstance {
+  /// avoid this, for testing.
   private init() {
-    self.bot = nil;
+    self._bot = nil;
     self.events = []
     self.commands = []
+    self.id = try! .makeFake()
   }
   
   /// bot instance we keep to interact with if needed
-  let bot: GatewayManager?
+  let _bot: GatewayManager?
   
   // declared events the user wants to receive
   let events: [any BaseEvent]
   let commands: [any BaseCommand]
   
+  /// Unique stable identifier for the app
+  public let id: ApplicationSnowflake
   
   init(bot: GatewayManager, events: [any BaseEvent], commands: [any BaseCommand]) {
-    self.bot = bot
+    self._bot = bot
     self.events = events
     self.commands = commands
+    
+    // Hey! If you found your bot crashing here, your token is invalid or you forgor
+    self.id = .init(.init(bot.identifyPayload.token.value.split(separator: ".", maxSplits: 1).first!))
   }
   
   func sendEvent(_ event: Gateway.Event) {
@@ -107,7 +115,7 @@ class BotInstance {
     cmds.forEach { command in
       guard
         let option = cmd.options?.first(where: {$0.focused == true}),
-        let client = bot?.client
+        let client = _bot?.client
       else { return }
       Task(priority: .userInitiated) {
         await command.autocompletion(i, cmd: cmd, opt: option, client: client)

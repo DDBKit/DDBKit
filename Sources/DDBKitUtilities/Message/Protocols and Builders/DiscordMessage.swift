@@ -75,7 +75,11 @@ public struct Message {
 }
 
 public extension Message {
-  
+  func tts(_ enabled: Bool = true) -> Self {
+    var copy = self
+    copy.tts = true
+    return copy
+  }
 }
 
 /// All kinds of data in a `Message` object must conform to this

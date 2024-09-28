@@ -16,12 +16,9 @@ extension DiscordBotApp {
   }
   
   public func run() async throws {
-//    if BotInstance.shared.bot != nil {
-//      fatalError("A bot is already running in this process, DDBKit does not yet support multiple clients per process.")
-//    }
-    
     // first init the environment to capture events and process commands
     let sceneData = readScene(scenes: self.body)
+    // BotInstance contains all of our commands and events, it handles dispatching data to the bot
     let instance: BotInstance = .init(bot: self.bot, events: sceneData.events, commands: sceneData.commands)
     
     // register commands
@@ -38,7 +35,6 @@ extension DiscordBotApp {
       instance.sendEvent(event)
     }
   }
-  
 }
 
 internal extension DiscordBotApp {

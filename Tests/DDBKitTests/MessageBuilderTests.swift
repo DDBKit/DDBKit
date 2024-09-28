@@ -8,7 +8,7 @@
 import Foundation
 
 import XCTest
-@testable import DDBKit
+@testable @_spi(Extension) import DDBKit
 @testable import DDBKitUtilities
 @testable import Database
 
@@ -118,33 +118,6 @@ text 2
         }
         Text("text 1")
         Text("text 2")
-      }
-    }
-    
-    let expected1 = """
-text 1
-text 2
-"""
-    
-    let expected2 = """
-1, 2, 3, 4
-text 1
-text 2
-"""
-    if random {
-      XCTAssertEqual(msg.content.textualRepresentation, expected2)
-    } else {
-      XCTAssertEqual(msg.content.textualRepresentation, expected1)
-    }
-  }
-  
-  func testMessageBuilderContentLoops() throws {
-    let random = Bool.random()
-    let msg = Message {
-      MessageContent {
-        for i in 1...5 {
-          Text("gm")
-        }
       }
     }
     

@@ -35,7 +35,9 @@ let package = Package(
     // We only use exact version tags to ensure the package doesn't break with a minor update
     // since Discord sucks.
 //    .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.12.0"),
-    .package(url: "https://github.com/DiscordBM/DiscordBM", revision: "52fe13121d24dc9a250fec4fc969ccec06357961"), /// temporary workaround to https://github.com/DiscordBM/DiscordBM/issues/78
+    
+    /// temporary workaround to https://github.com/DiscordBM/DiscordBM/issues/78
+    .package(url: "https://github.com/DiscordBM/DiscordBM", revision: "52fe13121d24dc9a250fec4fc969ccec06357961"),
     .package(url: "https://github.com/swift-server/async-http-client", from: "1.21.0"),
   ],
   targets: [

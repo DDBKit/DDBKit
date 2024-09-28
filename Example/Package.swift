@@ -21,7 +21,8 @@ let package = Package(
     .executableTarget(
       name: "ExampleBot",
       dependencies: [
-        "DDBKit"
+        .product(name: "DDBKit", package: "DDBKit"),
+        .product(name: "DDBKitUtilities", package: "DDBKit"),
       ]
     ),
   ]

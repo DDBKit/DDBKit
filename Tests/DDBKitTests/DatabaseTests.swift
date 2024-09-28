@@ -10,6 +10,7 @@ import XCTest
 
 @testable import Database
 @testable import DDBKit
+@testable import DDBKitUtilities
 
 final class DatabaseTests: XCTestCase {
   func testTransactions() async throws {
@@ -41,4 +42,40 @@ final class DatabaseTests: XCTestCase {
     // since the database is basically a big queue of single transactions,
     // you'll always want to defer or something when using db transactions.
   }
+  
+//  func testGM() async throws {
+//    struct Egg: DiscordBotApp {
+//      init() async {
+//        // Edit below as needed.
+//        bot = await BotGatewayManager( /// Need sharding? Use `ShardingGatewayManager`
+//          /// Do not store your token in your code in production.
+//          token: "",
+//          /// replace the above with your own token, but only for testing
+//          presence: .init(activities: [], status: .online, afk: false),
+//          intents: [.messageContent, .guildMessages]
+//        )
+//        // Will be useful
+//        cache = await .init(
+//          gatewayManager: bot,
+//          intents: .all, // it's better to minimise cached data to your needs
+//          requestAllMembers: .enabledWithPresences,
+//          messageCachingPolicy: .saveEditHistoryAndDeleted
+//        )
+//      }
+//      
+//      var bot: any DiscordGateway.GatewayManager
+//      var cache: DiscordGateway.DiscordCache
+//      
+//      var body: [any DDBKit.BotScene] {
+//        Command("wagwan") { i, cmd, db in
+//          try! await bot.createInteractionResponse(to: i, type: .deferredChannelMessageWithSource(isEphemeral: true))
+//        }
+//        .description("gm")
+//      }
+//    }
+//    
+//    let bot = await Egg()
+//    try await bot.run()
+//  }
 }
+
