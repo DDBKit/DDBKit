@@ -73,7 +73,24 @@ struct MyNewBot: DiscordBotApp {
     .description("Toggles a value stored for this current channel context")
     
     Command("embeds") { i, cmd, dbreq in
-      try? await bot.createInteractionResponse(to: i, type: Payloads.InteractionResponse.pong)
+      try? await bot.createInteractionResponse(to: i, type: .deferredChannelMessageWithSource())
+      let color: DiscordColor = {
+        let colors: [DiscordColor] = [.red, .orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .pink, .brown, .gray]
+        return colors.randomElement() ?? .red
+      }()
+      print()
+      try? await bot.updateOriginalInteractionResponse(of: i, msg: {
+        Message {
+          MessageEmbed {
+            Title("gm")
+            Description {
+              Text("Did i mention how cool this shit is lmao")
+            }
+            Thumbnail(.exact(""))
+          }
+          .setColor(color)
+        }
+      })
     }
     .description("Test embeds")
     

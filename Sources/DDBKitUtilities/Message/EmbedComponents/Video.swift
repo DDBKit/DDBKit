@@ -1,5 +1,5 @@
 //
-//  Thumbnail.swift
+//  Video.swift
 //
 //
 //  Created by Lakhan Lothiyi on 22/04/2024.
@@ -7,7 +7,7 @@
 
 import DiscordBM
 
-public struct Thumbnail: MessageEmbedComponent {
+public struct Video: MessageEmbedComponent {
   var url: Embed.DynamicURL
   public init(_ url: Embed.DynamicURL) {
     self.url = url
