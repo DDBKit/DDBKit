@@ -22,7 +22,7 @@ let package = Package(
     .macOS(.v13)
   ],
   dependencies: [
-    .package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0"),
+    .package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0"), // change this to latest ver
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
