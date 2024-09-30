@@ -108,6 +108,8 @@ Feel free to work on providing more abstractions and adding general utilities.
 My code isn't exactly amazing so if you'd like to improve it for everyone else, be sure to make a PR!
 I have a silly database thing going on. I think it might be useful but it also might be dumb. If someone rewrites it to use a real database behind the scenes whilst also providing more utilities, it would be much appreciated.
 
+Contributors should clone this repository and open `DDBKit.xcworkspace` as it loads the example bot alongside the DDBKit package. This way, you can test your work live whilst making changes. You can also create your own tests if you'd like.
+
 I only ask that contributions are somewhat commented in cases of dense code or wherever fit. 
 Use `self` explicitly whenever it's used.
 Someone should PR a linter :3
