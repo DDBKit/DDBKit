@@ -23,6 +23,7 @@ let package = Package(
       dependencies: [
         .product(name: "DDBKit", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),
+        .product(name: "DDBKitFoundation", package: "DDBKit"),
       ]
     ),
   ]

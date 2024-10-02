@@ -1,6 +1,6 @@
 //
 //  Entrypoint.swift
-//  
+//
 //
 //  Created by Lakhan Lothiyi on 26/03/2024.
 //
@@ -15,7 +15,7 @@ extension DiscordBotApp {
     try await Self.init().run()
   }
   
-  @MainActor
+  @MainActor // eventloop runs on main actor
   public func run() async throws {
     // first init the environment to capture events and process commands
     let sceneData = readScene(scenes: self.body)

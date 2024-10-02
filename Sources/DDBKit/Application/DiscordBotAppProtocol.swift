@@ -19,4 +19,6 @@ public protocol DiscordBotApp {
   @MainActor @BotSceneBuilder var body: [BotScene] { get }
   
   init() async
+  
+  static var ExtensionRegistry: [DDBKitExtension.Type] { get }
 }

@@ -4,6 +4,8 @@ import DDBKitUtilities
 import Foundation
 import Database
 
+import DDBKitFoundation
+
 @main
 struct MyNewBot: DiscordBotApp {
   init() async {
@@ -41,7 +43,6 @@ struct MyNewBot: DiscordBotApp {
       
       // create the request for our type, bound to the channel where cmd was invoked
       let req = try! db.channel(ofType: Stinky.self)
-      
       
       let stinky = // returned struct from transaction
       // perform the transaction
@@ -127,4 +128,8 @@ struct MyNewBot: DiscordBotApp {
   
   var bot: Bot
   var cache: Cache
+  
+  static let ExtensionRegistry: [DDBKitExtension.Type] = {
+    ConfiguratorExtension.self
+  }()
 }
