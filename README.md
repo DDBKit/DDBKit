@@ -115,10 +115,11 @@ Use `self` explicitly whenever it's used.
 Someone should PR a linter :3
 
 ## Goals
-- [ ] Using builders for composable objects (main bot logic, messages etc.)
+- [x] Using builders for composable objects (main bot logic, messages etc.)
 - [ ] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
-- [ ] Swift Playgrounds book-based guide for younger demographics
-- [ ] Swift playground app for bots developed on iPad with in-app console and runs in background
+- [ ] ~~Swift Playgrounds book-based guide for younger demographics~~ 
+- [x] ~~Swift playground app for bots developed on iPad with in-app console and runs in background~~
+> Apple's Swift Playgrounds doesn't support C compilation. I've made an Xcode project template instead.
 - [ ] Feature parity with Discord
 - [ ] Make database good
 - [ ] Add linter
