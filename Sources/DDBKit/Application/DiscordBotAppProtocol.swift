@@ -16,7 +16,7 @@ public protocol DiscordBotApp {
   var cache: Cache { get set }
   typealias Bot = GatewayManager
   typealias Cache = DiscordCache
-  @BotSceneBuilder var body: [BotScene] { get }
+  @MainActor @BotSceneBuilder var body: [BotScene] { get }
   
   init() async
 }

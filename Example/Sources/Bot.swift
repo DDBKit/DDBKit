@@ -39,8 +39,6 @@ struct MyNewBot: DiscordBotApp {
         var bool: Bool
       }
       
-      
-      
       // create the request for our type, bound to the channel where cmd was invoked
       let req = try! db.channel(ofType: Stinky.self)
       

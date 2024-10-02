@@ -15,6 +15,7 @@ extension DiscordBotApp {
     try await Self.init().run()
   }
   
+  @MainActor
   public func run() async throws {
     // first init the environment to capture events and process commands
     let sceneData = readScene(scenes: self.body)
