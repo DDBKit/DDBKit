@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import DiscordBM
+@_spi(UserInstallableApps) import DiscordBM
 
 extension DiscordBotApp {
   
@@ -23,10 +23,35 @@ extension DiscordBotApp {
     let instance: BotInstance = .init(bot: self.bot, events: sceneData.events, commands: sceneData.commands)
     
     // register commands
-    let cmds = sceneData.commands.map(\.baseInfo)
+    let allCommands = sceneData.commands
+    
+    let globalCommands = allCommands.filter({ $0.guildScope.scope == .global }).map(\.baseInfo)
     try await bot.client
-      .bulkSetApplicationCommands(payload: cmds)
+      .bulkSetApplicationCommands(payload: globalCommands)
       .guardSuccess()
+    
+    // don't check for scope to be local, we check if it contains guilds to target
+    let targettedCommands: [GuildSnowflake: [Payloads.ApplicationCommandCreate]] = allCommands
+      .filter({ !$0.guildScope.guilds.isEmpty })
+      .flatMap { command in
+        command.guildScope.guilds.map { guild in
+          (guild, command.baseInfo)  // pair up guilds to base info
+        }
+      }
+      .reduce(into: [GuildSnowflake: [Payloads.ApplicationCommandCreate]]()) { result, pair in
+        let (guild, commandInfo) = pair
+        result[guild, default: []].append(commandInfo)  // append
+      }
+    
+      
+    for guildCommandsGroup in targettedCommands {
+      try await bot.client
+        .bulkSetGuildApplicationCommands(
+          guildId: guildCommandsGroup.key,
+          payload: guildCommandsGroup.value
+        )
+        .guardSuccess()
+    }
     
     // then connect the bot
     await bot.connect()

@@ -10,9 +10,25 @@ import DiscordHTTP
 
 /// Give `Command` and `ComplexCommand` conformance so they can be used the same behind the scenes
 protocol BaseCommand: BotScene {
-  var baseInfo: Payloads.ApplicationCommandCreate { get }
+  var guildScope: CommandGuildScope { get set }
+  var baseInfo: Payloads.ApplicationCommandCreate { get set }
   func trigger(_ i: Interaction) async
-  func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async
+  func autocompletion(
+    _ i: Interaction,
+    cmd: Interaction.ApplicationCommand,
+    opt: Interaction.ApplicationCommand.Option,
+    client: DiscordClient
+  ) async
+}
+
+public struct CommandGuildScope {
+  var scope: ScopeType
+  var guilds: [GuildSnowflake]
+  
+  public enum ScopeType {
+    case global
+    case local
+  }
 }
 
 

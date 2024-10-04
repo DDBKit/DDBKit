@@ -40,4 +40,20 @@ public extension Message {
       attachments: nil // we should add this soon
     )
   }
+  
+  var _interactionResponseMessage: Payloads.InteractionResponse.Message {
+    let content = self.content.textualRepresentation.isEmpty ? nil : self.content.textualRepresentation
+    let embeds = self.embeds.map { $0.embed }
+    return .init(
+      tts: nil, // we should add this soon
+      content: content,
+      embeds: embeds,
+      allowedMentions: nil, // we should add this soon
+      flags: nil, // we should add this soon
+      components: nil, // we should add this soon
+      attachments: nil, // we should add this soon
+      files: nil, // we should add this soon
+      poll: nil // we should add this soon
+    )
+  }
 }

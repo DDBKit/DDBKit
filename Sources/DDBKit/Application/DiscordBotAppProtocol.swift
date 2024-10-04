@@ -20,5 +20,5 @@ public protocol DiscordBotApp {
   
   init() async
   
-  static var ExtensionRegistry: [DDBKitExtension.Type] { get }
+//  static var ExtensionRegistry: [DDBKitExtension.Type] { get }
 }

@@ -11,6 +11,8 @@ import DiscordBM
 
 /// A basic command thats easy and fast to declare and program
 public struct Command: BaseCommand {
+  var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
+  
   // autocompletion related things
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
     guard let value = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
@@ -50,15 +52,17 @@ public struct Command: BaseCommand {
   }
   
   public init(_ commandName: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void) {
-    guard (1...32).contains(commandName.count) else { preconditionFailure("[\(commandName)] Command name must be 1-32 characters") }
     let name = commandName.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard name.wholeMatch(of: nameRegex) != nil else { preconditionFailure("[\(commandName)] Command name contains invalid characters")}
-    
     self.action = action
-    
     self.baseInfo = .init(
-      name: commandName
+      name: commandName,
+      description: "This command has no description."
     )
+    
+    let valid = self.baseInfo.validate()
+    if !valid.isEmpty {
+      preconditionFailure("[\(name)] Failed validation\n\n\(valid)")
+    }
   }
   
   // MARK: - These pre and post actions are for use internally
@@ -70,14 +74,4 @@ public struct Command: BaseCommand {
     // idk maybe register something internally, just here for completeness
   }
 }
-
-fileprivate var nameRegex = Regex {
-  ZeroOrMore {
-    CharacterClass(
-      .anyOf("-"),
-      ("a"..."z")
-    )
-  }
-}
-.anchorsMatchLineEndings()
 

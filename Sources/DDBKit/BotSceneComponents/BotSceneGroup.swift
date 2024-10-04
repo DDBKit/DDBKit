@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// this gets flattened in the ``BotSceneBuilder``
+
+/// Container scene for Events and Commands or any other kind of scene
 public struct Group: BotScene {
   public init(@BotSceneBuilder body: () -> [BotScene]) {
     self.scene = body()
