@@ -46,7 +46,7 @@ public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
   public var optionData: DiscordModels.ApplicationCommand.Option
   
   public init(name: String, description: String) {
-    self.optionData = .init(type: .user, name: name, description: description)
+    self.optionData = .init(type: .string, name: name, description: description)
   }
 }
 
