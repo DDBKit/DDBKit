@@ -33,6 +33,8 @@ struct MyNewBot: DiscordBotApp {
     Events
     
     manipulation
+    
+    coremlCommands
   }
   
   var bot: Bot

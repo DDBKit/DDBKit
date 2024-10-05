@@ -24,6 +24,9 @@ let package = Package(
         .product(name: "DDBKit", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),
         .product(name: "DDBKitFoundation", package: "DDBKit"),
+      ],
+      resources: [
+        .process("1984 Big Brother 2.mlmodelc")
       ]
     ),
   ]
