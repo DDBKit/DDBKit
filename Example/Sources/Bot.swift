@@ -31,6 +31,8 @@ struct MyNewBot: DiscordBotApp {
     
     Commands
     Events
+    
+    manipulation
   }
   
   var bot: Bot

@@ -139,46 +139,46 @@ text 2
   }
   
   func testMessageBuilderComplexBlocksContent() throws {
-    let msg = Message {
-      MessageContent {
-        Heading {
-          Text {
-            Text("Welcome to ")
-            Text("The Test")
-              .italic()
-            Text("!")
-          }
+let msg = Message {
+  MessageContent {
+    Heading {
+      Text {
+        Text("Welcome to ")
+        Text("The Test")
+          .italic()
+        Text("!")
+      }
+      .underlined()
+    }
+    Heading("We're testing the Message DSL")
+      .medium()
+    Text("Actually scratch that")
+      .strikethrough()
+    Link("https://llsc12.me")
+      .disableEmbedding()
+      .maskedWith {
+        Text("check out this!")
+          .bold()
+      }
+    Blockquote {
+      Heading {
+        Text("Blockquote!")
           .underlined()
-        }
-        Heading("We're testing the Message DSL")
-          .medium()
-        Text("Actually scratch that")
-          .strikethrough()
-        Link("https://llsc12.me")
-          .disableEmbedding()
-          .maskedWith {
-            Text("check out this!")
-              .bold()
-          }
-        Blockquote {
-          Heading {
-            Text("Blockquote!")
-              .underlined()
-          }
-          .medium()
-          Text("yep, we got em")
-        }
-        Code("wagwan")
-        Codeblock("""
+      }
+      .medium()
+      Text("yep, we got em")
+    }
+    Code("wagwan")
+    Codeblock("""
 for i in 0...10 {
-  print(i)
+print(i)
 }
 print("done!")
 """
-        )
-        .language("swift")
-      }
-    }
+    )
+    .language("swift")
+  }
+}
     
     let expected = """
 # __Welcome to *The Test*!__
@@ -205,10 +205,15 @@ print("done!")
       MessageEmbed {
         if random {
           Title("wagwan")
+        } else {
+          Title("heyyy")
         }
+        Description("hiiiiiii :3")
       }
+      .setColor(.cyan)
+      .setURL("https://llsc12.me")
     }
     
-    XCTAssertEqual(msg.embeds[0].title, random ? "wagwan" : nil)
+    XCTAssertEqual(msg.embeds[0].title, "heyyy")
   }
 }

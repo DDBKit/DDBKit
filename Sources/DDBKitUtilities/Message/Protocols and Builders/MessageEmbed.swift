@@ -11,6 +11,23 @@ import DiscordModels
 public protocol MessageEmbedComponent {
 }
 
+@resultBuilder
+public struct MessageEmbedBuilder {
+  public static func buildBlock(_ components: MessageEmbedComponent...) -> [MessageEmbedComponent] { components }
+  public static func buildOptional(_ component: [any MessageEmbedComponent]?) -> any MessageEmbedComponent { EmbedTuple(component ?? []) }
+  public static func buildEither(first component: [any MessageEmbedComponent]) -> any MessageEmbedComponent { EmbedTuple(component) }
+  public static func buildEither(second component: [any MessageEmbedComponent]) -> any MessageEmbedComponent { EmbedTuple(component) }
+  
+  /// used internally to allow logic
+  public struct EmbedTuple: MessageEmbedComponent {
+    var contained: [any MessageEmbedComponent]
+    
+    init(_ contained: [any MessageEmbedComponent]) {
+      self.contained = contained
+    }
+  }
+}
+
 /// Interface to building an embed and it's contents, and then
 /// making an embed object.
 public struct MessageEmbed: MessageComponent {

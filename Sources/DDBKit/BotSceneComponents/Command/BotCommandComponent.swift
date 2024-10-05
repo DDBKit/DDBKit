@@ -11,8 +11,6 @@ import DiscordBM
 
 /// A basic command thats easy and fast to declare and program
 public struct Command: BaseCommand {
-  var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
-  
   // autocompletion related things
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
     guard let value = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
@@ -32,7 +30,8 @@ public struct Command: BaseCommand {
   
   // command data
   var baseInfo: DiscordModels.Payloads.ApplicationCommandCreate
-  
+  var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
+
   func trigger(_ i: DiscordModels.Interaction) async {
     switch i.data {
     case .applicationCommand(let j): await proxyAction(i, j)

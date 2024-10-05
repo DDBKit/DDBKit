@@ -8,9 +8,10 @@
 import DDBKit
 import Database
 import DDBKitUtilities
+import Foundation
 
 extension MyNewBot {
-  var Commands: Group {
+  var Commands: DDBKit.Group {
     Group {
       Command("dbtest") { interaction, cmd, db in
         // model that defines the structure of data we want to store
@@ -31,75 +32,66 @@ extension MyNewBot {
           return stinky
         }
         
-        do {
-          let _ = try await bot.client.createInteractionResponse(
-            id: interaction.id,
-            token: interaction.token,
-            payload: .deferredChannelMessageWithSource()
-          )
-          let _ = try await bot.client
-            .updateOriginalInteractionResponse(
-              token: interaction.token,
-              payload: .init(content: "\(stinky?.bool ?? false) meow")
-            )
-        } catch {
-          // :3
+        try? await bot.createInteractionResponse(to: interaction) {
+          Message {
+            Text("\(stinky?.bool ?? false)")
+          }
         }
       }
       .description("Toggles a value stored for this current channel context")
-      .guildScope(.global, ["1289521419801202728"])
       
-      Command("embeds") { i, cmd, dbreq in
-        try? await bot.createInteractionResponse(to: i, type: .deferredChannelMessageWithSource())
-        let color: DiscordColor = {
-          let colors: [DiscordColor] = [.red, .orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .pink, .brown, .gray]
-          return colors.randomElement() ?? .red
-        }()
-        print()
-        try? await bot.updateOriginalInteractionResponse(of: i, msg: {
-          Message {
-            MessageEmbed {
-              Title("gm")
-              Description {
-                Text("Did i mention how cool this shit is lmao")
-              }
-              Thumbnail(.exact(""))
-            }
-            .setColor(color)
-          }
-        })
+Command("embeds") { i, cmd, dbreq in
+  let randomcolor: DiscordColor = {
+    let colors: [DiscordColor] = [.red, .orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .pink, .brown, .gray]
+    return colors.randomElement() ?? .red
+  }()
+  try? await bot.createInteractionResponse(to: i) {
+    Message {
+      MessageEmbed {
+        Title("gm")
+        Description {
+          Text("Did i mention how cool this shit is lmao")
+        }
       }
-      .description("Test embeds")
+      .setColor(randomcolor)
+    }
+  }
+}
+.description("Test embeds")
+.integrationType(.all, contexts: .all)
+      
+      Command("meow") { i, cmd, dbreq in
+        try? await bot.createInteractionResponse(to: i) {
+          Message {
+            Text("meow")
+          }
+        }
+      }
+      .description("says meow")
       .integrationType(.all, contexts: .all)
       
       Command("increment") { interaction, cmd, db in
         let number = Double((try? cmd.requireOption(named: "number").value?.asString) ?? "0") ?? 0
-        
-        do {
-          try await bot.createInteractionResponse(
-            to: interaction,
-            type: .deferredChannelMessageWithSource(isEphemeral: true)
-          )
-          
-          try await bot.updateOriginalInteractionResponse(of: interaction) {
-            Message {
-              Text("\((number + 1).formatted(.number))")
-            }
+        try? await bot.createInteractionResponse(to: interaction, msg: {
+          Message {
+            Text("\((number + 1).formatted(.number))")
           }
-        } catch {
-          // :3
-        }
+        })
       }
       .description("Adds 1 to an inputted value")
+      .integrationType(.all, contexts: .all)
       .addingOptions {
         DoubleOption(name: "number", description: "value")
           .required()
           .autocompletions { gm in
+            let number = Double((gm.asString)) ?? 0
             return [
-              .init(name: "0", value: .double(0)),
-              .init(name: "2", value: .double(2)),
-              .init(name: "4", value: .double(4)),
-              .init(name: "6", value: .double(6)),
+              .init(name: "\((number + 1).formatted(.number))", value: .double(number + 1)),
+              .init(name: "\((number + 2).formatted(.number))", value: .double(number + 2)),
+              .init(name: "\((number + 3).formatted(.number))", value: .double(number + 3)),
+              .init(name: "\((number + 4).formatted(.number))", value: .double(number + 4)),
+              .init(name: "\((number + 5).formatted(.number))", value: .double(number + 5)),
+              .init(name: "\((number + 6).formatted(.number))", value: .double(number + 6)),
             ]
           }
       }
