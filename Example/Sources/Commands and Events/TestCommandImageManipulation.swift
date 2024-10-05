@@ -83,12 +83,14 @@ extension MyNewBot {
         let img = await Task.detached { @MainActor in
           let renderer = ImageRenderer(content: ImageView(nsimg: nsimg))
           renderer.proposedSize = .init(width: nsimg.size.width, height: nsimg.size.height)
-          return renderer.nsImage
+          return renderer.cgImage
         }.value
         
+        
+        
         // Convert to PNG and send as a response
-        guard let img = img,
-              let tiff = img.tiffRepresentation,
+        guard let img,
+              let tiff = NSImage(cgImage: img, size: nsimg.size).tiffRepresentation,
               let imageRep = NSBitmapImageRep(data: tiff),
               let pngData = imageRep.representation(using: .png, properties: [:])
         else {
@@ -129,14 +131,13 @@ extension MyNewBot {
         // Render image with overlay
         let img = await Task.detached { @MainActor in
           let renderer = ImageRenderer(content: ImageView())
-          renderer.scale = 10
           renderer.proposedSize = .init(width: 300, height: 100)
-          return renderer.nsImage
+          return renderer.cgImage
         }.value
         
         // Convert to PNG and send as a response
-        guard let img = img,
-              let tiff = img.tiffRepresentation,
+        guard let img,
+              let tiff = NSImage(cgImage: img, size: .init(width: CGFloat(img.width), height: CGFloat(img.height))).tiffRepresentation,
               let imageRep = NSBitmapImageRep(data: tiff),
               let pngData = imageRep.representation(using: .png, properties: [:])
         else {
@@ -177,14 +178,13 @@ extension MyNewBot {
         // Render image with overlay
         let img = await Task.detached { @MainActor in
           let renderer = ImageRenderer(content: ImageView())
-          renderer.scale = 10
-          renderer.proposedSize = .init(width: 150, height: 150)
-          return renderer.nsImage
+          renderer.proposedSize = .init(width: 300, height: 100)
+          return renderer.cgImage
         }.value
         
         // Convert to PNG and send as a response
-        guard let img = img,
-              let tiff = img.tiffRepresentation,
+        guard let img,
+              let tiff = NSImage(cgImage: img, size: .init(width: CGFloat(img.width), height: CGFloat(img.height))).tiffRepresentation,
               let imageRep = NSBitmapImageRep(data: tiff),
               let pngData = imageRep.representation(using: .png, properties: [:])
         else {
