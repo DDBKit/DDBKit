@@ -40,25 +40,25 @@ extension MyNewBot {
       }
       .description("Toggles a value stored for this current channel context")
       
-Command("embeds") { i, cmd, dbreq in
-  let randomcolor: DiscordColor = {
-    let colors: [DiscordColor] = [.red, .orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .pink, .brown, .gray]
-    return colors.randomElement() ?? .red
-  }()
-  try? await bot.createInteractionResponse(to: i) {
-    Message {
-      MessageEmbed {
-        Title("gm")
-        Description {
-          Text("Did i mention how cool this shit is lmao")
+      Command("embeds") { i, cmd, dbreq in
+        let randomcolor: DiscordColor = {
+          let colors: [DiscordColor] = [.red, .orange, .yellow, .green, .mint, .teal, .cyan, .blue, .indigo, .purple, .pink, .brown, .gray]
+          return colors.randomElement() ?? .red
+        }()
+        try? await bot.createInteractionResponse(to: i) {
+          Message {
+            MessageEmbed {
+              Title("gm")
+              Description {
+                Text("Did i mention how cool this shit is lmao")
+              }
+            }
+            .setColor(randomcolor)
+          }
         }
       }
-      .setColor(randomcolor)
-    }
-  }
-}
-.description("Test embeds")
-.integrationType(.all, contexts: .all)
+      .description("Test embeds")
+      .integrationType(.all, contexts: .all)
       
       Command("meow") { i, cmd, dbreq in
         try? await bot.createInteractionResponse(to: i) {

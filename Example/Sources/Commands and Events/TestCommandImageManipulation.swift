@@ -15,6 +15,7 @@ extension MyNewBot {
   var manipulation: DDBKit.Group {
     Group {
       Command("colonthree") { int, cmd, reqs in
+        let firstTimestamp = Date.now
         // Defer the response
         try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
         
@@ -100,10 +101,18 @@ extension MyNewBot {
           return
         }
         
+        let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
         // Send the modified image back as an attachment
         try? await bot.updateOriginalInteractionResponse(of: int) {
           Message {
-            MessageAttachment(pngData, filename: "modified.png").usage(.attachment)
+            MessageAttachment(pngData, filename: "modified.png")
+              .usage(.embed) // dont add as attachment
+            MessageEmbed {
+              Title("Modified Image")
+              Image(.attachment(name: "modified.png"))
+              Footer("Took \(formatted)s")
+            }
+            .setColor(.blue)
           }
         }
       }
@@ -147,13 +156,18 @@ extension MyNewBot {
           return
         }
         
+        let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
         // Send the modified image back as an attachment
         try? await bot.updateOriginalInteractionResponse(of: int) {
           Message {
-            MessageContent {
-              Text("\(abs(firstTimestamp.timeIntervalSinceNow))")
+            MessageAttachment(pngData, filename: "modified.png")
+              .usage(.embed) // dont add as attachment
+            MessageEmbed {
+              Title("Modified Image")
+              Image(.attachment(name: "modified.png"))
+              Footer("Took \(formatted)s")
             }
-            MessageAttachment(pngData, filename: "modified.png").usage(.attachment)
+            .setColor(.blue)
           }
         }
       }
@@ -194,13 +208,18 @@ extension MyNewBot {
           return
         }
         
+        let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
         // Send the modified image back as an attachment
         try? await bot.updateOriginalInteractionResponse(of: int) {
           Message {
-            MessageContent {
-              Text("\(abs(firstTimestamp.timeIntervalSinceNow))")
+            MessageAttachment(pngData, filename: "modified.png")
+              .usage(.embed) // dont add as attachment
+            MessageEmbed {
+              Title("Modified Image")
+              Image(.attachment(name: "modified.png"))
+              Footer("Took \(formatted)s")
             }
-            MessageAttachment(pngData, filename: "modified.png").usage(.attachment)
+            .setColor(.blue)
           }
         }
       }

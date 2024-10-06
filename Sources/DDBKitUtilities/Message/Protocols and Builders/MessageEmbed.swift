@@ -97,7 +97,7 @@ public struct MessageEmbed: MessageComponent {
   var fields: [Embed.Field]?
 }
 
-public extension MessageEmbed {
+extension MessageEmbed {
   var embed: Embed {
     return .init(
       title: self.title,

@@ -10,7 +10,7 @@ import DiscordBM
 public struct Footer: MessageEmbedComponent {
   var text: String
   var url: Embed.DynamicURL?
-  public init(_ text: String, icon: Embed.DynamicURL?) {
+  public init(_ text: String, icon: Embed.DynamicURL? = nil) {
     self.text = text
     self.url = icon
   }
