@@ -97,6 +97,8 @@ Congratulations! You’ve connected to Discord as your bot and reacted to an eve
 > **Using Linux**? Run <code>swift run</code> in the project directory.
 > 
 > **If you need another entrypoint (iOS, etc.)**; you can run a DiscordBotApp instance with the <code>run() async throws</code> function available on your Bot struct. You can use this to run multiple clients at once if needed.
+>
+> **Don't have a bot yet?** You can create one at https://discord.com/developers/applications. Make sure your bot has the correct permissions and intents.
 
 > [!WARNING]
 > You cannot use logic in the `body` property; The property is only read once on startup.
