@@ -113,4 +113,33 @@ public extension SubcommandBase.IContexts {
   static var all: Self { [.botDm, .guild, .privateChannel] }
 }
 
+// misc middleman modifiers
 
+public extension Subcommand {
+  func addingOptions(
+    @CommandOptionsBuilder
+    options: () -> [Option]
+  ) -> Self {
+    var copy = self
+    copy.options.append(contentsOf: options())
+    copy.baseInfo.options = copy.baseInfo.options ?? []
+    copy.baseInfo.options = copy.options.map(\.optionData)
+    return copy
+  }
+  
+  /// The subcommand's description.
+  func description(_ description: String) -> Self {
+    var copy = self
+    copy.baseInfo.description = description
+    return copy
+  }
+}
+
+public extension SubcommandGroup {
+  /// The subcommand group's description.
+  func description(_ description: String) -> Self {
+    var copy = self
+    copy.baseInfo.description = description
+    return copy
+  }
+}

@@ -91,9 +91,9 @@ public class BotInstance {
     }
   }
   
-//case applicationCommand(ApplicationCommand)
-//case messageComponent(MessageComponent)
-//case modalSubmit(ModalSubmit)
+  //case applicationCommand(ApplicationCommand)
+  //case messageComponent(MessageComponent)
+  //case modalSubmit(ModalSubmit)
   
   func handleCommand(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
     // find all commands that fit criteria
@@ -114,12 +114,35 @@ public class BotInstance {
     }
     cmds.forEach { command in
       guard
-        let option = cmd.options?.first(where: {$0.focused == true}),
+        let option = Self.FindFocusedOption(in: cmd.options),
         let client = _bot?.client
       else { return }
       Task(priority: .userInitiated) {
         await command.autocompletion(i, cmd: cmd, opt: option, client: client)
       }
     }
+  }
+}
+
+extension BotInstance {
+  static func FindFocusedOption(in options: [Interaction.ApplicationCommand.Option]?) -> Interaction.ApplicationCommand.Option? {
+    // Guard against a nil options array
+    guard let options = options else { return nil }
+    
+    // Loop through each option
+    for option in options {
+      // If the current option is focused, return it
+      if option.focused == true {
+        return option
+      }
+      
+      // Recursively search through nested options
+      if let nestedFocusedOption = FindFocusedOption(in: option.options) {
+        return nestedFocusedOption
+      }
+    }
+    
+    // If no focused option is found, return nil
+    return nil
   }
 }

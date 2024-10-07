@@ -28,7 +28,8 @@ public struct SubcommandBase: BaseCommand {
   
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: any DiscordHTTP.DiscordClient) async {
     // same as trigger
-    //soon
+    guard let command = self.findChild(i) else { return print("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.") }
+    await command.autocompletion(i, cmd: cmd, opt: opt, client: client)
   }
   
   public init(_ name: String, @SubcommandBaseBuilder _ tree: () -> [SubcommandBaseTypes]) {
@@ -60,61 +61,6 @@ public struct SubcommandBase: BaseCommand {
     }
   }
 }
-
-// to easily list the two types
-public protocol SubcommandBaseTypes {
-}
-
-protocol BaseInfoType: SubcommandBaseTypes {
-  var baseInfo: ApplicationCommand.Option { get }
-}
-
-@resultBuilder
-public struct SubcommandBaseBuilder {
-  public static func buildBlock(_ components: SubcommandBaseTypes...) -> [SubcommandBaseTypes] { components }
-}
-@resultBuilder
-public struct SubcommandBuilder {
-  public static func buildBlock(_ components: Subcommand...) -> [Subcommand] { components }
-}
-
-/// Group subcommands under a label
-public struct SubcommandGroup: BaseInfoType {
-  var commands: [Subcommand] // this carries the instances so we keep trigger intact
-  var baseInfo: ApplicationCommand.Option
-  public init(_ name: String, @SubcommandBuilder _ tree: () -> [Subcommand]) {
-    self.commands = tree()
-    
-    self.baseInfo = .init(
-      type: .subCommandGroup,
-      name: name,
-      name_localizations: nil,
-      description: "This subcommand group has no description.",
-      description_localizations: nil,
-      options: self.commands.map(\.baseInfo)
-    )
-  }
-}
-
-/// A subcommand to a base or group
-public struct Subcommand: BaseInfoType {
-  let baseInfo: ApplicationCommand.Option
-  var trigger: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void
-  public init(_ name: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void) {
-    self.trigger = action
-    
-    self.baseInfo = .init(
-      type: .subCommand,
-      name: name,
-      name_localizations: nil,
-      description: "This subcommand has no description.",
-      description_localizations: nil,
-      options: []
-    )
-  }
-  
-}
-
 
 extension SubcommandBase {
   func findChild(_ i: Interaction) -> Subcommand? {

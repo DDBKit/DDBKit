@@ -79,18 +79,39 @@ struct MyNewBot: DiscordBotApp {
             }
           }
         }
+        .addingOptions {
+          DoubleOption(name: "number", description: "value")
+            .required()
+            .autocompletions { gm in
+              let number = Double((gm.asString)) ?? 0
+              return [
+                .init(name: "\((number + 1).formatted(.number))", value: .double(number + 1)),
+                .init(name: "\((number + 2).formatted(.number))", value: .double(number + 2)),
+                .init(name: "\((number + 3).formatted(.number))", value: .double(number + 3)),
+                .init(name: "\((number + 4).formatted(.number))", value: .double(number + 4)),
+                .init(name: "\((number + 5).formatted(.number))", value: .double(number + 5)),
+                .init(name: "\((number + 6).formatted(.number))", value: .double(number + 6)),
+              ]
+            }
+        }
         
         Subcommand("user") { int, cmd, reqs in
-          // ...
+          try? await bot.createInteractionResponse(to: int) {
+            Message { Text("Unimplemented") }
+          }
         }
       }
       
       Subcommand("kick") { int, cmd, reqs in
-        // ...
+        try? await bot.createInteractionResponse(to: int) {
+          Message { Text("Unimplemented") }
+        }
       }
       
       Subcommand("ban") { int, cmd, reqs in
-        // ...
+        try? await bot.createInteractionResponse(to: int) {
+          Message { Text("Unimplemented") }
+        }
       }
     }
   }
