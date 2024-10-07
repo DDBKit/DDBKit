@@ -54,3 +54,10 @@ public struct MessageContent: MessageComponent {
     .trimmingCharacters(in: .whitespacesAndNewlines)
   }
 }
+
+
+extension String: MessageContentComponent {
+  public var textualRepresentation: String {
+    self
+  }
+}

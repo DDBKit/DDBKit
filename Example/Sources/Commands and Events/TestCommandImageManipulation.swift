@@ -18,16 +18,12 @@ extension MyNewBot {
         let firstTimestamp = Date.now
         // Defer the response
         try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
-        
-        // Helper function to get user ID from command options or interaction context
         func getUserId(from int: Interaction, cmd: DiscordModels.Interaction.ApplicationCommand) -> UserSnowflake? {
           if let optionId = try? (cmd.options ?? []).requireOption(named: "egg").requireString() {
             return .init(optionId)
           }
-          return int.member?.user?.id ?? int.user?.id ?? int.message?.author?.id
+          return MiscUtils.getUserID(from: int)
         }
-        
-        // Helper function to get avatar based on user ID
         func fetchAvatar(for id: UserSnowflake, in guildId: GuildSnowflake?) async -> String? {
           if let guildId, await cache.guilds[guildId] != nil {
             let member = try? await bot.client.getGuildMember(guildId: guildId, userId: id).decode()
@@ -37,8 +33,6 @@ extension MyNewBot {
             return user?.avatar
           }
         }
-        
-        // Get the user ID and avatar
         guard let userId = getUserId(from: int, cmd: cmd),
               let avatar = await fetchAvatar(for: userId, in: int.guild_id)
         else {
@@ -47,13 +41,13 @@ extension MyNewBot {
           }
           return
         }
-        
-        // Construct CDN URL for avatar
         let endpoint = CDNEndpoint.userAvatar(userId: userId, avatar: avatar).url.appending("?size=1024")
-        
-        // Fetch avatar image data
-        guard let imgData = try? await bot.client.send(request: .init(to: .init(url: endpoint)), fallbackFileName: avatar).getFile(),
-              let nsimg = NSImage(data: .init(buffer: imgData.data))
+        guard
+          let imgData = try? await bot.client.send(
+            request: .init(to: .init(url: endpoint)),
+            fallbackFileName: avatar
+          ).getFile(),
+          let nsimg = NSImage(data: .init(buffer: imgData.data))
         else {
           try? await bot.updateOriginalInteractionResponse(of: int) {
             Message { Text("Couldn't get avatar") }
@@ -86,8 +80,6 @@ extension MyNewBot {
           renderer.proposedSize = .init(width: nsimg.size.width, height: nsimg.size.height)
           return renderer.cgImage
         }.value
-        
-        
         
         // Convert to PNG and send as a response
         guard let img,
@@ -224,7 +216,6 @@ extension MyNewBot {
         }
       }
       .integrationType(.all, contexts: .all)
-      
     }
   }
 }

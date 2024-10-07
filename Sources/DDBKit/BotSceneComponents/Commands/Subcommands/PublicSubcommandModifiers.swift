@@ -1,34 +1,18 @@
 //
-//  PublicCommandModifiers.swift
-//  
+//  PublicSubcommandModifiers.swift
+//  DDBKit
 //
-//  Created by Lakhan Lothiyi on 26/03/2024.
+//  Created by Lakhan Lothiyi on 07/10/2024.
 //
 
-import Foundation
 @_spi(UserInstallableApps) import DiscordModels
 
-// misc modifiers go here
-
-public extension Command {
+public extension SubcommandBase {
   /// add these at some point
   //  self.baseInfo = .init(
   //    name_localizations: <#T##[DiscordLocale : String]?#>,
   //    description_localizations: <#T##[DiscordLocale : String]?#>,
   //  )
-  
-  /// Add options to the command.
-  /// - Parameter options: StringOption IntOption BoolOption UserOption ChannelOption RoleOption MentionableOption DoubleOption AttachmentOption
-  func addingOptions(
-    @CommandOptionsBuilder
-    options: () -> [Option]
-  ) -> Self {
-    var copy = self
-    copy.options.append(contentsOf: options())
-    copy.baseInfo.options = copy.baseInfo.options ?? []
-    copy.baseInfo.options = copy.options.map(\.optionData)
-    return copy
-  }
   
   /// The command's description.
   func description(_ description: String) -> Self {
@@ -102,13 +86,31 @@ public extension Command {
       }
     }
   }
+  
+  /// Scopes this command to global use or local to a set of servers.
+  /// Intended to make development and testing easier.
+  /// This will only be used on registration of a command at launch.
+  /// - Parameters:
+  ///   - scope: The local or global scope
+  ///   - guilds: The guild snowflakes to add onto the array of guilds to target
+  func guildScope(
+    _ scope: CommandGuildScope.ScopeType,
+    _ guilds: [GuildSnowflake] = []
+  ) -> Self {
+    var copy = self
+    copy.guildScope.scope = scope
+    copy.guildScope.guilds.append(contentsOf: guilds)
+    return copy
+  }
 }
 
-public extension Command.IType {
+public extension SubcommandBase.IType {
   /// Specifies guild and user installs
   static var all: Self { [.guildInstall, .userInstall] }
 }
-public extension Command.IContexts {
+public extension SubcommandBase.IContexts {
   /// Specifies bot DMs, guilds, and user DMs
   static var all: Self { [.botDm, .guild, .privateChannel] }
 }
+
+

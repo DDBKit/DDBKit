@@ -51,6 +51,7 @@ public struct MessageEmbed: MessageComponent {
     // begin finding components and setting variables
     self.title = Self._findLast(type: Title.self, in: components)?.text
     self.description = Self._findLast(type: Description.self, in: components)?.text
+    self.fields = (components.filter({ $0 is Field }) as? [Field])?.compactMap(\.field)
     self.image = {
       if let obj = Self._findLast(type: Image.self, in: components) {
         return .init(url: obj.url)
@@ -94,7 +95,7 @@ public struct MessageEmbed: MessageComponent {
   var video: Embed.Media? // component
   var provider: Embed.Provider?
   var author: Embed.Author?
-  var fields: [Embed.Field]?
+  var fields: [Embed.Field]? // component
 }
 
 extension MessageEmbed {

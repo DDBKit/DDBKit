@@ -22,6 +22,7 @@ let package = Package(
       name: "ExampleBot",
       dependencies: [
         .product(name: "DDBKit", package: "DDBKit"),
+        .product(name: "Database", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),
         .product(name: "DDBKitFoundation", package: "DDBKit"),
       ],
