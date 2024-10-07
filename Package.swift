@@ -37,8 +37,8 @@ let package = Package(
 //    .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.12.0"),
     
     /// temporary workaround to https://github.com/DiscordBM/DiscordBM/issues/78
-    .package(url: "https://github.com/DiscordBM/DiscordBM", revision: "52fe13121d24dc9a250fec4fc969ccec06357961"),
-    .package(url: "https://github.com/swift-server/async-http-client", from: "1.21.0"),
+    .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.12.1"),
+    .package(url: "https://github.com/swift-server/async-http-client", from: "1.23.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
