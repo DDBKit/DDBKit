@@ -1,0 +1,49 @@
+disabled_rules: # rule identifiers to exclude from running
+  - trailing_whitespace
+  - force_cast
+  - force_try
+  - identifier_name
+  - line_length
+
+opt_in_rules: # some rules are only opt-in
+  - empty_count
+
+included: # paths to include during linting. `--path` is ignored if present.
+  - Sources
+  - Tests
+
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Carthage
+  - Pods
+  - Example
+
+# configurable rules can be customized from this configuration file
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+identifier_name:
+  min_length: 1 # Allow single character variable names
+  excluded: # Exclude specific variable names from the rule
+    - i
+    - j
+    - k
+    - T
+
+function_body_length:
+  warning: 150
+  error: 200
+
+type_name:
+  min_length: 1 # Allow single character type names
+  excluded: # Exclude specific type names from the rule
+    - T
+
+cyclomatic_complexity:
+  warning: 20
+  error: 30
+
+vertical_whitespace:
+  max_empty_lines: 2
