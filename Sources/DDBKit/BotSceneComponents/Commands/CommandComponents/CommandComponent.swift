@@ -23,7 +23,7 @@ public struct Command: BaseCommand {
     
     let autocompletions = option?.autocompletion?(value)
     // return these choices
-    let _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletions ?? [])))
+    _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletions ?? [])))
   }
   
   var options: [Option] = []
@@ -73,5 +73,3 @@ public struct Command: BaseCommand {
     // idk maybe register something internally, just here for completeness
   }
 }
-
-

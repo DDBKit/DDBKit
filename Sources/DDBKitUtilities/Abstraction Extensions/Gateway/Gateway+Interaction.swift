@@ -39,4 +39,3 @@ public extension GatewayManager {
       .guardSuccess()
   }
 }
-

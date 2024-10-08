@@ -26,7 +26,7 @@ public struct UnorderedList: MessageContentComponent {
     self.items = listItems()
   }
   public var textualRepresentation: String {
-    let strings = items.enumerated().map { (i, txt) in
+    let strings = items.enumerated().map { (_, txt) in
       "- \(txt.textualRepresentation)"
     }
     return strings.joined(separator: "\n")

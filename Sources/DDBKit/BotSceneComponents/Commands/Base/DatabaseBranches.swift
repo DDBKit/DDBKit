@@ -64,7 +64,7 @@ public struct DatabaseBranches {
   let guild: DiscordModels.GuildSnowflake?
   let channel: DiscordModels.ChannelSnowflake?
   
-  enum DBBranchError:Error {
+  enum DBBranchError: Error {
     case requiredDataUnavailableForBranch
   }
   

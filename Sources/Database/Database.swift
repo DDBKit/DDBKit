@@ -92,7 +92,7 @@ public actor Database {
     while true {
       if transactions[id] != nil {
         print("DB: existing transaction, awaiting")
-        let _ = await transactions[id]?.result
+        _ = await transactions[id]?.result
       } else {
         break
       }
@@ -167,7 +167,6 @@ extension Database {
   }
   
 }
-
 
 
 /// This protocol is required to use `@DatabaseInterface` property wrapper.

@@ -13,7 +13,7 @@ import DiscordBM
 public class BotInstance {
   /// avoid this, for testing.
   private init() {
-    self._bot = nil;
+    self._bot = nil
     self.events = []
     self.commands = []
     self.id = try! .makeFake()
@@ -46,7 +46,6 @@ public class BotInstance {
       case .interactionCreate(let interaction):
         // get interaction types and respond as needed
         switch interaction.data {
-          
           // MARK: - Handling START
           
           // slash command
@@ -55,11 +54,10 @@ public class BotInstance {
           if interaction.type == .applicationCommandAutocomplete {
             self.handleCommandAutocomplete(interaction, cmd: cmd)
           }
-          // trigger base commands named `cmd.name` (trigger
+          // trigger base commands named `cmd.name` (trigger)
           if interaction.type == .applicationCommand {
             self.handleCommand(interaction, cmd: cmd)
           }
-          break
           
           // message component (buttons, pickers etc.)
         case .messageComponent(let msg):
@@ -91,9 +89,9 @@ public class BotInstance {
     }
   }
   
-  //case applicationCommand(ApplicationCommand)
-  //case messageComponent(MessageComponent)
-  //case modalSubmit(ModalSubmit)
+  // case applicationCommand(ApplicationCommand)
+  // case messageComponent(MessageComponent)
+  // case modalSubmit(ModalSubmit)
   
   func handleCommand(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
     // find all commands that fit criteria

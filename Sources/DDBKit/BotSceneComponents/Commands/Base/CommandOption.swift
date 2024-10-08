@@ -23,7 +23,8 @@ public protocol RangedOption: Option { }
 public protocol AutocompletableOption: Option {
 }
 /// setting protocols public requires that their properties be public to match
-internal protocol _AutocompletableOption: Option, AutocompletableOption {
+/// so we'll just avoid that by using this internal type instead
+internal protocol _AutocompletableOption: Option, AutocompletableOption { // swiftlint:disable:this type_name
   var autocompletion: ((StringIntDoubleBool) -> [ApplicationCommand.Option.Choice])? { get set }
 }
 
@@ -37,8 +38,8 @@ internal protocol _AutocompletableOption: Option, AutocompletableOption {
 // mentionable // 9
 // attachment // 11
 // __undocumented(UInt)
-/// ``DiscordModels.ApplicationCommand.Option.Kind``
-//ApplicationCommand.Option.Kind
+// ``DiscordModels.ApplicationCommand.Option.Kind``
+// ApplicationCommand.Option.Kind
 
 /// A string option
 public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
@@ -154,7 +155,7 @@ extension ChoiceOption {
 extension RangedOption {
   
 }
-//ApplicationCommand.Option(
+// ApplicationCommand.Option(
 //    type: <#T##ApplicationCommand.Option.Kind#>,
 //    name: <#T##String#>,
 //    name_localizations: <#T##[DiscordLocale : String]?#>,
@@ -169,7 +170,7 @@ extension RangedOption {
 //    min_length: <#T##Int?#>,
 //    max_length: <#T##Int?#>,
 //    autocomplete: <#T##Bool?#>
-//)
+// )
 
 @resultBuilder
 public struct CommandOptionsBuilder {

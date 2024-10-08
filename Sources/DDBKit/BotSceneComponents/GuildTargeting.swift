@@ -22,7 +22,7 @@ public extension Group {
     var copy = self
     // we can assume no inner groups since the group result builder auto expands
     for index in copy.scene.indices {
-      if var command = copy.scene[index] as? Command {
+      if let command = copy.scene[index] as? Command {
         copy.scene[index] = command.guildScope(scope, guilds)
       }
     }

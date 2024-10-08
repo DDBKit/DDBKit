@@ -16,13 +16,13 @@ public struct MessageComponentBuilder {
 
 /// Stores things like message content, any embeds, etc
 public struct Message {
-  /// our types we keep track of the message state with
+  // MARK: - our types we keep track of the message state with
   public var content: MessageContent
   public var embeds: [MessageEmbed]
   public var attachments: [MessageAttachment]
-  /// discord types we'll be sending off
   
-//  var _nonce: StringOrInt?
+  // MARK: - discord types we'll be sending off
+  var _nonce: StringOrInt?
   var _content: String? { self.content.textualRepresentation.isEmpty ? nil : self.content.textualRepresentation }
   var _tts: Bool? // set by modifier
   var _embeds: [Embed] { self.embeds.map(\.embed) }
@@ -64,4 +64,3 @@ public extension Message {
 
 /// All kinds of data in a `Message` object must conform to this
 public protocol MessageComponent { }
-

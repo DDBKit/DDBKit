@@ -33,7 +33,7 @@ extension BaseEvent {
 // i couldn't find a better way to do this
 
 public extension Gateway.Event.Payload {
-  func asType<T>(_ type: T.Type) -> T? {
+  func asType<T>(_ type: T.Type) -> T? { // swiftlint:disable:this cyclomatic_complexity function_body_length
     switch self {
     case .heartbeat(let lastSequenceNumber):
       return lastSequenceNumber as? T
@@ -191,156 +191,155 @@ public extension Gateway.Event.Payload {
 
 
 extension Gateway.Event {
-  
-  func isOfType(_ type: EventType) -> Bool {
+  func isOfType(_ type: EventType) -> Bool { // swiftlint:disable:this cyclomatic_complexity function_body_length
     switch self.data {
-    case .heartbeat(lastSequenceNumber: _):
+    case .heartbeat:
       return type == .heartbeat
-    case .identify(_):
+    case .identify:
       return type == .identify
-    case .hello(_):
+    case .hello:
       return type == .hello
-    case .ready(_):
+    case .ready:
       return type == .ready
-    case .resume(_):
+    case .resume:
       return type == .resume
     case .resumed:
       return type == .resumed
-    case .invalidSession(canResume: _):
+    case .invalidSession:
       return type == .invalidSession
-    case .channelCreate(_):
+    case .channelCreate:
       return type == .channelCreate
-    case .channelUpdate(_):
+    case .channelUpdate:
       return type == .channelUpdate
-    case .channelDelete(_):
+    case .channelDelete:
       return type == .channelDelete
-    case .channelPinsUpdate(_):
+    case .channelPinsUpdate:
       return type == .channelPinsUpdate
-    case .threadCreate(_):
+    case .threadCreate:
       return type == .threadCreate
-    case .threadUpdate(_):
+    case .threadUpdate:
       return type == .threadUpdate
-    case .threadDelete(_):
+    case .threadDelete:
       return type == .threadDelete
-    case .threadSyncList(_):
+    case .threadSyncList:
       return type == .threadSyncList
-    case .threadMemberUpdate(_):
+    case .threadMemberUpdate:
       return type == .threadMemberUpdate
-    case .threadMembersUpdate(_):
+    case .threadMembersUpdate:
       return type == .threadMembersUpdate
-    case .entitlementCreate(_):
+    case .entitlementCreate:
       return type == .entitlementCreate
-    case .entitlementUpdate(_):
+    case .entitlementUpdate:
       return type == .entitlementUpdate
-    case .entitlementDelete(_):
+    case .entitlementDelete:
       return type == .entitlementDelete
-    case .guildCreate(_):
+    case .guildCreate:
       return type == .guildCreate
-    case .guildUpdate(_):
+    case .guildUpdate:
       return type == .guildUpdate
-    case .guildDelete(_):
+    case .guildDelete:
       return type == .guildDelete
-    case .guildBanAdd(_):
+    case .guildBanAdd:
       return type == .guildBanAdd
-    case .guildBanRemove(_):
+    case .guildBanRemove:
       return type == .guildBanRemove
-    case .guildEmojisUpdate(_):
+    case .guildEmojisUpdate:
       return type == .guildEmojisUpdate
-    case .guildStickersUpdate(_):
+    case .guildStickersUpdate:
       return type == .guildStickersUpdate
-    case .guildIntegrationsUpdate(_):
+    case .guildIntegrationsUpdate:
       return type == .guildIntegrationsUpdate
-    case .guildMemberAdd(_):
+    case .guildMemberAdd:
       return type == .guildMemberAdd
-    case .guildMemberRemove(_):
+    case .guildMemberRemove:
       return type == .guildMemberRemove
-    case .guildMemberUpdate(_):
+    case .guildMemberUpdate:
       return type == .guildMemberUpdate
-    case .guildMembersChunk(_):
+    case .guildMembersChunk:
       return type == .guildMembersChunk
-    case .requestGuildMembers(_):
+    case .requestGuildMembers:
       return type == .requestGuildMembers
-    case .guildRoleCreate(_):
+    case .guildRoleCreate:
       return type == .guildRoleCreate
-    case .guildRoleUpdate(_):
+    case .guildRoleUpdate:
       return type == .guildRoleUpdate
-    case .guildRoleDelete(_):
+    case .guildRoleDelete:
       return type == .guildRoleDelete
-    case .guildScheduledEventCreate(_):
+    case .guildScheduledEventCreate:
       return type == .guildScheduledEventCreate
-    case .guildScheduledEventUpdate(_):
+    case .guildScheduledEventUpdate:
       return type == .guildScheduledEventUpdate
-    case .guildScheduledEventDelete(_):
+    case .guildScheduledEventDelete:
       return type == .guildScheduledEventDelete
-    case .guildScheduledEventUserAdd(_):
+    case .guildScheduledEventUserAdd:
       return type == .guildScheduledEventUserAdd
-    case .guildScheduledEventUserRemove(_):
+    case .guildScheduledEventUserRemove:
       return type == .guildScheduledEventUserRemove
-    case .guildAuditLogEntryCreate(_):
+    case .guildAuditLogEntryCreate:
       return type == .guildAuditLogEntryCreate
-    case .integrationCreate(_):
+    case .integrationCreate:
       return type == .integrationCreate
-    case .integrationUpdate(_):
+    case .integrationUpdate:
       return type == .integrationUpdate
-    case .integrationDelete(_):
+    case .integrationDelete:
       return type == .integrationDelete
-    case .interactionCreate(_):
+    case .interactionCreate:
       return type == .interactionCreate
-    case .inviteCreate(_):
+    case .inviteCreate:
       return type == .inviteCreate
-    case .inviteDelete(_):
+    case .inviteDelete:
       return type == .inviteDelete
-    case .messageCreate(_):
+    case .messageCreate:
       return type == .messageCreate
-    case .messageUpdate(_):
+    case .messageUpdate:
       return type == .messageUpdate
-    case .messageDelete(_):
+    case .messageDelete:
       return type == .messageDelete
-    case .messageDeleteBulk(_):
+    case .messageDeleteBulk:
       return type == .messageDeleteBulk
-    case .messageReactionAdd(_):
+    case .messageReactionAdd:
       return type == .messageReactionAdd
-    case .messageReactionRemove(_):
+    case .messageReactionRemove:
       return type == .messageReactionRemove
-    case .messageReactionRemoveAll(_):
+    case .messageReactionRemoveAll:
       return type == .messageReactionRemoveAll
-    case .messageReactionRemoveEmoji(_):
+    case .messageReactionRemoveEmoji:
       return type == .messageReactionRemoveEmoji
-    case .messagePollVoteAdd(_):
+    case .messagePollVoteAdd:
       return type == .messagePollVoteAdd
-    case .messagePollVoteRemove(_):
+    case .messagePollVoteRemove:
       return type == .messagePollVoteRemove
-    case .presenceUpdate(_):
+    case .presenceUpdate:
       return type == .presenceUpdate
-    case .requestPresenceUpdate(_):
+    case .requestPresenceUpdate:
       return type == .requestPresenceUpdate
-    case .stageInstanceCreate(_):
+    case .stageInstanceCreate:
       return type == .stageInstanceCreate
-    case .stageInstanceDelete(_):
+    case .stageInstanceDelete:
       return type == .stageInstanceDelete
-    case .stageInstanceUpdate(_):
+    case .stageInstanceUpdate:
       return type == .stageInstanceUpdate
-    case .typingStart(_):
+    case .typingStart:
       return type == .typingStart
-    case .userUpdate(_):
+    case .userUpdate:
       return type == .userUpdate
-    case .voiceStateUpdate(_):
+    case .voiceStateUpdate:
       return type == .voiceStateUpdate
-    case .requestVoiceStateUpdate(_):
+    case .requestVoiceStateUpdate:
       return type == .requestVoiceStateUpdate
-    case .voiceServerUpdate(_):
+    case .voiceServerUpdate:
       return type == .voiceServerUpdate
-    case .webhooksUpdate(_):
+    case .webhooksUpdate:
       return type == .webhooksUpdate
-    case .applicationCommandPermissionsUpdate(_):
+    case .applicationCommandPermissionsUpdate:
       return type == .applicationCommandPermissionsUpdate
-    case .autoModerationRuleCreate(_):
+    case .autoModerationRuleCreate:
       return type == .autoModerationRuleCreate
-    case .autoModerationRuleUpdate(_):
+    case .autoModerationRuleUpdate:
       return type == .autoModerationRuleUpdate
-    case .autoModerationRuleDelete(_):
+    case .autoModerationRuleDelete:
       return type == .autoModerationRuleDelete
-    case .autoModerationActionExecution(_):
+    case .autoModerationActionExecution:
       return type == .autoModerationActionExecution
     case .__undocumented:
       return false // Handle undocumented case, if necessary
@@ -425,5 +424,4 @@ extension Gateway.Event {
     case autoModerationRuleDelete
     case autoModerationActionExecution
   }
-
-}
+} // swiftlint:disable:this file_length

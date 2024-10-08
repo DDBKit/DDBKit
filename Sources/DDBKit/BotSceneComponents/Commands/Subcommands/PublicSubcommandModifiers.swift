@@ -8,7 +8,7 @@
 @_spi(UserInstallableApps) import DiscordModels
 
 public extension SubcommandBase {
-  /// add these at some point
+  // add these at some point
   //  self.baseInfo = .init(
   //    name_localizations: <#T##[DiscordLocale : String]?#>,
   //    description_localizations: <#T##[DiscordLocale : String]?#>,

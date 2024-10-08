@@ -20,14 +20,14 @@ public protocol DDBKitExtension {
   func onEventHandlerStart() async throws -> Bool
   func onEventHandlerEnd() async throws
   
-  /// MARK: State-management data
+  // MARK: State-management data
   func onHeartbeat(lastSequenceNumber: Int?) async throws
   func onHello(_ payload: Gateway.Hello) async throws
   func onReady(_ payload: Gateway.Ready) async throws
   func onResumed() async throws
   func onInvalidSession(canResume: Bool) async throws
   
-  /// MARK: Events
+  // MARK: Events
   func onChannelCreate(_ payload: DiscordChannel) async throws
   func onChannelUpdate(_ payload: DiscordChannel) async throws
   func onChannelDelete(_ payload: DiscordChannel) async throws
@@ -99,7 +99,7 @@ public protocol DDBKitExtension {
   init(bot: any GatewayManager)
 }
 
-//final class DemoExtension: DDBKitExtension {
+// final class DemoExtension: DDBKitExtension {
 //  init(bot: any GatewayManager) {
 //    self.bot = bot
 //  }
@@ -112,4 +112,4 @@ public protocol DDBKitExtension {
 //  func onInteractionCreate(_ payload: Interaction) async {
 //    /// Do what you want
 //  }
-//}
+// }

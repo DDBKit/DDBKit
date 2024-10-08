@@ -58,4 +58,3 @@ public extension GatewayManager {
     return try res.decode()
   }
 }
-

@@ -74,7 +74,7 @@ extension SubcommandBase {
     guard let options, !options.isEmpty else { print("[\(self.baseInfo.name)] SubcommandBase triggered with no options, skipped eval."); return nil } // options in this command cannot be empty, its literally impossible
     
     var currentOption = options.first!
-    var currentObject: (any BaseInfoType)? = nil
+    var currentObject: (any BaseInfoType)?
     currentObject = self.tree.first { obj in
       obj.baseInfo.name == currentOption.name
     }

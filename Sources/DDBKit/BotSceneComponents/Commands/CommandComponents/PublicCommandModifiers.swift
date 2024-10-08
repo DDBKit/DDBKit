@@ -11,7 +11,7 @@ import Foundation
 // misc modifiers go here
 
 public extension Command {
-  /// add these at some point
+  // add these at some point
   //  self.baseInfo = .init(
   //    name_localizations: <#T##[DiscordLocale : String]?#>,
   //    description_localizations: <#T##[DiscordLocale : String]?#>,
