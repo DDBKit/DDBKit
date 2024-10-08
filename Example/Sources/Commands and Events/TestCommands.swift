@@ -72,7 +72,7 @@ extension MyNewBot {
       
       Command("increment") { interaction, cmd, db in
         let number = Double((try? cmd.requireOption(named: "number").value?.asString) ?? "0") ?? 0
-        try? await bot.createInteractionResponse(to: interaction, msg: {
+        try? await bot.createInteractionResponse(to: interaction, {
           Message {
             Text("\((number + 1).formatted(.number))")
           }
@@ -95,6 +95,36 @@ extension MyNewBot {
             ]
           }
       }
+      
+      Command("neofetch") { int,_,_ in
+        try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
+        
+        let nf = Process()
+        let pipe = Pipe()
+        nf.standardOutput = pipe
+        nf.executableURL = .init(fileURLWithPath: "/usr/local/bin/neofetch")
+        try? nf.run()
+        nf.waitUntilExit()
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = (String(data: data, encoding: .utf8) ?? "")
+          .replacingOccurrences(of: "[?25l", with: "")
+          .replacingOccurrences(of: "[?7l", with: "")
+          .replacingOccurrences(of: "[17A", with: "")
+          .replacingOccurrences(of: "[9999999D", with: "")
+          .replacingOccurrences(of: "[33C", with: "")
+          .replacingOccurrences(of: "[m", with: "")
+          .replacingOccurrences(of: "[?25h", with: "")
+          .replacingOccurrences(of: "[?7h", with: "")
+          .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        try? await bot.updateOriginalInteractionResponse(of: int) {
+          Message {
+            Codeblock(output, lang: "ansi")
+          }
+        }
+      }
+      .guildScope(.global)
+      .integrationType(.all, contexts: .all)
     }
   }
 }
