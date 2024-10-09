@@ -121,6 +121,25 @@ public extension SubcommandBase {
     copy.modalReceives.append(event, to: "")
     return copy
   }
+  
+  /// Receive component interactions under this custom ID.
+  /// - Parameters:
+  ///   - id: Modal custom ID
+  ///   - event: Event callback
+  func component(on id: String, _ event: @escaping (Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void) -> Self {
+    var copy = self
+    copy.componentReceives.append(event, to: id)
+    return copy
+  }
+  
+  /// Receive all component interaction events, intended for manual handling control.
+  /// - Parameters:
+  ///   - event: Event callback
+  func component(_ event: @escaping (Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void) -> Self {
+    var copy = self
+    copy.componentReceives.append(event, to: "")
+    return copy
+  }
 }
 
 public extension SubcommandBase.IType {

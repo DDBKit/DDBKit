@@ -36,19 +36,21 @@ struct MyNewBot: DiscordBotApp {
     
     SubcommandBase("test") {
       Subcommand("modal") { int, cmd, req in
-        let modal =
-        Modal("hiii") {
+        let modal = Modal("hiii") {
           TextField("hru")
-            .style(.short)
         }
         .id("gm")
-        do {
-          try await bot.createInteractionResponse(to: int) {
-            modal
-          }
-        } catch {
-          print(error)
-        }
+        try? await bot.createInteractionResponse(to: int) { modal }
+      }
+      
+      Subcommand("components") { int, cmd, req in
+        try? await bot.createInteractionResponse(to: int,type: .channelMessageWithSource(
+          .init(content: "hii", components: [
+            .init(components: [
+              .button(.init(style: .danger, label: "wagwan", custom_id: "gm"))
+            ])
+          ])
+        ))
       }
     }
     .integrationType(.all, contexts: .all)
@@ -58,10 +60,17 @@ struct MyNewBot: DiscordBotApp {
         Message {
           Text(String(reflecting: modal))
         }
-//        .flags([.ephemeral])
+        .flags([.ephemeral])
       }
     }
-    
+    .component(on: "gm") { int, cmp, req in
+      try? await bot.createInteractionResponse(to: int) {
+        Message {
+          Text(String(reflecting: cmp))
+        }
+        .flags([.ephemeral])
+      }
+    }
   }
   
   var bot: Bot
