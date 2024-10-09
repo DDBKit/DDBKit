@@ -26,6 +26,9 @@ public class BotInstance {
   let events: [any BaseEvent]
   let commands: [any BaseCommand]
   
+  var modalReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
+  var componentReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
+  
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake
   
@@ -33,48 +36,31 @@ public class BotInstance {
     self._bot = bot
     self.events = events
     self.commands = commands
-    
     // Hey! If you found your bot crashing here, your token is invalid or you forgor
     self.id = .init(.init(bot.identifyPayload.token.value.split(separator: ".", maxSplits: 1).first!))
+    
+    // register modal and component id receives
+    commands.forEach { cmd in
+      cmd.modalReceives.keys.forEach { key in
+        (cmd.modalReceives[key] ?? []).forEach { value in
+          self.modalReceives.append(value, to: key)
+        }
+      }
+    }
+    commands.forEach { cmd in
+      cmd.componentReceives.keys.forEach { key in
+        (cmd.componentReceives[key] ?? []).forEach { value in
+          self.componentReceives.append(value, to: key)
+        }
+      }
+    }
   }
   
   func sendEvent(_ event: Gateway.Event) {
     // MARK: - Interactions (cmds etc.)
     if event.isOfType(.interactionCreate) {
-      // get interaction
-      switch event.data {
-      case .interactionCreate(let interaction):
-        // get interaction types and respond as needed
-        switch interaction.data {
-          // MARK: - Handling START
-          
-          // slash command
-        case .applicationCommand(let cmd):
-          // trigger base commands named `cmd.name` (autocomplete handler)
-          if interaction.type == .applicationCommandAutocomplete {
-            self.handleCommandAutocomplete(interaction, cmd: cmd)
-          }
-          // trigger base commands named `cmd.name` (trigger)
-          if interaction.type == .applicationCommand {
-            self.handleCommand(interaction, cmd: cmd)
-          }
-          
-          // message component (buttons, pickers etc.)
-        case .messageComponent(let msg):
-          // trigger component callback
-          break
-          
-          // modals (form sheets)
-        case .modalSubmit(let modal):
-          // handle submission
-          break
-          
-          // MARK: Handling END -
-          
-        default: break
-        }
-      default: break
-      }
+      // handle externally
+      self.handleInteractionCreate(event)
     }
     
     // MARK: - Events (anything else)
@@ -83,64 +69,10 @@ public class BotInstance {
     
     // now we have all appropriate events. go through them all and trigger action
     matchedEvents.forEach { match in
-      Task(priority: .userInitiated) { /// we use a task because we don't want many of the same event doing long tasks and blocking the event queue
+      Task(priority: .userInitiated) {
+        /// we use a task because we don't want many of the same event doing long tasks and blocking the event queue
         await match.handle(event.data) // FIXME: how do we get type safety based on chosen event
       }
     }
-  }
-  
-  // case applicationCommand(ApplicationCommand)
-  // case messageComponent(MessageComponent)
-  // case modalSubmit(ModalSubmit)
-  
-  func handleCommand(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
-    // find all commands that fit criteria
-    let cmds = commands.filter { command in
-      command.baseInfo.name == cmd.name
-    }
-    cmds.forEach { command in
-      Task(priority: .userInitiated) {
-        await command.trigger(i)
-      }
-    }
-  }
-  
-  func handleCommandAutocomplete(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
-    // find all commands that fit criteria
-    let cmds = commands.filter { command in
-      command.baseInfo.name == cmd.name
-    }
-    cmds.forEach { command in
-      guard
-        let option = Self.FindFocusedOption(in: cmd.options),
-        let client = _bot?.client
-      else { return }
-      Task(priority: .userInitiated) {
-        await command.autocompletion(i, cmd: cmd, opt: option, client: client)
-      }
-    }
-  }
-}
-
-extension BotInstance {
-  static func FindFocusedOption(in options: [Interaction.ApplicationCommand.Option]?) -> Interaction.ApplicationCommand.Option? {
-    // Guard against a nil options array
-    guard let options = options else { return nil }
-    
-    // Loop through each option
-    for option in options {
-      // If the current option is focused, return it
-      if option.focused == true {
-        return option
-      }
-      
-      // Recursively search through nested options
-      if let nestedFocusedOption = FindFocusedOption(in: option.options) {
-        return nestedFocusedOption
-      }
-    }
-    
-    // If no focused option is found, return nil
-    return nil
   }
 }

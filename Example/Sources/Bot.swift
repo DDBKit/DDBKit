@@ -29,17 +29,39 @@ struct MyNewBot: DiscordBotApp {
   var body: [any BotScene] {
     ReadyEvent { _ in print("hi mom") }
     
-    Command("ping") { interaction, _,_ in
-      try? await bot.createInteractionResponse(to: interaction, "Pong!")
-    }
-    .integrationType(.all, contexts: .all)
-    
     Commands
     Events
-    
     manipulation
-    
     coremlCommands
+    
+    SubcommandBase("test") {
+      Subcommand("modal") { int, cmd, req in
+        let modal =
+        Modal("hiii") {
+          TextField("hru")
+            .style(.short)
+        }
+        .id("gm")
+        do {
+          try await bot.createInteractionResponse(to: int) {
+            modal
+          }
+        } catch {
+          print(error)
+        }
+      }
+    }
+    .integrationType(.all, contexts: .all)
+    .modal(on: "gm") { int, modal, req in
+      // ...
+      try? await bot.createInteractionResponse(to: int) {
+        Message {
+          Text(String(reflecting: modal))
+        }
+//        .flags([.ephemeral])
+      }
+    }
+    
   }
   
   var bot: Bot

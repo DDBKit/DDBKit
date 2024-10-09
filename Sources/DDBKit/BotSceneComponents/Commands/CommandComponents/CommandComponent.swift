@@ -11,6 +11,9 @@ import DiscordBM
 
 /// A basic command thats easy and fast to declare and program
 public struct Command: BaseCommand {
+  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
+  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
+  
   // autocompletion related things
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
     guard let value = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
@@ -21,7 +24,8 @@ public struct Command: BaseCommand {
     let option = autocompletableOptions.first(where: {$0.optionData.name == opt.name})
     // run autocompletions callback
     
-    let autocompletions = option?.autocompletion?(value)
+    let autocompletionsValues = option?.autocompletion?(value)
+    let autocompletions: [ApplicationCommand.Option.Choice]? = autocompletionsValues?.map { .init(name: $0.asString, value: $0) }
     // return these choices
     _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletions ?? [])))
   }

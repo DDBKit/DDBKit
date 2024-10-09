@@ -8,6 +8,9 @@
 import DiscordBM
 
 public struct SubcommandBase: BaseCommand {
+  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
+  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
+  
   var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   
   var baseInfo: DiscordModels.Payloads.ApplicationCommandCreate

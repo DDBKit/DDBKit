@@ -24,6 +24,16 @@ public extension GatewayManager {
       .guardSuccess()
   }
   
+  func createInteractionResponse(to i: Interaction, _ modal: () -> Modal) async throws {
+    try await self.client.createInteractionResponse(
+      id: i.id,
+      token: i.token,
+      payload: .modal(
+        modal().modal
+      ))
+      .guardSuccess()
+  }
+  
   func createInteractionResponse(to i: Interaction, _  msg: String) async throws {
     try await self.client.createInteractionResponse(
       id: i.id,

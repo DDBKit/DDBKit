@@ -19,6 +19,16 @@ protocol BaseCommand: BotScene {
     opt: Interaction.ApplicationCommand.Option,
     client: DiscordClient
   ) async
+  
+  // contains callbacks for registering to the botinstance
+  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void]] { get }
+  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void]] { get }
+}
+
+protocol BaseContextCommand: BotScene { // used in context menus like users and messages, so lacks autocomplete
+  var guildScope: CommandGuildScope { get set }
+  var baseInfo: Payloads.ApplicationCommandCreate { get set }
+  func trigger(_ i: Interaction) async
 }
 
 public struct CommandGuildScope {

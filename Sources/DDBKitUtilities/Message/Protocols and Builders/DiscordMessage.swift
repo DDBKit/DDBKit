@@ -54,7 +54,7 @@ public extension Message {
     return copy
   }
   
-  /// Message flags
+  /// Message flags manual configuration
   func flags(_ flags: IntBitField<DiscordChannel.Message.Flag>) -> Self {
     var copy = self
     copy._flags = flags

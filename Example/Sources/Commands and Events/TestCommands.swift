@@ -86,12 +86,12 @@ extension MyNewBot {
           .autocompletions { gm in
             let number = Double((gm.asString)) ?? 0
             return [
-              .init(name: "\((number + 1).formatted(.number))", value: .double(number + 1)),
-              .init(name: "\((number + 2).formatted(.number))", value: .double(number + 2)),
-              .init(name: "\((number + 3).formatted(.number))", value: .double(number + 3)),
-              .init(name: "\((number + 4).formatted(.number))", value: .double(number + 4)),
-              .init(name: "\((number + 5).formatted(.number))", value: .double(number + 5)),
-              .init(name: "\((number + 6).formatted(.number))", value: .double(number + 6)),
+              .string("\(number + 1)"),
+              .string("\(number + 2)"),
+              .string("\(number + 3)"),
+              .string("\(number + 4)"),
+              .string("\(number + 5)"),
+              .string("\(number + 6)")
             ]
           }
       }

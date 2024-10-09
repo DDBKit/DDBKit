@@ -118,6 +118,25 @@ public extension Command {
     copy.guildScope.guilds.append(contentsOf: guilds)
     return copy
   }
+  
+  /// Receive modals under this custom ID.
+  /// - Parameters:
+  ///   - id: Modal custom ID
+  ///   - event: Event callback
+  func modal(on id: String, _ event: @escaping (Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void) -> Self {
+    var copy = self
+    copy.modalReceives.append(event, to: id)
+    return copy
+  }
+  
+  /// Receive all modal events, intended for manual handling control.
+  /// - Parameters:
+  ///   - event: Event callback
+  func modal(_ event: @escaping (Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void) -> Self {
+    var copy = self
+    copy.modalReceives.append(event, to: "")
+    return copy
+  }
 }
 
 public extension Command.IType {
