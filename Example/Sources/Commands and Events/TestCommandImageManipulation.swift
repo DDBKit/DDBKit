@@ -120,18 +120,20 @@ extension MyNewBot {
         // Image manipulation view
 
         struct ImageView: View {
+          var captcha: String
           var body: some View {
-            CaptchaView(captchaString: String((0...5).map { _ in
-              "abcdefghijklmnopqrstuvwxyz1234567890"
-                .uppercased()
-                .randomElement()!
-            }))
+            CaptchaView(captchaString: captcha)
           }
         }
+        let captcha = String((0...5).map { _ in
+          "abcdefghijklmnopqrstuvwxyz1234567890"
+            .uppercased()
+            .randomElement()!
+        })
         
         // Render image with overlay
         let img = await Task.detached { @MainActor in
-          let renderer = ImageRenderer(content: ImageView())
+          let renderer = ImageRenderer(content: ImageView(captcha: captcha))
           renderer.proposedSize = .init(width: 300, height: 100)
           return renderer.cgImage
         }.value
@@ -160,10 +162,55 @@ extension MyNewBot {
               Footer("Took \(formatted)s")
             }
             .setColor(.blue)
+            MessageComponents {
+              ActionRow {
+                Button("Answer")
+                  .id("captcha-\(captcha)")
+              }
+            }
           }
         }
       }
       .integrationType(.all, contexts: .all)
+      .modal { int, cmp, req in
+        guard
+          cmp.custom_id.starts(with: "captcha-"),
+          let captchaSplit = cmp.custom_id.components(separatedBy: "captcha-").last
+        else { return }
+        
+        let input = (try? cmp.components.requireComponent(customId: "captcha-field").requireTextInput().value) ?? ""
+        if input == captchaSplit {
+          try? await bot.createInteractionResponse(to: int) {
+            Message {
+              Text("Congrats u can read :3")
+            }
+            .flags([.ephemeral])
+          }
+        } else {
+          try? await bot.createInteractionResponse(to: int) {
+            Message {
+              Text("Captcha invalid, please try again.")
+            }
+            .flags([.ephemeral])
+          }
+        }
+      }
+      .component { int, cmp, req in
+        guard
+          cmp.custom_id.starts(with: "captcha-"),
+          let captchaSplit = cmp.custom_id.components(separatedBy: "captcha-").last
+        else { return }
+        
+        try? await bot.createInteractionResponse(to: int) {
+          Modal("CAPTCHA") {
+            TextField("Enter Captcha Code")
+              .length(6...6)
+              .placeholder("ABC123")
+              .id("captcha-field")
+          }
+          .id("captcha-\(captchaSplit)")
+        }
+      }
       
       Command("tiramisu") { int, cmd, reqs in
         let firstTimestamp = Date.now

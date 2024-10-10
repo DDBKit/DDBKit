@@ -49,6 +49,10 @@ public struct MessageComponents: MessageComponent {
     self.rows = rows()
   }
   
+  init() {
+    self.rows = []
+  }
+  
   var rows: [ActionRowProtocol]
 }
 

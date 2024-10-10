@@ -16,6 +16,7 @@ extension Message {
     self.content = (components.last(where: {$0 is MessageContent}) as? MessageContent) ?? .init(message: { })
     self.embeds = components.filter { $0 is MessageEmbed } as? [MessageEmbed] ?? []
     self.attachments = components.filter { $0 is MessageAttachment } as? [MessageAttachment] ?? []
+    self.components = (components.last(where: {$0 is MessageComponents}) as? MessageComponents) ?? .init()
   }
   
   /// Initializes a message's content directly
@@ -27,5 +28,6 @@ extension Message {
     self.content = .init(message: message)
     self.embeds = []
     self.attachments = []
+    self.components = .init()
   }
 }

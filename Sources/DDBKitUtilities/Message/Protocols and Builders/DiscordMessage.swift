@@ -20,6 +20,7 @@ public struct Message {
   public var content: MessageContent
   public var embeds: [MessageEmbed]
   public var attachments: [MessageAttachment]
+  public var components: MessageComponents
   
   // MARK: - discord types we'll be sending off
   var _nonce: StringOrInt?
@@ -28,7 +29,13 @@ public struct Message {
   var _embeds: [Embed] { self.embeds.map(\.embed) }
   var _allowed_mentions: Payloads.AllowedMentions?
   var _message_reference: DiscordChannel.Message.MessageReference?
-  var _components: [Interaction.ActionRow]?
+  var _components: [Interaction.ActionRow]? {
+    self.components.rows.reduce([Interaction.ActionRow]()) { partialResult, row in
+      var partialResult = partialResult
+      partialResult.append(Interaction.ActionRow(components: (row as! _ActionRowProtocol).components.map { ($0 as! _MessageComponentsActionRowComponent).component }))
+      return partialResult
+    }
+  }
   var _sticker_ids: [String]?
   var _files: [RawFile]? { self.attachments.map { RawFile(data: $0.data, filename: $0.filename) } }
   var _attachments: [Payloads.Attachment]? { self.attachments.enumerated().compactMap {

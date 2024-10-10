@@ -32,4 +32,18 @@ final class ModelTests: XCTestCase {
     }
     print(gm)
   }
+  
+  // Usage example
+  func testBuilders() {
+    @GenericBuilder<Example> var egg: GenericTuple<Example> {
+      Example(value: "gm")
+      Example(value: "gn")
+      
+      if true {
+        Example(value: "conditional")
+      }
+    }
+    
+    print(egg.values)
+  }
 }
