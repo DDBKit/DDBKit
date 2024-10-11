@@ -21,17 +21,18 @@ public struct SubcommandBase: BaseCommand {
   func trigger(_ i: DiscordModels.Interaction) async {
     // do preprocessing work to find where which closure requires calling in the registered subcommands
     switch i.data {
-    case .applicationCommand(let j):
+    case .applicationCommand(var j):
       let k: DatabaseBranches = .init(i)
-      let command = self.findChild(i)
-      await command?.trigger(i, j, k)
+      guard let (command, options) = try? self.findChild(i) else { return }
+      j.options = options ?? j.options
+      await command.trigger(i, j, k)
     default: break
     }
   }
   
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: any DiscordHTTP.DiscordClient) async {
-    // same as trigger
-    guard let command = self.findChild(i) else { return print("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.") }
+    /// same as trigger, we dont use the pruned options from findChild(:) since BotInstance recursively tracks the option with focused set to true.
+    guard let (command, _) = try? self.findChild(i) else { return print("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.") }
     await command.autocompletion(i, cmd: cmd, opt: opt, client: client)
   }
   
@@ -66,7 +67,8 @@ public struct SubcommandBase: BaseCommand {
 }
 
 extension SubcommandBase {
-  func findChild(_ i: Interaction) -> Subcommand? {
+  func findChild(_ i: Interaction) throws -> (Subcommand,  [Interaction.ApplicationCommand.Option]?) {
+    // get the options tree from the interaction
     let options: [Interaction.ApplicationCommand.Option]? = {
       switch i.data {
       case .applicationCommand(let applicationCommand):
@@ -74,25 +76,43 @@ extension SubcommandBase {
       default: return nil
       }
     }()
-    guard let options, !options.isEmpty else { print("[\(self.baseInfo.name)] SubcommandBase triggered with no options, skipped eval."); return nil } // options in this command cannot be empty, its literally impossible
-    
+    // ensure the options exist before we continue
+    guard let options, !options.isEmpty else { print("[\(self.baseInfo.name)] SubcommandBase triggered with no options, skipped eval."); throw SubcommandError.noOptions } // options in this command cannot be empty, its literally impossible
+    // this is a variable to store the pruned tree
+    var optionsTree: [Interaction.ApplicationCommand.Option]? = nil
+
+    // currentOption is the root option in the tree (the subcommand or subcommandgroup layer
     var currentOption = options.first!
     var currentObject: (any BaseInfoType)?
+    // tree contains all the subcommands available
     currentObject = self.tree.first { obj in
-      obj.baseInfo.name == currentOption.name
+      if obj.baseInfo.name == currentOption.name {
+        optionsTree = currentOption.options
+        return true
+      }
+      return false
     }
     
     // in case of nesting
     if currentOption.options?.first?.type == .subCommand {
       currentOption = currentOption.options!.first!
       if let obj = (currentObject as? SubcommandGroup)?.commands.first(where: { cmd in
-        cmd.baseInfo.name == currentOption.name
+        if cmd.baseInfo.name == currentOption.name {
+          optionsTree = currentOption.options
+          return true
+        }
+        return false
       }) {
         currentObject = obj
       }
     }
     
-    guard let subcommand = currentObject as? Subcommand else { print("[\(self.baseInfo.name)] SubcommandBase triggered and failed to find subcommand."); return nil }
-    return subcommand
+    guard let subcommand = currentObject as? Subcommand else { print("[\(self.baseInfo.name)] SubcommandBase triggered and failed to find subcommand."); throw SubcommandError.noChildFound }
+    return (subcommand, optionsTree)
+  }
+  
+  enum SubcommandError: Error {
+    case noOptions
+    case noChildFound
   }
 }
