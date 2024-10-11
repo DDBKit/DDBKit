@@ -34,7 +34,7 @@ let package = Package(
   dependencies: [
     // We only use exact version tags to ensure the package doesn't break with a minor update
     // since Discord sucks.
-    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.57.0"),
+//    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.57.0"),
     .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.12.1"),
     .package(url: "https://github.com/swift-server/async-http-client", from: "1.23.0"),
   ],
@@ -48,7 +48,9 @@ let package = Package(
         "Database",
         .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
-      plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+      plugins: [
+//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins"),
+      ]
     ),
     .target(
       name: "Database",
@@ -56,7 +58,9 @@ let package = Package(
         "DiscordBM",
         .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
-      plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+      plugins: [
+//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+      ]
     ),
     .target(
       name: "DDBKitFoundation",
@@ -65,7 +69,9 @@ let package = Package(
         "DiscordBM",
         .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
-      plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+      plugins: [
+//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+      ]
     ),
     .target(
       name: "DDBKitUtilities",
@@ -74,7 +80,9 @@ let package = Package(
         "DiscordBM",
         .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
-      plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+      plugins: [
+//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+      ]
     ),
     .testTarget(
       name: "DDBKitTests",
