@@ -7,7 +7,7 @@
 
 import DDBKit
 import DDBKitUtilities
-
+#if !os(Linux)
 extension MyNewBot {
   var coremlCommands: Group {
     Group {
@@ -48,3 +48,4 @@ extension MyNewBot {
     }
   }
 }
+#endif

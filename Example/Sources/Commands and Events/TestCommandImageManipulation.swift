@@ -9,6 +9,7 @@ import DDBKit
 import Database
 import DDBKitUtilities
 import Foundation
+#if !os(Linux)
 import SwiftUI
 
 extension MyNewBot {
@@ -402,3 +403,4 @@ extension Double {
     return value
   }
 }
+#endif

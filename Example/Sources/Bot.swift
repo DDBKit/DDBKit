@@ -31,9 +31,10 @@ struct MyNewBot: DiscordBotApp {
     
     Commands
     Events
+    #if !os(Linux)
     manipulation
     coremlCommands
-    
+    #endif
   }
   
   var bot: Bot
