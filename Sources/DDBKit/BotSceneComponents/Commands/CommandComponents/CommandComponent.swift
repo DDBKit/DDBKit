@@ -24,7 +24,7 @@ public struct Command: BaseCommand {
     let option = autocompletableOptions.first(where: {$0.optionData.name == opt.name})
     // run autocompletions callback
     
-    let autocompletionsValues = option?.autocompletion?(value)
+    let autocompletionsValues = await option?.autocompletion?(value)
     let autocompletions: [ApplicationCommand.Option.Choice]? = autocompletionsValues?.map { .init(name: $0.asString, value: $0) }
     // return these choices
     _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletions ?? [])))

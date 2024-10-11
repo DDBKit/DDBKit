@@ -24,7 +24,7 @@ public protocol AutocompletableOption: Option { }
 /// setting protocols public requires that their properties be public to match
 /// so we'll just avoid that by using this internal type instead
 internal protocol _AutocompletableOption: Option, AutocompletableOption { // swiftlint:disable:this type_name
-  var autocompletion: ((StringIntDoubleBool) -> [StringIntDoubleBool])? { get set }
+  var autocompletion: ((StringIntDoubleBool) async -> [StringIntDoubleBool])? { get set }
 }
 
 // MARK: - Define all kinds of options
@@ -42,7 +42,7 @@ internal protocol _AutocompletableOption: Option, AutocompletableOption { // swi
 
 /// A string option
 public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
-  internal var autocompletion: ((StringIntDoubleBool) -> [StringIntDoubleBool])?
+  internal var autocompletion: ((StringIntDoubleBool) async -> [StringIntDoubleBool])?
   public var optionData: DiscordModels.ApplicationCommand.Option
   
   public init(name: String, description: String) {
@@ -52,7 +52,7 @@ public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
 
 /// An integer option
 public struct IntOption: Option, _AutocompletableOption, ChoiceOption, RangedOption {
-  public var autocompletion: ((StringIntDoubleBool) -> [StringIntDoubleBool])?
+  public var autocompletion: ((StringIntDoubleBool) async -> [StringIntDoubleBool])?
   public var optionData: DiscordModels.ApplicationCommand.Option
   
   public init(name: String, description: String) {
@@ -107,7 +107,7 @@ public struct MentionableOption: Option {
 
 /// A number option that can be non-integer between the same ranges
 public struct DoubleOption: Option, _AutocompletableOption, ChoiceOption, RangedOption {
-  public var autocompletion: ((StringIntDoubleBool) -> [StringIntDoubleBool])?
+  public var autocompletion: ((StringIntDoubleBool) async -> [StringIntDoubleBool])?
   public var optionData: DiscordModels.ApplicationCommand.Option
   
   public init(name: String, description: String) {
@@ -139,7 +139,7 @@ extension Option {
 public extension AutocompletableOption {
   /// Allows configuration of a callback that provides autocomplete to users, return an array of choices.
   /// - Parameter completion: Autocomplete handler
-  func autocompletions(_ completion: @escaping (StringIntDoubleBool) -> [StringIntDoubleBool]) -> Self {
+  func autocompletions(_ completion: @escaping (StringIntDoubleBool) async -> [StringIntDoubleBool]) -> Self {
     var copy = self as! _AutocompletableOption // will always work
     copy.autocompletion = completion // set autocompletion callback on self
     copy.optionData.autocomplete = true
