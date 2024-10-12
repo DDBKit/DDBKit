@@ -8,23 +8,6 @@
 import DiscordBM
 
 @resultBuilder
-public struct MessageComponentsActionRowComponentBuilder { // swiftlint:disable:this type_name
-  public static func buildBlock(_ components: MessageComponentsActionRowComponent...) -> [MessageComponentsActionRowComponent] { components }
-  public static func buildOptional(_ component: [any MessageComponentsActionRowComponent]?) -> any MessageComponentsActionRowComponent { FlattenedComponent(components: component ?? []) }
-  public static func buildEither(first component: [any MessageComponentsActionRowComponent]) -> any MessageComponentsActionRowComponent { FlattenedComponent(components: component) }
-  public static func buildEither(second component: [any MessageComponentsActionRowComponent]) -> any MessageComponentsActionRowComponent { FlattenedComponent(components: component) }
-  
-  /// Used internally to flatten conditional branches to text. reduces code complexity.
-  public struct FlattenedComponent: MessageComponentsActionRowComponent {
-    var component: Interaction.ActionRow.Component
-    public init(components: [any MessageComponentsActionRowComponent]) {
-      // this seems extremely dangerous but also it works??
-      self.component = (components.first as? _MessageComponentsActionRowComponent)!.component
-    }
-  }
-}
-
-@resultBuilder
 public struct MessageComponentsActionRowsBuilder {
   public static func buildBlock(_ components: ActionRowProtocol...) -> [ActionRowProtocol] { components }
   public static func buildOptional(_ component: [any ActionRowProtocol]?) -> any ActionRowProtocol { FlattenedComponent(components: component ?? []) }

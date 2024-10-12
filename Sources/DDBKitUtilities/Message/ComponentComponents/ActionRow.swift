@@ -10,8 +10,8 @@ import DiscordBM
 public struct ActionRow: _ActionRowProtocol {
   var components: [MessageComponentsActionRowComponent]
   
-  public init(@MessageComponentsActionRowComponentBuilder _ components: () -> [MessageComponentsActionRowComponent]) {
-    self.components = components()
+  public init(@GenericBuilder<MessageComponentsActionRowComponent> _ components: () -> GenericTuple<MessageComponentsActionRowComponent>) {
+    self.components = components().values
   }
 }
 
