@@ -111,7 +111,7 @@ public extension StringMenu {
 public struct StringMenuOption {
   var obj: Interaction.ActionRow.StringSelectMenu.Option
   
-  init(_ label: String) {
+  public init(_ label: String) {
     self.obj = .init(
       label: label,
       value: label,
