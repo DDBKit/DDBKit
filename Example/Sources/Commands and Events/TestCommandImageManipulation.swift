@@ -329,9 +329,6 @@ struct CaptchaView: View {
       return nsImage
     }
     
-    
-    
-    
     return nil
   }
   
