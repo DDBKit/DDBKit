@@ -7,6 +7,7 @@
 
 import Foundation
 import DiscordModels
+import DiscordBM
 
 public protocol MessageEmbedComponent {
 }
