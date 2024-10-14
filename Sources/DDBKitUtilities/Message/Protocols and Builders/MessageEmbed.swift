@@ -121,7 +121,7 @@ extension MessageEmbed {
 public extension MessageEmbed {
   func setKind(_ kind: Embed.Kind) -> Self { var e = self; e.kind = kind; return e }
   func setTimestamp(_ date: Date = .now) -> Self { var e = self; e.timestamp = date; return e }
-  func setColor(_ color: DiscordColor) -> Self { var e = self; e.color = color; return e }
+  func setColor(_ color: DiscordColor?) -> Self { var e = self; e.color = color; return e }
   func setURL(_ url: String) -> Self { var e = self; e.url = url; return e }
   func setProvider(_ name: String, url: String? = nil) -> Self { var e = self; e.provider = .init(name: name, url: url); return e }
   func setAuthor(_ name: String, url: String? = nil, icon_url: Embed.DynamicURL? = nil) -> Self { var e = self; e.author = .init(name: name, url: url, icon_url: icon_url); return e }
