@@ -60,16 +60,3 @@ final class ModelTests: XCTestCase {
     print(obj)
   }
 }
-
-let egg = Message {
-  MessageContent {
-    Text("buttons!")
-      .bold()
-      .underlined()
-  }
-  MessageComponents {
-    ActionRow {
-      <#code#>
-    }
-  }
-}

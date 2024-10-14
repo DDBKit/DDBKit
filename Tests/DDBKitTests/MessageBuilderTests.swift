@@ -216,4 +216,19 @@ print("done!")
     
     XCTAssertEqual(msg.embeds[0].title, "heyyy")
   }
+  
+  func testMessageBuilderEmbedLoops() throws {
+    let msg = Message {
+      MessageEmbed {
+        for i in 1...10 {
+          Field("number", i.description)
+        }
+      }
+      .setColor(.cyan)
+      .setURL("https://llsc12.me")
+    }
+    
+//    XCTAssertEqual(msg.embeds[0].title, "heyyy")
+    print(msg)
+  }
 }
