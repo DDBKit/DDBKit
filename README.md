@@ -91,17 +91,13 @@ struct MyNewBot: DiscordBotApp {
       guard let msg else { return }
       print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
     }
-
-    Command("ping") { i, _, _ in
-      try? await bot.createInteractionResponse(to: i, "pong!")
-    }
   }
   
   var bot: Bot
   var cache: Cache
 }
 ```
-Congratulations! You’ve connected to Discord as your bot, reacted to an event and made your first command!
+Congratulations! You’ve connected to Discord as your bot and reacted to an event!
 
 > [!NOTE]
 > **Using Linux**? Run <code>swift run</code> in the project directory.
