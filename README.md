@@ -106,7 +106,7 @@ Congratulations! You’ve connected to Discord as your bot, reacted to an event 
 > [!NOTE]
 > **Using Linux**? Run <code>swift run</code> in the project directory.
 > 
-> **If you need another entrypoint (iOS, etc.)**; you can run a DiscordBotApp instance with the <code>run() async throws</code> function available on your Bot struct. You can use this to run multiple clients at once if needed.
+> **If you need another entrypoint (iOS, etc.)**; you can run a DiscordBotApp instance with the <code>run() async throws</code> function available on your Bot struct. You can use this to run multiple clients at once if needed. If deploying to an iOS device or similar, it's easier to use [DiscordBotShell](https://github.com/DDBKit/DiscordBotShell).
 >
 > **Don't have a bot yet?** You can create one at https://discord.com/developers/applications. Make sure your bot has the correct permissions and intents.
 
@@ -120,7 +120,7 @@ You've now got a solid place to start with your bot. Check out the [wiki](https:
 ## Contributing
 Feel free to work on providing more abstractions and adding general utilities.
 My code isn't exactly amazing so if you'd like to improve it for everyone else, be sure to make a PR!
-I have a silly database thing going on. I think it might be useful but it also might be dumb. If someone rewrites it to use a real database behind the scenes whilst also providing more utilities, it would be much appreciated.
+I have a silly database thing going on. I think it might be useful but it also might be dumb and bad at large scale. If someone rewrites it to use a real database behind the scenes whilst also providing more utilities, it would be much appreciated.
 
 Contributors should clone this repository and open `DDBKit.xcworkspace` as it loads the example bot alongside the DDBKit package. This way, you can test your work live whilst making changes. You can also create your own tests if you'd like.
 
@@ -131,12 +131,10 @@ Someone should PR a linter :3
 ## Goals
 - [x] Using builders for composable objects (main bot logic, messages etc.)
 - [ ] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
-- [ ] ~~Swift Playgrounds book-based guide for younger demographics~~ 
-- [x] ~~Swift playground app for bots developed on iPad with in-app console and runs in background~~ Apple's Swift Playgrounds doesn't support C compilation. I've made an [Xcode project template](https://github.com/DDBKit/DiscordBotShell) instead.
 - [ ] Feature parity with Discord
 - [ ] Make database good
-- [ ] Add linter
-- [ ] Links in DocC comments of objects to thorough wiki docs
+- [x] Add linter (added as GH Action)
+- [ ] Links in DocC comments of objects to more thorough wiki docs
 
 ## Sponsoring
 If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
