@@ -11,6 +11,9 @@
 ## What is it?
 DDBKit stands for Declarative Discord Bot Kit, name proposed by [Tobias](https://github.com/tobiasdickinson). DDBKit is designed to abstract away the complexities of Discord’s API into something that feels right at home. Similar to SwiftUI, DDBKit lets you declare commands and add modifiers to create functionality in your bot. It’s kinda like [Commando](https://github.com/discordjs/commando). DDBKit relies on [DiscordBM](https://github.com/DiscordBM/DiscordBM) under the hood.
 
+## Quick Start
+Already know what you're doing? Get started faster by using the [DDBKit Template](https://github.com/DDBKit/DDBKit-Template).
+
 ## Getting started
 Begin by making a new project directory with
 ```sh
@@ -23,23 +26,26 @@ swift package init --type executable
 Open `Package.swift` in your preferred editor, and copy this configuration.
 ```swift
 let package = Package(
-    name: "MyNewBot",
-    platforms: [
-        .macOS(.v13)
-    ],
-    dependencies: [
-        .package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0"), // Change this to the latest version
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "MyNewBot",
-            dependencies: [
-                "DDBKit"
-            ]
-        ),
-    ]
+  name: "rig",
+  platforms: [
+    .macOS(.v13)
+  ],
+  dependencies: [
+    .package(url: "https://github.com/llsc12/DDBKit", exact: "0.1.4"), // change this to latest ver
+  ],
+  targets: [
+    // Targets are the basic building blocks of a package, defining a module or a test suite.
+    // Targets can depend on other targets in this package and products from dependencies.
+    .executableTarget(
+      name: "rig",
+      dependencies: [
+        .product(name: "DDBKit", package: "DDBKit"),
+        .product(name: "Database", package: "DDBKit"),
+        .product(name: "DDBKitUtilities", package: "DDBKit"),
+        .product(name: "DDBKitFoundation", package: "DDBKit"),
+      ]
+    ),
+  ]
 )
 ```
 
@@ -54,44 +60,48 @@ You can now replace any existing code in your Swift file with
 import DDBKit
 
 @main
+
 struct MyNewBot: DiscordBotApp {
-    init() async {
-        let httpClient = HTTPClient()
-        // Edit this as needed.
-        bot = await BotGatewayManager(
-            eventLoopGroup: httpClient.eventLoopGroup,
-            httpClient: httpClient,
-            token: "Token Here", // Do not store your token in your code in production.
-            largeThreshold: 250,
-            presence: .init(activities: [], status: .online, afk: false),
-            intents: [.messageContent, .guildMessages]
-        )
-        // Will be useful
-        cache = await .init(
-            gatewayManager: bot,
-            intents: .all, // it's better to minimise cached data to your needs
-            requestAllMembers: .enabledWithPresences,
-            messageCachingPolicy: .saveEditHistoryAndDeleted
-        )
+  init() async {
+    let httpClient = HTTPClient()
+    // Edit this as needed.
+    bot = await BotGatewayManager(
+      eventLoopGroup: httpClient.eventLoopGroup,
+      httpClient: httpClient,
+      token: "Token Here", // Do not store your token in your code in production.
+      largeThreshold: 250,
+      presence: .init(activities: [], status: .online, afk: false),
+      intents: [.messageContent, .guildMessages]
+    )
+    // Will be useful
+    cache = await .init(
+      gatewayManager: bot,
+      intents: .all, // it's better to minimise cached data to your needs
+      requestAllMembers: .enabledWithPresences,
+      messageCachingPolicy: .saveEditHistoryAndDeleted
+    )
+  }
+  
+  var body: [any BotScene] {
+    ReadyEvent { ready in
+      print("hi mom")
     }
     
-    var body: [any BotScene] {
-        ReadyEvent { ready in
-            print("hi mom")
-        }
-        
-        MessageCreateEvent { msg in
-            if let msg {
-                print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
-            }
-        }
+    MessageCreateEvent { msg in
+      guard let msg else { return }
+      print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
     }
-    
-    var bot: Bot
-    var cache: Cache
+
+    Command("ping") { i, _, _ in
+      try? await bot.createInteractionResponse(to: i, "pong!")
+    }
+  }
+  
+  var bot: Bot
+  var cache: Cache
 }
 ```
-Congratulations! You’ve connected to Discord as your bot and reacted to an event!
+Congratulations! You’ve connected to Discord as your bot, reacted to an event and made your first command!
 
 > [!NOTE]
 > **Using Linux**? Run <code>swift run</code> in the project directory.
@@ -122,7 +132,7 @@ Someone should PR a linter :3
 - [x] Using builders for composable objects (main bot logic, messages etc.)
 - [ ] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
 - [ ] ~~Swift Playgrounds book-based guide for younger demographics~~ 
-- [x] ~~Swift playground app for bots developed on iPad with in-app console and runs in background~~ Apple's Swift Playgrounds doesn't support C compilation. I've made an Xcode project template instead.
+- [x] ~~Swift playground app for bots developed on iPad with in-app console and runs in background~~ Apple's Swift Playgrounds doesn't support C compilation. I've made an [Xcode project template](https://github.com/DDBKit/DiscordBotShell) instead.
 - [ ] Feature parity with Discord
 - [ ] Make database good
 - [ ] Add linter
