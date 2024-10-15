@@ -15,6 +15,7 @@ extension BotInstance {
     }
     cmds.forEach { command in
       guard
+        let command = command as? BaseCommand,
         let option = Self.FindFocusedOption(in: cmd.options),
         let client = _bot?.client
       else { return }

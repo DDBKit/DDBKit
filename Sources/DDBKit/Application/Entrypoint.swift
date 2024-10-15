@@ -67,13 +67,13 @@ internal extension DiscordBotApp {
   /// Reads the declared scene
   /// - Parameter scenes: Scene data
   /// - Returns: Separated scenes
-  func readScene(scenes: [any BotScene]) -> (events: [any BaseEvent], commands: [any BaseCommand]) {
+  func readScene(scenes: [any BotScene]) -> (events: [any BaseEvent], commands: [any BaseContextCommand]) {
     var events = [any BaseEvent]()
-    var commands = [any BaseCommand]()
+    var commands = [any BaseContextCommand]()
     scenes.forEach { scene in
       switch true {
       case scene is any BaseEvent: events.append(scene as! any BaseEvent) // register event handlers
-      case scene is any BaseCommand: commands.append(scene as! any BaseCommand) // register commands
+      case scene is any BaseContextCommand: commands.append(scene as! any BaseContextCommand) // register commands
       default: break
       }
     }

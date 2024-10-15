@@ -35,6 +35,15 @@ struct MyNewBot: DiscordBotApp {
     manipulation
     coremlCommands
     #endif
+    
+    Context("meow at this message", kind: .message) { i, _, _ in
+      try? await bot.createInteractionResponse(to: i) {
+        Message {
+          Text("Redacted")
+        }
+      }
+    }
+    .integrationType(.all, contexts: .all)
   }
   
   var bot: Bot

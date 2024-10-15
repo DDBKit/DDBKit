@@ -28,5 +28,7 @@ public struct BotSceneBuilder {
     return scenes
   }
   
+  
+  
   private static func expandGroup(group: Group) -> [BotScene] { group.scene }
 }

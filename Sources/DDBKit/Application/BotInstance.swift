@@ -24,7 +24,7 @@ public class BotInstance {
   
   // declared events the user wants to receive
   let events: [any BaseEvent]
-  let commands: [any BaseCommand]
+  let commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
   var modalReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
   var componentReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
@@ -32,7 +32,7 @@ public class BotInstance {
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake
   
-  init(bot: GatewayManager, events: [any BaseEvent], commands: [any BaseCommand]) {
+  init(bot: GatewayManager, events: [any BaseEvent], commands: [any BaseContextCommand]) {
     self._bot = bot
     self.events = events
     self.commands = commands
