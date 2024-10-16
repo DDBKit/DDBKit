@@ -47,17 +47,28 @@ public struct Message {
       ephemeral: $0.element.ephemeral
     ) }
   }
-  var _flags: IntBitField<DiscordChannel.Message.Flag>?
+  var _flags: IntBitField<DiscordChannel.Message.Flag> = .init()
   var _enforce_nonce: Bool?
   var _poll: Payloads.CreatePollRequest?
 }
 
 // MARK: - Public modifiers
 public extension Message {
-  /// Whether or not to enable text-to-speech on this message
+  /// Whether or not to enable text-to-speech on this message.
   func tts(_ enabled: Bool = true) -> Self {
     var copy = self
     copy._tts = true
+    return copy
+  }
+  
+  /// Whether or not this message is ephemeral.
+  func ephemeral(_ enabled: Bool = true) -> Self {
+    var copy = self
+    if enabled {
+      copy._flags.insert(.ephemeral)
+    } else {
+      copy._flags.remove(.ephemeral)
+    }
     return copy
   }
   

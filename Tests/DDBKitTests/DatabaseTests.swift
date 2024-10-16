@@ -12,16 +12,17 @@ import XCTest
 @testable import DDBKit
 @testable import DDBKitUtilities
 
+struct UserNotes: DatabaseModel {
+  var notes: [String]
+}
+
 final class DatabaseTests: XCTestCase {
   func testTransactions() async throws {
     // define a model to store data with
-    struct UserNotes: DatabaseModel {
-      var notes: [String]
-    }
     
     let db = Database.shared // singleton instance
     // prepare a request for user llsc12
-    let req = Database.FetchRequest.requestFor(user: .init("381538809180848128"), ofType: UserNotes.self)
+    let req = Database.FetchRequest.requestFor(user: .init("324565"), ofType: UserNotes.self)
 
     // transactions give us access to the model instance for the lifetime of this closure
     // we shouldn't do anything aside from reading and writing data in this closure
@@ -43,38 +44,8 @@ final class DatabaseTests: XCTestCase {
     // you'll always want to defer or something when using db transactions.
   }
   
-//  func testGM() async throws {
-//    struct Egg: DiscordBotApp {
-//      init() async {
-//        // Edit below as needed.
-//        bot = await BotGatewayManager( /// Need sharding? Use `ShardingGatewayManager`
-//          /// Do not store your token in your code in production.
-//          token: "",
-//          /// replace the above with your own token, but only for testing
-//          presence: .init(activities: [], status: .online, afk: false),
-//          intents: [.messageContent, .guildMessages]
-//        )
-//        // Will be useful
-//        cache = await .init(
-//          gatewayManager: bot,
-//          intents: .all, // it's better to minimise cached data to your needs
-//          requestAllMembers: .enabledWithPresences,
-//          messageCachingPolicy: .saveEditHistoryAndDeleted
-//        )
-//      }
-//      
-//      var bot: any DiscordGateway.GatewayManager
-//      var cache: DiscordGateway.DiscordCache
-//      
-//      var body: [any DDBKit.BotScene] {
-//        Command("wagwan") { i, cmd, db in
-//          try! await bot.createInteractionResponse(to: i, type: .deferredChannelMessageWithSource(isEphemeral: true))
-//        }
-//        .description("gm")
-//      }
-//    }
-//    
-//    let bot = await Egg()
-//    try await bot.run()
-//  }
+  func testGM() async throws {
+    let req = Database.FetchRequest.requestFor(user: .init("381538809180848128"), ofType: UserNotes.self)
+    await Database.shared.availableKeys(around: req)
+  }
 }

@@ -39,7 +39,21 @@ struct MyNewBot: DiscordBotApp {
     Context("meow at this message", kind: .message) { i, _, _ in
       try? await bot.createInteractionResponse(to: i) {
         Message {
-          Text("Redacted")
+          MessageContent {
+            Text("Redacted")
+          }
+          
+          MessageEmbed {
+            Title("wagwan")
+            Description("Please take a shower immediately")
+            
+            Field("egg", "nog").inline()
+            Field("egg", "nog").inline()
+            Field("egg", "nog").inline()
+            Field("egg", "nog").inline()
+          }
+          .setColor(.green)
+          .setTimestamp()
         }
       }
     }
