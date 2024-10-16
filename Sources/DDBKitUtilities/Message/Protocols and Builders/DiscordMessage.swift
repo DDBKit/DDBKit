@@ -22,6 +22,7 @@ public struct Message {
   public var attachments: [MessageAttachment]
   public var components: MessageComponents
   public var stickers: [MessageSticker]
+  public var poll: MessagePoll?
   
   // MARK: - discord types we'll be sending off
   var _nonce: StringOrInt?
@@ -50,7 +51,7 @@ public struct Message {
   }
   var _flags: IntBitField<DiscordChannel.Message.Flag> = .init()
   var _enforce_nonce: Bool?
-  var _poll: Payloads.CreatePollRequest?
+  var _poll: Payloads.CreatePollRequest? { self.poll?.poll }
 }
 
 // MARK: - Public modifiers
@@ -73,7 +74,7 @@ public extension Message {
     return copy
   }
   
-  /// Message flags manual configuration
+  /// Message flags manual configuration, this will override previous modifiers.
   func flags(_ flags: IntBitField<DiscordChannel.Message.Flag>) -> Self {
     var copy = self
     copy._flags = flags

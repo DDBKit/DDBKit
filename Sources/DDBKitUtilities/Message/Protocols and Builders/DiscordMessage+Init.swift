@@ -18,6 +18,7 @@ extension Message {
     self.attachments = components.filter { $0 is MessageAttachment } as? [MessageAttachment] ?? []
     self.components = (components.last(where: {$0 is MessageComponents}) as? MessageComponents) ?? .init()
     self.stickers = components.filter { $0 is MessageSticker } as? [MessageSticker] ?? []
+    self.poll = (components.last(where: {$0 is MessagePoll}) as? MessagePoll)
   }
   
   /// Initializes a message's content directly
