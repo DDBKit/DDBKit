@@ -21,6 +21,7 @@ public struct Message {
   public var embeds: [MessageEmbed]
   public var attachments: [MessageAttachment]
   public var components: MessageComponents
+  public var stickers: [MessageSticker]
   
   // MARK: - discord types we'll be sending off
   var _nonce: StringOrInt?
@@ -36,7 +37,7 @@ public struct Message {
       return partialResult
     }
   }
-  var _sticker_ids: [String]?
+  var _sticker_ids: [String]? { self.stickers.map { $0.id } }
   var _files: [RawFile]? { self.attachments.map { RawFile(data: $0.data, filename: $0.filename) } }
   var _attachments: [Payloads.Attachment]? { self.attachments.enumerated().compactMap {
     if $0.element.use == .embed { return nil } // the user wants to use this in an embed
@@ -76,6 +77,13 @@ public extension Message {
   func flags(_ flags: IntBitField<DiscordChannel.Message.Flag>) -> Self {
     var copy = self
     copy._flags = flags
+    return copy
+  }
+  
+  /// Sets the allowed mentions for this message
+  func allowedMentions(_ mentions: Payloads.AllowedMentions) -> Self {
+    var copy = self
+    copy._allowed_mentions = mentions
     return copy
   }
 }
