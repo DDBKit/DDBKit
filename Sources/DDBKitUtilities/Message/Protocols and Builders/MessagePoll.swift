@@ -43,7 +43,7 @@ public struct PollAnswer {
   var answerID: Int? = nil
   public init(_ answer: String? = nil, emoji: Self.Emoji? = .none) {
     self.answer = answer
-    
+    self.emoji = emoji
     if answer == nil {
       precondition(emoji != nil, "You need to provide either an answer, emoji or both.")
     }

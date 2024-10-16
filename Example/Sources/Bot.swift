@@ -74,6 +74,7 @@ struct MyNewBot: DiscordBotApp {
         }
       }
     }
+    .integrationType(.all, contexts: .all)
   }
   
   var bot: Bot

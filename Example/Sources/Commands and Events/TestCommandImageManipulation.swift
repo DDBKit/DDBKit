@@ -16,9 +16,10 @@ extension MyNewBot {
   var manipulation: DDBKit.Group {
     Group {
       Command("colonthree") { int, cmd, reqs in
-        let firstTimestamp = Date.now
         // Defer the response
         try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
+
+        let firstTimestamp = Date.now
         func getUserId(from int: Interaction, cmd: DiscordModels.Interaction.ApplicationCommand) -> UserSnowflake? {
           if let optionId = try? (cmd.options ?? []).requireOption(named: "egg").requireString() {
             return .init(optionId)
