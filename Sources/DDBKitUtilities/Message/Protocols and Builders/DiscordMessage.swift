@@ -81,9 +81,19 @@ public extension Message {
   }
   
   /// Sets the allowed mentions for this message
-  func allowedMentions(_ mentions: Payloads.AllowedMentions) -> Self {
+  func allowedMentions(
+    _ kind: [DiscordChannel.AllowedMentions.Kind]? = nil,
+    roles: [RoleSnowflake]? = nil,
+    users: [UserSnowflake]? = nil,
+    repliedUser: Bool? = true
+  ) -> Self {
     var copy = self
-    copy._allowed_mentions = mentions
+    copy._allowed_mentions = .init(
+      parse: kind,
+      roles: roles,
+      users: users,
+      replied_user: repliedUser
+    )
     return copy
   }
 }
