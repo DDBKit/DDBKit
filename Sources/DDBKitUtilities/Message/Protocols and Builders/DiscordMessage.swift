@@ -68,6 +68,13 @@ public extension Message {
     copy._flags = flags
     return copy
   }
+  
+  /// Sets the allowed mentions for this message
+  func allowedMentions(_ mentions: Payloads.AllowedMentions) -> Self {
+    var copy = self
+    copy._allowed_mentions = mentions
+    return copy
+  }
 }
 
 /// All kinds of data in a `Message` object must conform to this
