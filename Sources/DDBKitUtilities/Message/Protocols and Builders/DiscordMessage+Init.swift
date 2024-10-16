@@ -30,5 +30,6 @@ extension Message {
     self.embeds = []
     self.attachments = []
     self.components = .init()
+    self.stickers = []
   }
 }
