@@ -58,6 +58,22 @@ struct MyNewBot: DiscordBotApp {
       }
     }
     .integrationType(.all, contexts: .all)
+    
+    Command("egg") { i, _, _ in
+      try? await bot.createInteractionResponse(to: i) {
+        Message {
+          MessageContent {
+            Text("this chat is smelly")
+          }
+          
+          MessagePoll(emoji: .id("1295897627505987634"), hours: 1) {
+            PollAnswer(emoji: .id("1295877525154566156"))
+            PollAnswer(emoji: .id("1295897627505987634"))
+          }
+          .allowMultipleAnswers()
+        }
+      }
+    }
   }
   
   var bot: Bot

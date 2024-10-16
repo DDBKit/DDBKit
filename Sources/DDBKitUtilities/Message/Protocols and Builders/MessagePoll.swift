@@ -14,7 +14,8 @@ public struct MessagePoll: MessageComponent {
   var emoji: Self.Emoji?
   var question: String?
   var layout: Poll.LayoutKind = .default
-  public init(_ question: String?, emoji: Self.Emoji? = .none, hours: Int, @GenericBuilder<PollAnswer> _ answers: () -> GenericTuple<PollAnswer>) {
+  
+  public init(_ question: String? = nil, emoji: Self.Emoji? = .none, hours: Int, @GenericBuilder<PollAnswer> _ answers: () -> GenericTuple<PollAnswer>) {
     self.answers = answers().values
     self.durationHours = hours
     self.emoji = emoji
@@ -40,7 +41,7 @@ public struct PollAnswer {
   var answer: String?
   var emoji: Self.Emoji?
   var answerID: Int? = nil
-  public init(_ answer: String?, emoji: Self.Emoji? = .none) {
+  public init(_ answer: String? = nil, emoji: Self.Emoji? = .none) {
     self.answer = answer
     
     if answer == nil {
