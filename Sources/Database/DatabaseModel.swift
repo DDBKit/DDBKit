@@ -9,6 +9,5 @@
 import Foundation
 import DiscordModels
 
-/// This protocol is required to use `@DatabaseInterface` property wrapper.
-/// Types conforming to it can be stored in an interface.
+/// Types conforming to it can be stored on disk.
 public protocol DatabaseModel: Codable {}

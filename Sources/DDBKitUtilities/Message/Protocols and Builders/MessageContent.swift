@@ -13,6 +13,7 @@ public struct MessageContentBuilder {
   public static func buildOptional(_ component: [any MessageContentComponent]?) -> any MessageContentComponent { FlattenedComponent(components: component ?? []) }
   public static func buildEither(first component: [any MessageContentComponent]) -> any MessageContentComponent { FlattenedComponent(components: component) }
   public static func buildEither(second component: [any MessageContentComponent]) -> any MessageContentComponent { FlattenedComponent(components: component) }
+  public static func buildArray(_ components: [[any MessageContentComponent]]) -> [any MessageContentComponent] { components.map { FlattenedComponent(components: $0) } }
   
   /// Used internally to flatten conditional branches to text. reduces code complexity.
   public struct FlattenedComponent: MessageContentComponent {

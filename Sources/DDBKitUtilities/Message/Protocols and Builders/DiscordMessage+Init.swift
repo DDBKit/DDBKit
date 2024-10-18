@@ -9,10 +9,10 @@ extension Message {
   /// Initializes a message with content and embeds
   /// - Parameter components: Message components
   public init(
-    @MessageComponentBuilder
-    components: () -> [MessageComponent]
+    @GenericBuilder<MessageComponent>
+    components: () -> GenericTuple<MessageComponent>
   ) {
-    let components = components()
+    let components = components().values
     self.content = (components.last(where: {$0 is MessageContent}) as? MessageContent) ?? .init(message: { })
     self.embeds = components.filter { $0 is MessageEmbed } as? [MessageEmbed] ?? []
     self.attachments = components.filter { $0 is MessageAttachment } as? [MessageAttachment] ?? []

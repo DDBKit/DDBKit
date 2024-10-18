@@ -10,7 +10,7 @@ import Foundation
 import DiscordModels
 
 struct DBPaths {
-  private static let dbDirectory: URL = {
+  static var dbDirectory: URL = {
     // we get the executable path first
     guard let execPath = Bundle.main.executableURL?.deletingLastPathComponent() else { fatalError("DB: Unable to get the current executable directory.") }
     // store stuff in db directory

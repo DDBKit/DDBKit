@@ -62,6 +62,16 @@ extension Database {
       let url = DBPaths.Bot.url
       return FetchRequest<Model>(type: type, url: url)
     }
+    
+    func _rerouted(to key: String) -> Self {
+      var copy = self
+      let ext = copy.datapath.lastPathComponent
+      copy.datapath = copy.datapath.deletingLastPathComponent().deletingLastPathComponent().appending(components: key, ext)
+      return copy
+    }
+    
+    var _key: String {
+      datapath.deletingLastPathComponent().lastPathComponent
+    }
   }
-  
 }

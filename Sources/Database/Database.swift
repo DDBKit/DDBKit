@@ -10,9 +10,13 @@ import DiscordModels
 
 // this database library is for storing data associated with entities
 // such as discord users, servers, channels and such.
-
 public actor Database {
-  public static let shared = Database()
+  public static var shared = Database()
+  init(basePath: URL? = nil) {
+    precondition(Bundle.main.executableURL != nil, "Something seems to be wrong, please manually specify a database root path.")
+    DBPaths.dbDirectory = basePath?.appendingPathComponent("db", isDirectory: true) ?? DBPaths.dbDirectory
+  }
+  
   static let decoder = JSONDecoder()
   static let encoder = JSONEncoder()
   
@@ -24,11 +28,11 @@ public actor Database {
   /// Reads file from the file in the db
   /// - Parameter url: URL of file to read
   /// - Returns: The file contents or nil
-  func requestData(for url: URL) -> Data? { try? Data(contentsOf: url) }
+  func _requestData(for url: URL) -> Data? { try? Data(contentsOf: url) }
   
   /// writes file to the db
   /// - Parameter url: URL of file to write
-  func writeData(for url: URL, data: Data?) {
+  func _writeData(for url: URL, data: Data?) {
     if data != nil, String(data: data!, encoding: .utf8) == "null" { // check if blank files have been written
       try? FileManager.default.removeItem(at: url)
       return
@@ -41,18 +45,15 @@ public actor Database {
   ///   - url: URL to read from
   ///   - type: the type of the data
   /// - Returns: the model or nil
-  func request<T: DatabaseModel>(_ req: FetchRequest<T>) -> T? {
-    guard let d = requestData(for: req.datapath) else { return nil }
+  func _request<T: DatabaseModel>(_ req: FetchRequest<T>) -> T? {
+    guard let d = _requestData(for: req.datapath) else { return nil }
     return try? Self.decoder.decode(req.type, from: d)
   }
   
-  func write<T: DatabaseModel>(_ req: FetchRequest<T>, data: T?) {
+  func _write<T: DatabaseModel>(_ req: FetchRequest<T>, data: T?) {
     let d = try? Self.encoder.encode(data)
-    writeData(for: req.datapath, data: d)
+    _writeData(for: req.datapath, data: d)
   }
 }
-
-
-
 
 

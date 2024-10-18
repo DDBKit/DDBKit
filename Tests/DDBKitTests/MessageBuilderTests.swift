@@ -231,4 +231,20 @@ print("done!")
 //    XCTAssertEqual(msg.embeds[0].title, "heyyy")
     print(msg)
   }
+  
+  func testGM() {
+    let msg = Message {
+      MessageContent {
+        Heading("gm")
+        Text("gm")
+      }
+      MessageComponents {
+        ActionRow {
+          Button("hi mom")
+            .id("mom-btn")
+        }
+      }
+    }
+    print(msg)
+  }
 }

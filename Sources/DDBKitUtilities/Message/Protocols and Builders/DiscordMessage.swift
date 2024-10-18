@@ -9,11 +9,6 @@ import Foundation
 import DiscordModels
 import NIOCore
 
-@resultBuilder
-public struct MessageComponentBuilder {
-  public static func buildBlock(_ components: MessageComponent...) -> [MessageComponent] { components }
-}
-
 /// Stores things like message content, any embeds, etc
 public struct Message {
   // MARK: - our types we keep track of the message state with

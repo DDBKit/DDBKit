@@ -60,18 +60,24 @@ struct MyNewBot: DiscordBotApp {
     .integrationType(.all, contexts: .all)
     
     Command("egg") { i, _, _ in
-      try? await bot.createInteractionResponse(to: i) {
-        Message {
-          MessageContent {
-            Text("this chat is smelly")
+      do {
+        try await bot.createInteractionResponse(to: i, type: .deferredChannelMessageWithSource())
+        try await bot.createInteractionResponse(to: i) {
+          Message {
+            MessageContent {
+              Text("this chat is smelly")
+            }
+            
+            MessagePoll("gm oomfs", hours: 1) {
+              
+              PollAnswer("​", emoji: .id("1296043562865131560")) // note that there are zero-width chars in the text
+              PollAnswer("​", emoji: .id("1296043564601442406")) // note that there are zero-width chars in the text
+            }
+            .allowMultipleAnswers()
           }
-          
-          MessagePoll(emoji: .id("1295897627505987634"), hours: 1) {
-            PollAnswer(emoji: .id("1295877525154566156"))
-            PollAnswer(emoji: .id("1295897627505987634"))
-          }
-          .allowMultipleAnswers()
         }
+      } catch {
+        print(error)
       }
     }
     .integrationType(.all, contexts: .all)
