@@ -15,6 +15,7 @@ public struct TextBuilder {
   public static func buildOptional(_ component: [Text]?) -> Text { Text.init(components: component ?? []) }
   public static func buildEither(first component: [Text]) -> Text { Text.init(components: component) }
   public static func buildEither(second component: [Text]) -> Text { Text.init(components: component) }
+  public static func buildArray(_ components: [[Text]]) -> Text { Text(components: components.map { Text(components: $0) }) }
 }
 
 public struct Text: MessageContentComponent {

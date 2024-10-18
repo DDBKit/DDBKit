@@ -247,4 +247,24 @@ print("done!")
     }
     print(msg)
   }
+  
+  func testLooping() {
+    let msg = Message {
+      MessageContent {
+        Text("gm")
+        for i in 0...5 {
+          Text("\(i)")
+        }
+        
+        Text {
+          for _ in 0...5 {
+            Text("meow ")
+          }
+        }
+      }
+    }
+    print(msg.embeds.map(\.title))
+    print(msg.content.textualRepresentation)
+    
+  }
 }
