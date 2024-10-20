@@ -46,7 +46,7 @@ public struct Subcommand: BaseInfoType {
   
   
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
-    guard let value = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
+    guard let _ = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
     // find autocompletable options
     let autocompletableOptions = self.options.compactMap { $0 as? _AutocompletableOption }
     
