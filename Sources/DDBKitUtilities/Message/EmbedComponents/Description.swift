@@ -17,4 +17,13 @@ public struct Description: MessageEmbedComponent {
   public init(_ txt: String) {
     self.text = txt
   }
+  public init(
+    @MessageContentBuilder
+    message: () -> [MessageContentComponent]
+  ) {
+    self.text = message().reduce("") { partialResult, component in
+      return partialResult + component.textualRepresentation
+    }
+    .trimmingCharacters(in: .whitespacesAndNewlines)
+  }
 }

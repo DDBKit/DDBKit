@@ -1,5 +1,5 @@
 {
-  "originHash" : "b829d0c3eb1af23b5d6d8c44bec90aa21e8533bd377bcbacacf7a83016e1b123",
+  "originHash" : "fc532144d95d2d8ae829b455b5a9bb60cfecfdc5677ff96a879942017226c77f",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -20,12 +20,30 @@
       }
     },
     {
+      "identity" : "dynamic",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mhdhejazi/Dynamic",
+      "state" : {
+        "branch" : "master",
+        "revision" : "772883073d044bc754d401cabb6574624eb3778f"
+      }
+    },
+    {
       "identity" : "multipart-kit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/multipart-kit.git",
       "state" : {
         "revision" : "12ee56f25bd3fc4c2d09c2aa16e69de61dc786e8",
         "version" : "4.6.0"
+      }
+    },
+    {
+      "identity" : "privateframeworks",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/llsc12/PrivateFrameworks",
+      "state" : {
+        "branch" : "main",
+        "revision" : "9f9be55181114fcbd047fac8af5913907bb0341f"
       }
     },
     {

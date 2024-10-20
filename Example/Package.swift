@@ -9,10 +9,12 @@ let package = Package(
     .macOS(.v14)
   ],
   dependencies: [
+    .package(url: "https://github.com/llsc12/PrivateFrameworks", branch: "main"),
+    .package(url: "https://github.com/mhdhejazi/Dynamic", branch: "master"),
     .package(path: "./../../DDBKit"),
 //    .package(url: "https://github.com/llsc12/DDBKit", branch: "main")
     /// you'll want to use a version tag instead, use the below line
-    /// `.package(url: "https://github.com/llsc12/DDBKit", from: "0.1.0")`
+    /// `.package(url: "https://github.com/llsc12/DDBKit", from: "0.1.6")`
     /// i happen to also use this example project to test the package :3
   ],
   targets: [
@@ -21,10 +23,13 @@ let package = Package(
     .executableTarget(
       name: "ExampleBot",
       dependencies: [
+        .product(name: "Dictionary", package: "PrivateFrameworks"),
+//        .product(name: "Calculate", package: "PrivateFrameworks"),
         .product(name: "DDBKit", package: "DDBKit"),
         .product(name: "Database", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),
         .product(name: "DDBKitFoundation", package: "DDBKit"),
+        .product(name: "Dynamic", package: "Dynamic")
       ],
       resources: [
         .process("1984 Big Brother 2.mlmodelc")

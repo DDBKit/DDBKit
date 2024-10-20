@@ -43,9 +43,4 @@ final class DatabaseTests: XCTestCase {
     // since the database is basically a big queue of single transactions,
     // you'll always want to defer or something when using db transactions.
   }
-  
-  func testGM() async throws {
-    let req = Database.FetchRequest.requestFor(user: .init("381538809180848128"), ofType: UserNotes.self)
-    await Database.shared.availableKeys(around: req)
-  }
 }

@@ -171,7 +171,7 @@ let msg = Message {
     Code("wagwan")
     Codeblock("""
 for i in 0...10 {
-print(i)
+  print(i)
 }
 print("done!")
 """
@@ -214,7 +214,7 @@ print("done!")
       .setURL("https://llsc12.me")
     }
     
-    XCTAssertEqual(msg.embeds[0].title, "heyyy")
+    XCTAssertEqual(msg.embeds[0].title, random ? "wagwan" : "heyyy")
   }
   
   func testMessageBuilderEmbedLoops() throws {
@@ -228,24 +228,7 @@ print("done!")
       .setURL("https://llsc12.me")
     }
     
-//    XCTAssertEqual(msg.embeds[0].title, "heyyy")
-    print(msg)
-  }
-  
-  func testGM() {
-    let msg = Message {
-      MessageContent {
-        Heading("gm")
-        Text("gm")
-      }
-      MessageComponents {
-        ActionRow {
-          Button("hi mom")
-            .id("mom-btn")
-        }
-      }
-    }
-    print(msg)
+    XCTAssertEqual(msg.embeds[0].fields?.count, 10)
   }
   
   func testLooping() {
@@ -263,8 +246,15 @@ print("done!")
         }
       }
     }
-    print(msg.embeds.map(\.title))
-    print(msg.content.textualRepresentation)
-    
+    XCTAssertEqual(msg.content.textualRepresentation, """
+gm
+0
+1
+2
+3
+4
+5
+meow meow meow meow meow meow
+""")
   }
 }

@@ -54,10 +54,9 @@ public struct Subcommand: BaseInfoType {
     let option = autocompletableOptions.first(where: {$0.optionData.name == opt.name})
     // run autocompletions callback
     
-    let autocompletionsValues = await option?.autocompletion?(value)
-    let autocompletions: [ApplicationCommand.Option.Choice]? = autocompletionsValues?.map { .init(name: $0.asString, value: $0) }
+    let autocompletionsValues = await option?.autocompletion?(opt, cmd)
     
     // return these choices
-    _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletions ?? [])))
+    _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletionsValues ?? [])))
   }
 }

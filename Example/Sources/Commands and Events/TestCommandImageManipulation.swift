@@ -213,58 +213,6 @@ extension MyNewBot {
           .id("captcha-\(captchaSplit)")
         }
       }
-      
-      Command("tiramisu") { int, cmd, reqs in
-        let firstTimestamp = Date.now
-        try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
-        // Image manipulation view
-
-        struct ImageView: View {
-          var body: some View {
-            Text("brat")
-                .font(.title)
-                .foregroundColor(.black)
-                .frame(width: 150, height: 150)
-                .background(Color.green)
-                .scaleEffect(x: 1.5, y: 1, anchor: .center)
-          }
-        }
-        
-        // Render image with overlay
-        let img = await Task.detached { @MainActor in
-          let renderer = ImageRenderer(content: ImageView())
-          renderer.proposedSize = .init(width: 300, height: 100)
-          return renderer.cgImage
-        }.value
-        
-        // Convert to PNG and send as a response
-        guard let img,
-              let tiff = NSImage(cgImage: img, size: .init(width: CGFloat(img.width), height: CGFloat(img.height))).tiffRepresentation,
-              let imageRep = NSBitmapImageRep(data: tiff),
-              let pngData = imageRep.representation(using: .png, properties: [:])
-        else {
-          try? await bot.updateOriginalInteractionResponse(of: int) {
-            Message { Text("Couldn't make img") }
-          }
-          return
-        }
-        
-        let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
-        // Send the modified image back as an attachment
-        try? await bot.updateOriginalInteractionResponse(of: int) {
-          Message {
-            MessageAttachment(pngData, filename: "modified.png")
-              .usage(.embed) // dont add as attachment
-            MessageEmbed {
-              Title("Modified Image")
-              Image(.attachment(name: "modified.png"))
-              Footer("Took \(formatted)s")
-            }
-            .setColor(.blue)
-          }
-        }
-      }
-      .integrationType(.all, contexts: .all)
     }
   }
 }
