@@ -52,7 +52,7 @@ public extension SubcommandBase {
   typealias IType = [Self.IntegrationKind]
   typealias IContexts = [Self.ContextKind]
   
-  struct IntegrationTypeOptions: OptionSet {
+  struct IntegrationTypeOptions: OptionSet, Sendable {
     public let rawValue: UInt
     public init(rawValue: UInt) {
       self.rawValue = rawValue

@@ -29,10 +29,16 @@ public struct SubcommandGroup: BaseInfoType {
 public struct Subcommand: BaseInfoType {
   var options: [Option] = []
   var baseInfo: ApplicationCommand.Option
-  var trigger: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void
+  var action: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void
   
-  public init(_ name: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async -> Void) {
-    self.trigger = action
+  func action(_ i: Interaction, _ j: Interaction.ApplicationCommand, _ k: DatabaseBranches) async throws {
+    try await preAction(i)
+    try await action(i, j, k)
+    try await postAction(i)
+  }
+  
+  public init(_ name: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void) {
+    self.action = action
     
     self.baseInfo = .init(
       type: .subCommand,
@@ -58,5 +64,14 @@ public struct Subcommand: BaseInfoType {
     
     // return these choices
     _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletionsValues ?? [])))
+  }
+  
+  // MARK: - These pre and post actions are for use internally
+  
+  func preAction(_ interaction: Interaction) async throws {
+    // do things like sending defer, processing, idk
+  }
+  func postAction(_ interaction: Interaction) async throws {
+    // idk maybe register something internally, just here for completeness
   }
 }

@@ -8,8 +8,8 @@
 import DiscordBM
 
 public struct SubcommandBase: BaseCommand {
-  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
-  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
+  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
   var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   
@@ -18,19 +18,19 @@ public struct SubcommandBase: BaseCommand {
   var tree: [BaseInfoType]
   
   // this is called when a command under this base is called
-  func trigger(_ i: DiscordModels.Interaction) async {
+  func trigger(_ i: Interaction) async throws {
     // do preprocessing work to find where which closure requires calling in the registered subcommands
     switch i.data {
     case .applicationCommand(var j):
       let k: DatabaseBranches = .init(i)
       guard let (command, options) = try? self.findChild(i) else { return }
       j.options = options ?? j.options
-      await command.trigger(i, j, k)
+      try await command.action(i, j, k)
     default: break
     }
   }
   
-  func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: any DiscordHTTP.DiscordClient) async {
+  func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: any DiscordClient) async {
     /// same as trigger, we dont use the pruned options from findChild(:) since BotInstance recursively tracks the option with focused set to true.
     guard let (command, _) = try? self.findChild(i) else { return print("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.") }
     await command.autocompletion(i, cmd: cmd, opt: opt, client: client)

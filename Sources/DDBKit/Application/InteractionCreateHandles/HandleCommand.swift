@@ -15,7 +15,7 @@ extension BotInstance {
     }
     cmds.forEach { command in
       Task(priority: .userInitiated) {
-        await command.trigger(i)
+        try! await command.trigger(i)
       }
     }
   }

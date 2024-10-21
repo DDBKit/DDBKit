@@ -11,8 +11,8 @@ import DiscordBM
 
 /// A basic command thats easy and fast to declare and program
 public struct Command: BaseCommand {
-  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
-  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
+  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
   // autocompletion related things
   func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
@@ -36,7 +36,7 @@ public struct Command: BaseCommand {
   var baseInfo: DiscordModels.Payloads.ApplicationCommandCreate
   var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
 
-  func trigger(_ i: DiscordModels.Interaction) async {
+  func trigger(_ i: DiscordModels.Interaction) async throws {
     switch i.data {
     case .applicationCommand(let j): await proxyAction(i, j)
     default: break

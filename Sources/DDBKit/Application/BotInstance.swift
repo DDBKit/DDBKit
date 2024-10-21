@@ -26,8 +26,8 @@ public class BotInstance {
   let events: [any BaseEvent]
   let commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
-  var modalReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.ModalSubmit, DatabaseBranches) async -> Void]] = [:]
-  var componentReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.MessageComponent, DatabaseBranches) async -> Void]] = [:]
+  var modalReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  var componentReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake
