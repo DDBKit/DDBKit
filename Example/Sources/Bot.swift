@@ -24,13 +24,17 @@ struct MyNewBot: DiscordBotApp {
   
   func boot() async throws {
     // register stuff
-//    RegisterExtension(<#T##e: any DDBKitExtension##any DDBKitExtension#>)
+//    RegisterExtension(<#any DDBKitExtension#>)
     AssignGlobalCatch { bot, error, i in
       try await bot.createInteractionResponse(to: i) {
         Message {
           MessageEmbed {
             Title("Your command ran into a problem")
-            Description("\(error.localizedDescription)\n\n||Error Reflection\n\(error)||")
+            Description {
+              Text(error.localizedDescription)
+              Text("\n\n")
+              Codeblock("\(error)", lang: "swift")
+            }
           }
           .setColor(.red)
         }
@@ -49,9 +53,6 @@ struct MyNewBot: DiscordBotApp {
     
     Command("failable") { i, _, _ in
       throw "This command failed oh no who could've guessed"
-    }
-    .catch { error, i in
-      try await bot.createInteractionResponse(to: i, "failed")
     }
   }
   

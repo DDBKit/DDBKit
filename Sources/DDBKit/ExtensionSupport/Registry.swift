@@ -10,17 +10,8 @@ import DiscordModels
 var _ExtensionInstances: [ApplicationSnowflake: [DDBKitExtension]] = [:]
 
 extension DiscordBotApp {
-  mutating public func RegisterExtension(_ e: DDBKitExtension) {
-    self.extensions.append(e)
-  }
-  
-  var extensions: [DDBKitExtension] {
-    get {
-      _ExtensionInstances[self.bot.client.appId!] ?? []
-    }
-    set {
-      _ExtensionInstances[self.bot.client.appId!] = newValue
-    }
+  public func RegisterExtension(_ e: DDBKitExtension) {
+    _BotInstances[self.bot.client.appId!]!.extensions.append(e)
   }
 }
 extension BotInstance {
