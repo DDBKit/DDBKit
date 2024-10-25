@@ -24,7 +24,7 @@ public protocol AutocompletableOption: Option { }
 /// setting protocols public requires that their properties be public to match
 /// so we'll just avoid that by using this internal type instead
 internal protocol _AutocompletableOption: Option, AutocompletableOption { // swiftlint:disable:this type_name
-  var autocompletion: ((DiscordModels.Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])? { get set }
+  var autocompletion: ((Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])? { get set }
 }
 
 // MARK: - Define all kinds of options
@@ -37,13 +37,13 @@ internal protocol _AutocompletableOption: Option, AutocompletableOption { // swi
 // mentionable // 9
 // attachment // 11
 // __undocumented(UInt)
-// ``DiscordModels.ApplicationCommand.Option.Kind``
+// ``ApplicationCommand.Option.Kind``
 // ApplicationCommand.Option.Kind
 
 /// A string option
 public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
-  internal var autocompletion: ((DiscordModels.Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  internal var autocompletion: ((Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .string, name: name, description: description)
@@ -52,8 +52,8 @@ public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
 
 /// An integer option
 public struct IntOption: Option, _AutocompletableOption, ChoiceOption, RangedOption {
-  internal var autocompletion: ((DiscordModels.Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  internal var autocompletion: ((Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .integer, name: name, description: description)
@@ -62,7 +62,7 @@ public struct IntOption: Option, _AutocompletableOption, ChoiceOption, RangedOpt
 
 /// A boolean option
 public struct BoolOption: Option {
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .boolean, name: name, description: description)
@@ -71,7 +71,7 @@ public struct BoolOption: Option {
 
 /// A user option
 public struct UserOption: Option {
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .user, name: name, description: description)
@@ -80,7 +80,7 @@ public struct UserOption: Option {
 
 /// A channel option
 public struct ChannelOption: Option {
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .channel, name: name, description: description)
@@ -89,7 +89,7 @@ public struct ChannelOption: Option {
 
 /// A role option
 public struct RoleOption: Option {
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .role, name: name, description: description)
@@ -98,7 +98,7 @@ public struct RoleOption: Option {
 
 /// Any mentionable entity (users, roles)
 public struct MentionableOption: Option {
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .mentionable, name: name, description: description)
@@ -107,8 +107,8 @@ public struct MentionableOption: Option {
 
 /// A number option that can be non-integer between the same ranges
 public struct DoubleOption: Option, _AutocompletableOption, ChoiceOption, RangedOption {
-  internal var autocompletion: ((DiscordModels.Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  internal var autocompletion: ((Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .number, name: name, description: description)
@@ -117,7 +117,7 @@ public struct DoubleOption: Option, _AutocompletableOption, ChoiceOption, Ranged
 
 /// An uploadable attachment
 public struct AttachmentOption: Option {
-  public var optionData: DiscordModels.ApplicationCommand.Option
+  @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
   public init(name: String, description: String) {
     self.optionData = .init(type: .attachment, name: name, description: description)

@@ -9,7 +9,7 @@ import DiscordBM
 
 /// A dropdown component, to be used in message components to select users.
 public struct UserMenu: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .userSelect(self.object)
   }
   var object: Interaction.ActionRow.SelectMenu

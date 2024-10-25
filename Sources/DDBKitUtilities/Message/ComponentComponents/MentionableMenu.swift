@@ -9,7 +9,7 @@ import DiscordBM
 
 /// A dropdown component, to be used in message components to select entities the specifying user can mention.
 public struct MentionableMenu: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .mentionableSelect(self.object)
   }
   var object: Interaction.ActionRow.SelectMenu

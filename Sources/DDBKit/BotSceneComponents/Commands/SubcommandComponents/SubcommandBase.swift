@@ -7,13 +7,16 @@
 
 import DiscordBM
 
-public struct SubcommandBase: BaseCommand {
+public struct SubcommandBase: BaseCommand, _ExtensibleCommand {  
+  var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  
   var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
   var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
   var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   
-  var baseInfo: DiscordModels.Payloads.ApplicationCommandCreate
+  var baseInfo: Payloads.ApplicationCommandCreate
   
   var tree: [BaseInfoType]
   
@@ -42,10 +45,29 @@ public struct SubcommandBase: BaseCommand {
       name: name,
       description: "This command group has no description."
     )
-    self.tree = tree() as! [BaseInfoType]
+    self.tree = (tree() as! [BaseInfoType])
     
     self.baseInfo.options = []
     
+    self.tree = self.tree.reduce([], { partialResult, type in
+      var p = partialResult
+      p += {
+        var type = type
+        if var group = type as? SubcommandGroup {
+          group.detail = .init(info: self.baseInfo, scope: self.guildScope)
+          group.detail.info.name = "\(group.detail.info.name) \(group.baseInfo.name)"
+          type = group
+        }
+        if var cmd = type as? Subcommand {
+          cmd.detail = .init(info: self.baseInfo, scope: self.guildScope)
+          cmd.detail.info.name = "\(cmd.detail.info.name) \(cmd.baseInfo.name)"
+          type = cmd
+        }
+        return [type]
+      }()
+      return p
+    })
+        
     for object in self.tree {
       // begin by finding subcommands and registering them, or finding groups and registering them with their subcommands
       

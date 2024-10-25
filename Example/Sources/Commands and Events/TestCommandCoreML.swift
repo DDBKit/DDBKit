@@ -45,6 +45,8 @@ extension MyNewBot {
         StringOption(name: "text", description: "Stinky :c")
           .required()
       }
+      .catch { error, i in
+      }
     }
   }
 }

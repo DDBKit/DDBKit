@@ -28,6 +28,26 @@ protocol BaseContextCommand: BotScene { // used in context menus like users and 
   var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] { get }
 }
 
+/// This protocol provides a way to identify commands, this is only used
+/// within the bot itself and is not exposed to discord. Best used in context
+/// of an extension that requires binding to commands you specify.
+public protocol IdentifiableCommand {
+  /// The stable identity of the entity associated with this instance.
+  @_spi(Extensions)
+  var id: (any Hashable)? { get set }
+}
+
+extension IdentifiableCommand {
+  /// Provide a command with an identifier used to allow extensions to
+  /// easily find commands to bind to.
+  /// - Parameter id: Any hashable type
+  public func id(_ id: (any Hashable)?) -> Self {
+    var copy = self
+    copy.id = id
+    return copy
+  }
+}
+
 public struct CommandGuildScope {
   var scope: ScopeType
   var guilds: [GuildSnowflake]

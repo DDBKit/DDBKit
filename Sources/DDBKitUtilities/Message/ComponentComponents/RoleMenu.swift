@@ -9,7 +9,7 @@ import DiscordBM
 
 /// A dropdown component, to be used in message components to select roles.
 public struct RoleMenu: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .roleSelect(self.object)
   }
   var object: Interaction.ActionRow.SelectMenu

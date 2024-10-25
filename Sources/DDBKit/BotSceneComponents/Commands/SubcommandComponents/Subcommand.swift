@@ -7,34 +7,31 @@
 
 import DiscordBM
 
-/// Group subcommands under a label
-public struct SubcommandGroup: BaseInfoType {
-  var commands: [Subcommand] // this carries the instances so we keep trigger intact
-  var baseInfo: ApplicationCommand.Option
-  public init(_ name: String, @SubcommandBuilder _ tree: () -> [Subcommand]) {
-    self.commands = tree()
-    
-    self.baseInfo = .init(
-      type: .subCommandGroup,
-      name: name,
-      name_localizations: nil,
-      description: "This subcommand group has no description.",
-      description_localizations: nil,
-      options: self.commands.map(\.baseInfo)
-    )
-  }
-}
-
 /// A subcommand to a base or group
-public struct Subcommand: BaseInfoType {
+public struct Subcommand: BaseInfoType, _ExtensibleCommand, IdentifiableCommand, LocalisedThrowable {
+  public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
+  
+  var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  
+  @_spi(Extensions)
+  public var id: (any Hashable)?
+
   var options: [Option] = []
   var baseInfo: ApplicationCommand.Option
   var action: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void
   
+  var detail: CommandDescription!
+  
   func action(_ i: Interaction, _ j: Interaction.ApplicationCommand, _ k: DatabaseBranches) async throws {
-    try await preAction(i)
-    try await action(i, j, k)
-    try await postAction(i)
+    do {
+      try await preAction(i)
+      try await action(i, j, k)
+      try await postAction(i)
+    } catch {
+      if let localThrowCatch { try await localThrowCatch(error, i) }
+      else { throw error }
+    }
   }
   
   public init(_ name: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void) {
@@ -51,7 +48,7 @@ public struct Subcommand: BaseInfoType {
   }
   
   
-  func autocompletion(_ i: DiscordModels.Interaction, cmd: DiscordModels.Interaction.ApplicationCommand, opt: DiscordModels.Interaction.ApplicationCommand.Option, client: DiscordClient) async {
+  func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async {
     guard let _ = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
     // find autocompletable options
     let autocompletableOptions = self.options.compactMap { $0 as? _AutocompletableOption }

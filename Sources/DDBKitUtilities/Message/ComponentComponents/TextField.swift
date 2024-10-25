@@ -9,10 +9,10 @@ import DiscordBM
 
 /// A text field component, to be used in modals.
 public struct TextField: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .textInput(self.object)
   }
-  var object: DiscordModels.Interaction.ActionRow.TextInput
+  var object: Interaction.ActionRow.TextInput
   public init(_ label: String) {
     self.object = .init(custom_id: "", style: .short, label: label)
   }

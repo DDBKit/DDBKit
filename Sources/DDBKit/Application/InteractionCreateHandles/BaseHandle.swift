@@ -29,18 +29,29 @@ extension BotInstance {
         // message component (buttons, pickers etc.)
       case .messageComponent(let msgComp):
         // trigger component callback
-        handleMsgComponent(interaction, component: msgComp)
+        self.handleMsgComponent(interaction, component: msgComp)
         
         // modals (form sheets)
       case .modalSubmit(let modal):
         // handle submission
-        handleModal(interaction, modal: modal)
+        self.handleModal(interaction, modal: modal)
         
         // MARK: Handling END -
         
       default: break
       }
     default: break
+    }
+  }
+  
+  func handleInteractionError(error: Error, interaction: Interaction) {
+    Task(priority: .userInitiated) {
+      do {
+        if let globalErrorHandle { try await globalErrorHandle(_bot, error, interaction) }
+        else { throw error }
+      } catch(let uncaughtError) {
+        print("[Uncaught Error] \(uncaughtError)\n\n\(interaction)")
+      }
     }
   }
 }

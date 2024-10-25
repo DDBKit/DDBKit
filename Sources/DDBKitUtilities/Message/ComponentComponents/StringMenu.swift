@@ -9,7 +9,7 @@ import DiscordBM
 
 /// A dropdown component, to be used in message components to select a string value.
 public struct StringMenu: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .stringSelect(self.object)
   }
   var object: Interaction.ActionRow.StringSelectMenu

@@ -20,7 +20,7 @@ extension MyNewBot {
         try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
 
         let firstTimestamp = Date.now
-        func getUserId(from int: Interaction, cmd: DiscordModels.Interaction.ApplicationCommand) -> UserSnowflake? {
+        func getUserId(from int: Interaction, cmd: Interaction.ApplicationCommand) -> UserSnowflake? {
           if let optionId = try? (cmd.options ?? []).requireOption(named: "egg").requireString() {
             return .init(optionId)
           }

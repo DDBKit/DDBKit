@@ -1,9 +1,6 @@
 // hi mom
 import DDBKit
 import DDBKitUtilities
-import Foundation
-import Database
-import DDBKitFoundation
 
 @main
 struct MyNewBot: DiscordBotApp {
@@ -25,6 +22,22 @@ struct MyNewBot: DiscordBotApp {
     )
   }
   
+  func boot() async throws {
+    // register stuff
+//    RegisterExtension(<#T##e: any DDBKitExtension##any DDBKitExtension#>)
+    AssignGlobalCatch { bot, error, i in
+      try await bot.createInteractionResponse(to: i) {
+        Message {
+          MessageEmbed {
+            Title("Your command ran into a problem")
+            Description("\(error.localizedDescription)\n\n||Error Reflection\n\(error)||")
+          }
+          .setColor(.red)
+        }
+      }
+    }
+  }
+  
   var body: [any BotScene] {
     ReadyEvent { _ in print("hi mom") }
     
@@ -33,8 +46,19 @@ struct MyNewBot: DiscordBotApp {
     manipulation
     coremlCommands
     #endif
+    
+    Command("failable") { i, _, _ in
+      throw "This command failed oh no who could've guessed"
+    }
+    .catch { error, i in
+      try await bot.createInteractionResponse(to: i, "failed")
+    }
   }
   
   var bot: Bot
   var cache: Cache
+}
+import Foundation
+extension String: @retroactive LocalizedError {
+  public var errorDescription: String? { self }
 }

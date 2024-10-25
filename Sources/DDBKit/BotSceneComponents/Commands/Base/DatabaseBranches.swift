@@ -60,22 +60,22 @@ public struct DatabaseBranches {
   }
   
   // used in requests
-  let user: DiscordModels.UserSnowflake?
-  let guild: DiscordModels.GuildSnowflake?
-  let channel: DiscordModels.ChannelSnowflake?
+  let user: UserSnowflake?
+  let guild: GuildSnowflake?
+  let channel: ChannelSnowflake?
   
   enum DBBranchError: Error {
     case requiredDataUnavailableForBranch
   }
   
   // MARK: - types of requests
-//  public static func requestFor(user: DiscordModels.UserSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
+//  public static func requestFor(user: UserSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
 //
-//  public static func requestFor(member: DiscordModels.UserSnowflake, in guild: DiscordModels.GuildSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
+//  public static func requestFor(member: UserSnowflake, in guild: GuildSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
 //
-//  public static func requestFor(guild: DiscordModels.GuildSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
+//  public static func requestFor(guild: GuildSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
 //
-//  public static func requestFor(channel: DiscordModels.ChannelSnowflake, in guild: DiscordModels.GuildSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
+//  public static func requestFor(channel: ChannelSnowflake, in guild: GuildSnowflake, ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
 //
 //  public static func requestForBot(ofType type: Model.Type) -> Database.Database.FetchRequest<Model>
 }

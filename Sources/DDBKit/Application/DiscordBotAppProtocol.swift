@@ -19,6 +19,8 @@ public protocol DiscordBotApp {
   @MainActor @BotSceneBuilder var body: [BotScene] { get }
   
   init() async
-  
-//  static var ExtensionRegistry: [DDBKitExtension.Type] { get }
+  /// Allows you to make configurations to the bot after initialisation and before bot connection.
+  func boot() async throws
 }
+
+public var _BotInstances: [ApplicationSnowflake: BotInstance] = [:]

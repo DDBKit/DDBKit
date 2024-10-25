@@ -13,7 +13,11 @@ extension BotInstance {
     callbacks.forEach { callback in
       Task(priority: .userInitiated) {
         let dbReqs = DatabaseBranches(i)
-        try! await callback(i, component, dbReqs)
+        do {
+          try await callback(i, component, dbReqs)
+        } catch {
+          self.handleInteractionError(error: error, interaction: i)
+        }
       }
     }
   }

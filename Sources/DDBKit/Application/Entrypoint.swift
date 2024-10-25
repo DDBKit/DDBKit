@@ -22,6 +22,10 @@ extension DiscordBotApp {
     // BotInstance contains all of our commands and events, it handles dispatching data to the bot
     let instance: BotInstance = .init(bot: self.bot, events: sceneData.events, commands: sceneData.commands)
     
+    // we should store the reference somewhere useful for use later
+    _BotInstances[instance.id] = instance
+    try await self.boot()
+    
     // register commands
     let allCommands = sceneData.commands
     
@@ -79,4 +83,8 @@ internal extension DiscordBotApp {
     }
     return (events, commands)
   }
+}
+
+public extension DiscordBotApp {
+  func boot() async throws { }
 }

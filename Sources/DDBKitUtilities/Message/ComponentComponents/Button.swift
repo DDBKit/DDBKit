@@ -9,7 +9,7 @@ import DiscordBM
 
 /// A button component, to be used in message components to take users to a link.
 public struct Button: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .button(self.object)
   }
   var object: Interaction.ActionRow.Button

@@ -9,7 +9,7 @@ import DiscordBM
 
 /// A dropdown component, to be used in message components to select channels.
 public struct ChannelMenu: _MessageComponentsActionRowComponent {
-  var component: DiscordModels.Interaction.ActionRow.Component {
+  var component: Interaction.ActionRow.Component {
     .channelSelect(self.object)
   }
   var object: Interaction.ActionRow.ChannelSelectMenu

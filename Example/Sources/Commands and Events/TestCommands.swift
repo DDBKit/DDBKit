@@ -294,16 +294,18 @@ fileprivate func fuseSearch(_ q: String, in list: [String]) async -> [Fuse.Searc
   }
 }
 
-func CalculatePerformExpression(_ expr: UnsafeMutablePointer<CChar>!, _ significantDigits: Int32, _ flags: Int32, _ answer: UnsafeMutablePointer<CChar>!) -> Int32 {
+func CalculatePerformExpression(
+  _ expr: UnsafeMutablePointer<CChar>!,
+  _ significantDigits: Int32,
+  _ flags: Int32,
+  _ answer: UnsafeMutablePointer<CChar>!) -> Int32
+{
   let handle = dlopen("/System/Library/PrivateFrameworks/Calculate.framework/Versions/A/Calculate", RTLD_NOW)
   let sym = dlsym(handle, "CalculatePerformExpression")
-
   typealias CalculateExprCall = @convention(c) (UnsafeMutablePointer<CChar>?, Int32, Int32, UnsafeMutablePointer<CChar>?) -> Int32
   let f = unsafeBitCast(sym, to: CalculateExprCall.self)
   let result = f(expr, significantDigits, flags, answer)
   dlclose(handle)
-  print(result)
-  
   return result
 }
 

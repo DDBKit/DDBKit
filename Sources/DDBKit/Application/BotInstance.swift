@@ -20,14 +20,16 @@ public class BotInstance {
   }
   
   /// bot instance we keep to interact with if needed
-  let _bot: GatewayManager?
+  let _bot: GatewayManager!
+  
+  public var globalErrorHandle: ((GatewayManager, Error, Interaction) async throws -> Void)?
   
   // declared events the user wants to receive
   let events: [any BaseEvent]
   let commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
-  var modalReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  var componentReceives: [String: [(DiscordModels.Interaction, DiscordModels.Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake
@@ -37,7 +39,7 @@ public class BotInstance {
     self.events = events
     self.commands = commands
     // Hey! If you found your bot crashing here, your token is invalid or you forgor
-    self.id = .init(.init(bot.identifyPayload.token.value.split(separator: ".", maxSplits: 1).first!))
+    self.id = bot.client.appId!
     
     // register modal and component id receives
     commands.forEach { cmd in

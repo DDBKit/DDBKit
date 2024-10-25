@@ -10,7 +10,6 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/llsc12/PrivateFrameworks", branch: "main"),
-    .package(url: "https://github.com/mhdhejazi/Dynamic", branch: "master"),
     .package(path: "./../../DDBKit"),
 //    .package(url: "https://github.com/llsc12/DDBKit", branch: "main")
     /// you'll want to use a version tag instead, use the below line
@@ -29,7 +28,6 @@ let package = Package(
         .product(name: "Database", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),
         .product(name: "DDBKitFoundation", package: "DDBKit"),
-        .product(name: "Dynamic", package: "Dynamic")
       ],
       resources: [
         .process("1984 Big Brother 2.mlmodelc")
