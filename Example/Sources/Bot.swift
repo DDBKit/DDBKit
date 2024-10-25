@@ -32,7 +32,6 @@ struct MyNewBot: DiscordBotApp {
             Title("Your command ran into a problem")
             Description {
               Text(error.localizedDescription)
-              Text("\n\n")
               Codeblock("\(error)", lang: "swift")
             }
           }
@@ -52,14 +51,14 @@ struct MyNewBot: DiscordBotApp {
     #endif
     
     Command("failable") { i, _, _ in
-      throw "This command failed oh no who could've guessed"
+      struct Egg: Decodable {
+        var gm: String
+      }
+      let data = "{}".data(using: .utf8)!
+      _ = try JSONDecoder().decode(Egg.self, from: data)
     }
   }
   
   var bot: Bot
   var cache: Cache
-}
-import Foundation
-extension String: @retroactive LocalizedError {
-  public var errorDescription: String? { self }
 }
