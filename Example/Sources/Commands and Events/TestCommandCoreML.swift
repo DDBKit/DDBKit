@@ -12,31 +12,29 @@ extension MyNewBot {
   var coremlCommands: Group {
     Group {
       Command("textanalysis") { int, cmd, reqs in
-        try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource(isEphemeral: true))
-        // bundle loading wont work
-        guard let model = try? _1984_Big_Brother_2.init(contentsOf: .init(fileURLWithPath: "/Users/llsc12/Documents/GitHub/DDBKit/Example/Sources/1984 Big Brother 2.mlmodelc")) else {
-          try? await bot.updateOriginalInteractionResponse(of: int) {
-            Message { Text("Couldn't setup model") }
-          }
-          return
-        }
+        // get bool from ephemeral option
+        let ephemeral = try! cmd.requireOption(named: "ephemeral").requireBool()
+        // defer
+        try await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource(isEphemeral: ephemeral))
+        // bundle loading wont work here, load CoreML model with absolute url
+        // for others using this example, this model is not publicly available its just
+        // for testing :3
+        let model = try _1984_Big_Brother_2.init(contentsOf:
+            .init(fileURLWithPath: "/Users/llsc12/Documents/GitHub/DDBKit/Example/Sources/1984 Big Brother 2.mlmodelc")
+        )
+        // get string option
         let str = try! cmd.requireOption(named: "text").requireString()
-        do {
-          let out = try model.prediction(text: str)
-          try? await bot.updateOriginalInteractionResponse(of: int) {
-            Message {
-              MessageEmbed {
-                Title(out.label)
-                Description(str)
-              }
+        // run prediction
+        let out = try model.prediction(text: str)
+        // update response
+        try await bot.updateOriginalInteractionResponse(of: int) {
+          Message {
+            MessageEmbed {
+              Title(out.label)
+              Description(str)
             }
+            .setColor(.blue)
           }
-          return
-        } catch {
-          try? await bot.updateOriginalInteractionResponse(of: int) {
-            Message { Text("\(error.localizedDescription)") }
-          }
-          return
         }
       }
       .description("Analyse text for rude language with my CoreML model i trained over 5 days :sob:")
@@ -44,8 +42,8 @@ extension MyNewBot {
       .addingOptions {
         StringOption(name: "text", description: "Stinky :c")
           .required()
-      }
-      .catch { error, i in
+        BoolOption(name: "ephemeral", description: "smelly :c")
+          .required()
       }
     }
   }

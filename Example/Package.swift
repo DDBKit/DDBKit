@@ -23,7 +23,7 @@ let package = Package(
       name: "ExampleBot",
       dependencies: [
         .product(name: "Dictionary", package: "PrivateFrameworks"),
-//        .product(name: "Calculate", package: "PrivateFrameworks"),
+        .product(name: "Calculate", package: "PrivateFrameworks"),
         .product(name: "DDBKit", package: "DDBKit"),
         .product(name: "Database", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),

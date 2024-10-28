@@ -10,6 +10,7 @@ import Database
 import DDBKitUtilities
 import Foundation
 import Dictionary
+import Calculate
 
 fileprivate let dicts = DictionaryProvider.Dictionaries.filter { $0.isAvailable }
 
@@ -89,28 +90,15 @@ extension MyNewBot {
 //          let dict = try! cmd.requireOption(named: "dictionary").requireString()
           let dict = "Apple"
           let q = try! cmd.requireOption(named: "query").requireString()
-          
+          let dictionary = dicts.first(where:{ $0.shortName == dict })!
+          let results = dictionary.search(q: q) ?? []
           guard
-            let dictionary = dicts.first(where:{ $0.shortName == dict }),
-            let result = dictionary.search(q: q)?.first
-          else { return }
+            let result = results.first
+          else { throw "Failed to find a result, did you mean any of \(results)?" }
           
-          try? await bot.createInteractionResponse(to: i, result.data(.text) ?? "idk bro")
+          try await bot.createInteractionResponse(to: i, String((result.data(.text) ?? "idk bro").prefix(2000)))
         }
         .addingOptions {
-//          StringOption(name: "dictionary", description: "The dictionary to search.")
-//            .required()
-//            .autocompletions { txt in
-//              let current = txt.asString
-//              let dicts = dicts.compactMap(\.shortName)
-//              let results = await fuseSearch(current, in: dicts)
-//              let values = results
-//                .map { dicts[$0.index] }
-//              print(values)
-//              return values
-//                .prefix(25)
-//                .map { .string($0) }
-//            }
           StringOption(name: "query", description: "Search query.")
             .required()
             .autocompletions { txt in
@@ -121,7 +109,6 @@ extension MyNewBot {
                 .sorted(by: { lhs, rhs in
                   return lhs.lowercased().starts(with: current.lowercased()) 
                 })
-              print(current, values)
               return values
                 .prefix(25)
                 .map { .string($0) }
@@ -130,32 +117,31 @@ extension MyNewBot {
         
         Subcommand("search") { i, cmd, _ in
           let dict = try! cmd.requireOption(named: "dictionary").requireString()
-//          let dict = "Apple"
           let q = try! cmd.requireOption(named: "query").requireString()
           
           guard
-            let dictionary = dicts.first(where:{ $0.shortName == dict }),
-            let result = dictionary.search(q: q)?.first
-          else { return }
+            let dictionary = dicts.first(where:{ $0.shortName == dict })
+          else { throw "Failed to find dictionary" }
+          let results = dictionary.search(q: q) ?? []
+          guard
+            let result = results.first
+          else { throw "Failed to find a result, did you mean any of \(results)?" }
           
-          try? await bot.createInteractionResponse(to: i, result.data(.text) ?? "idk bro")
+          try await bot.createInteractionResponse(to: i, String((result.data(.text) ?? "idk bro").prefix(2000)))
         }
         .addingOptions {
           StringOption(name: "dictionary", description: "The dictionary to search.")
             .required()
-            .autocompletions { txt in
-              let current = txt?.asString ?? ""
-              let dicts = dicts.compactMap(\.shortName)
-              let results = await fuseSearch(current, in: dicts)
-              let values = results
-                .map { dicts[$0.index] }
-              print(values)
-              return values
-                .prefix(25)
+            .choices {
+              dicts
+                .compactMap(\.shortName)
                 .map { .string($0) }
             }
           StringOption(name: "query", description: "Search query.")
             .required()
+        }
+        .catch { error, i in
+          try await bot.createInteractionResponse(to: i, "\(error.localizedDescription)")
         }
       }
       .integrationType(.all, contexts: .all)
@@ -292,50 +278,4 @@ fileprivate func fuseSearch(_ q: String, in list: [String]) async -> [Fuse.Searc
   await withCheckedContinuation { continuation in
     fuse.search(q, in: list) { continuation.resume(returning: $0) }
   }
-}
-
-func CalculatePerformExpression(
-  _ expr: UnsafeMutablePointer<CChar>!,
-  _ significantDigits: Int32,
-  _ flags: Int32,
-  _ answer: UnsafeMutablePointer<CChar>!) -> Int32
-{
-  let handle = dlopen("/System/Library/PrivateFrameworks/Calculate.framework/Versions/A/Calculate", RTLD_NOW)
-  let sym = dlsym(handle, "CalculatePerformExpression")
-  typealias CalculateExprCall = @convention(c) (UnsafeMutablePointer<CChar>?, Int32, Int32, UnsafeMutablePointer<CChar>?) -> Int32
-  let f = unsafeBitCast(sym, to: CalculateExprCall.self)
-  let result = f(expr, significantDigits, flags, answer)
-  dlclose(handle)
-  return result
-}
-
-public struct CalculateFlags: OptionSet {
-  public let rawValue: Int32
-  public static let unknown1: Self = .init(rawValue: 1 << 0)
-  public static let treatInputAsIntegers: Self = .init(rawValue: 1 << 1)
-  public static let moreAccurate: Self = .init(rawValue: 1 << 2)
-  
-  public init(rawValue: Int32) {
-    self.rawValue = rawValue
-  }
-}
-
-func CalculateExpression(_ expression: String, significantDigits: Int32 = 8, flags: CalculateFlags = []) -> (succeed: Int, answer: String?) {
-  let exprLength = expression.utf8CString.count
-  let expr = UnsafeMutablePointer<CChar>.allocate(capacity: exprLength)
-  defer { expr.deallocate() }
-  
-  expression.utf8CString.withUnsafeBufferPointer { buffer in
-    expr.initialize(from: buffer.baseAddress!, count: exprLength)
-  }
-  
-  let answerLength = 2048
-  let answer = UnsafeMutablePointer<CChar>.allocate(capacity: answerLength)
-  defer { answer.deallocate() }
-  
-  let succeed = CalculatePerformExpression(expr, significantDigits, flags.rawValue, answer)
-
-  let result = String(cString: answer)
-  
-  return (Int(succeed), result)
 }

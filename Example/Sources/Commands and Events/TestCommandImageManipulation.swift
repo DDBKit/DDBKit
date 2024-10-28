@@ -17,33 +17,33 @@ extension MyNewBot {
     Group {
       Command("colonthree") { int, cmd, reqs in
         // Defer the response
-        try? await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
+        try await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
 
         let firstTimestamp = Date.now
-        func getUserId(from int: Interaction, cmd: Interaction.ApplicationCommand) -> UserSnowflake? {
+        func getUserId(from int: Interaction, cmd: Interaction.ApplicationCommand) -> UserSnowflake?  {
           if let optionId = try? (cmd.options ?? []).requireOption(named: "egg").requireString() {
             return .init(optionId)
           }
           return MiscUtils.getUserID(from: int)
         }
-        func fetchAvatar(for id: UserSnowflake, in guildId: GuildSnowflake?) async -> String? {
+        func fetchAvatar(for id: UserSnowflake, in guildId: GuildSnowflake?) async throws -> String? {
           if let guildId, await cache.guilds[guildId] != nil {
-            let member = try? await bot.client.getGuildMember(guildId: guildId, userId: id).decode()
-            return member?.avatar ?? member?.user?.avatar
+            let member = try await bot.client.getGuildMember(guildId: guildId, userId: id).decode()
+            return member.avatar ?? member.user?.avatar
           } else {
-            let user = try? await bot.client.getUser(id: id).decode()
-            return user?.avatar
+            let user = try await bot.client.getUser(id: id).decode()
+            return user.avatar
           }
         }
         guard let userId = getUserId(from: int, cmd: cmd),
-              let avatar = await fetchAvatar(for: userId, in: int.guild_id)
+              let avatar = try await fetchAvatar(for: userId, in: int.guild_id)
         else {
-          try? await bot.updateOriginalInteractionResponse(of: int) {
+          try await bot.updateOriginalInteractionResponse(of: int) {
             Message { Text("Couldn't retrieve avatar") }
           }
           return
         }
-        let endpoint = CDNEndpoint.userAvatar(userId: userId, avatar: avatar).url.appending("?size=1024")
+        let endpoint = CDNEndpoint.userAvatar(userId: userId, avatar: avatar).url.appending("?size=4096")
         guard
           let imgData = try? await bot.client.send(
             request: .init(to: .init(url: endpoint)),
@@ -51,10 +51,7 @@ extension MyNewBot {
           ).getFile(),
           let nsimg = NSImage(data: .init(buffer: imgData.data))
         else {
-          try? await bot.updateOriginalInteractionResponse(of: int) {
-            Message { Text("Couldn't get avatar") }
-          }
-          return
+          throw "Failed to retrieve avatar from CDN"
         }
         
         // Image manipulation view
@@ -66,20 +63,21 @@ extension MyNewBot {
               .aspectRatio(contentMode: .fill)
               .overlay(alignment: .center) {
                 Text("meow :3")
-                  .font(.system(size: 300, weight: .bold, design: .rounded))
+                  .font(.system(size: 600, weight: .bold, design: .rounded))
                   .minimumScaleFactor(0.001)
                   .lineLimit(1)
                   .foregroundStyle(.white)
                   .shadow(color: .black, radius: 10)
                   .multilineTextAlignment(.center)
               }
+              .frame(width: 1024, height: 1024)
           }
         }
         
         // Render image with overlay
         let img = await Task.detached { @MainActor in
           let renderer = ImageRenderer(content: ImageView(nsimg: nsimg))
-          renderer.proposedSize = .init(width: nsimg.size.width, height: nsimg.size.height)
+          renderer.proposedSize = .init(width: 1024, height: 1024)
           return renderer.cgImage
         }.value
         
@@ -89,15 +87,12 @@ extension MyNewBot {
               let imageRep = NSBitmapImageRep(data: tiff),
               let pngData = imageRep.representation(using: .png, properties: [:])
         else {
-          try? await bot.updateOriginalInteractionResponse(of: int) {
-            Message { Text("Couldn't make modifications") }
-          }
-          return
+          throw "Failed to convert modified image cgimage to png."
         }
         
         let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
         // Send the modified image back as an attachment
-        try? await bot.updateOriginalInteractionResponse(of: int) {
+        try await bot.updateOriginalInteractionResponse(of: int) {
           Message {
             MessageAttachment(pngData, filename: "modified.png")
               .usage(.embed) // dont add as attachment
@@ -136,7 +131,8 @@ extension MyNewBot {
         // Render image with overlay
         let img = await Task.detached { @MainActor in
           let renderer = ImageRenderer(content: ImageView(captcha: captcha))
-          renderer.proposedSize = .init(width: 300, height: 100)
+          renderer.proposedSize = .init(width: 900, height: 300)
+          renderer.scale = 2
           return renderer.cgImage
         }.value
         

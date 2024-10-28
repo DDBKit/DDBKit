@@ -1,5 +1,5 @@
 {
-  "originHash" : "592e8b3cff007f12249d4919d259936206c316b44befff011cadd08d19e2520a",
+  "originHash" : "3f74dc4dbe2cc81057f9becd18d0e706bdebd785d7c06fefad6320ec3ec54728",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -34,7 +34,7 @@
       "location" : "https://github.com/llsc12/PrivateFrameworks",
       "state" : {
         "branch" : "main",
-        "revision" : "9f9be55181114fcbd047fac8af5913907bb0341f"
+        "revision" : "4b511d767941a8bb0cbfca0647dd35d7de9455bc"
       }
     },
     {

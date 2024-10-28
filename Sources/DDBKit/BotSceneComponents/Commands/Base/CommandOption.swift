@@ -166,6 +166,12 @@ public extension ChoiceOption {
     copy.optionData.choices = c.map { .init(name: $0.asString, value: $0) }
     return copy
   }
+  
+  func autocompletions(_ choices: @escaping () -> [ApplicationCommand.Option.Choice]) -> Self {
+    var copy = self as! _AutocompletableOption // will always work
+    copy.optionData.choices = choices()
+    return copy as! Self
+  }
 }
 
 public extension RangedOption {

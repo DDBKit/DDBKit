@@ -23,7 +23,7 @@ public struct Subcommand: BaseInfoType, _ExtensibleCommand, IdentifiableCommand,
   
   var detail: CommandDescription!
   
-  func action(_ i: Interaction, _ j: Interaction.ApplicationCommand, _ k: DatabaseBranches) async throws {
+  func trigger(_ i: Interaction, _ j: Interaction.ApplicationCommand, _ k: DatabaseBranches) async throws {
     do {
       try await preAction(i)
       try await action(i, j, k)

@@ -28,7 +28,7 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
       let k: DatabaseBranches = .init(i)
       guard let (command, options) = try? self.findChild(i) else { return }
       j.options = options ?? j.options
-      try await command.action(i, j, k)
+      try await command.trigger(i, j, k)
     default: break
     }
   }

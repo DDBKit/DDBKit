@@ -1,6 +1,8 @@
 // hi mom
 import DDBKit
 import DDBKitUtilities
+import Foundation
+import NIOCore
 
 @main
 struct MyNewBot: DiscordBotApp {
@@ -10,7 +12,7 @@ struct MyNewBot: DiscordBotApp {
       /// Do not store your token in your code in production.
       token: token,
       /// replace the above with your own token, but only for testing
-      presence: .init(activities: [], status: .online, afk: false),
+      presence: .init(activities: [.init(name: "meow", type: .custom, state: "meow :3")], status: .online, afk: false),
       intents: [.messageContent, .guildMessages]
     )
     // Will be useful
@@ -42,7 +44,6 @@ struct MyNewBot: DiscordBotApp {
   }
   
   var body: [any BotScene] {
-    ReadyEvent { _ in print("hi mom") }
     
     Commands
     #if !os(Linux)
@@ -57,8 +58,11 @@ struct MyNewBot: DiscordBotApp {
       let data = "{}".data(using: .utf8)!
       _ = try JSONDecoder().decode(Egg.self, from: data)
     }
+    .integrationType(.all, contexts: .all)
   }
   
   var bot: Bot
   var cache: Cache
 }
+
+extension String: @retroactive LocalizedError { }
