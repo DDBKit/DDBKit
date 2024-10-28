@@ -19,7 +19,6 @@ extension MyNewBot {
         // Defer the response
         try await bot.createInteractionResponse(to: int, type: .deferredChannelMessageWithSource())
 
-        let firstTimestamp = Date.now
         func getUserId(from int: Interaction, cmd: Interaction.ApplicationCommand) -> UserSnowflake?  {
           if let optionId = try? (cmd.options ?? []).requireOption(named: "egg").requireString() {
             return .init(optionId)
@@ -54,6 +53,7 @@ extension MyNewBot {
           throw "Failed to retrieve avatar from CDN"
         }
         
+        let firstTimestamp = Date.now
         // Image manipulation view
         struct ImageView: View {
           var nsimg: NSImage
@@ -99,7 +99,7 @@ extension MyNewBot {
             MessageEmbed {
               Title("Modified Image")
               Image(.attachment(name: "modified.png"))
-              Footer("Took \(formatted)s")
+              Footer("Took \(formatted)s to render")
             }
             .setColor(.blue)
           }

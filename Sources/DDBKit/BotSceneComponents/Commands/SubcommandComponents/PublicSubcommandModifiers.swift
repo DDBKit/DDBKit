@@ -107,7 +107,7 @@ public extension SubcommandBase {
   /// - Parameters:
   ///   - id: Modal custom ID
   ///   - event: Event callback
-  func modal(on id: String, _ event: @escaping (Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void) -> Self {
+  func modal(on id: String, _ event: @escaping (Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.modalReceives.append(event, to: id)
     return copy
@@ -116,7 +116,7 @@ public extension SubcommandBase {
   /// Receive all modal events, intended for manual handling control.
   /// - Parameters:
   ///   - event: Event callback
-  func modal(_ event: @escaping (Interaction, Interaction.ModalSubmit, DatabaseBranches) async -> Void) -> Self {
+  func modal(_ event: @escaping (Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.modalReceives.append(event, to: "")
     return copy
@@ -126,7 +126,7 @@ public extension SubcommandBase {
   /// - Parameters:
   ///   - id: Modal custom ID
   ///   - event: Event callback
-  func component(on id: String, _ event: @escaping (Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void) -> Self {
+  func component(on id: String, _ event: @escaping (Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.componentReceives.append(event, to: id)
     return copy
@@ -135,7 +135,7 @@ public extension SubcommandBase {
   /// Receive all component interaction events, intended for manual handling control.
   /// - Parameters:
   ///   - event: Event callback
-  func component(_ event: @escaping (Interaction, Interaction.MessageComponent, DatabaseBranches) async -> Void) -> Self {
+  func component(_ event: @escaping (Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.componentReceives.append(event, to: "")
     return copy
