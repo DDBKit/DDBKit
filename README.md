@@ -3,7 +3,7 @@
 <div id="user-content-toc">
   <ul style="list-style: none;">
     <summary>
-      <h1 style="color: orange;">DDB</h1><h1>Kit</h1>
+      <h1>DDBKit</h1>
     </summary>
   </ul>
 </div>
