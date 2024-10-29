@@ -3,10 +3,13 @@
 <div id="user-content-toc">
   <ul style="list-style: none;">
     <summary>
-      <h1>DDBKit</h1>
+      <h1 style="color: orange;">DDB</h1><h1>Kit</h1>
     </summary>
   </ul>
 </div>
+<a href="https://github.com/sponsors/llsc12">
+<img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" alt="Logo" align="right" height="20"/>
+</a>
 
 ## What is it?
 DDBKit stands for Declarative Discord Bot Kit, name proposed by [Tobias](https://github.com/tobiasdickinson). DDBKit is designed to abstract away the complexities of Discord’s API into something that feels right at home. Similar to SwiftUI, DDBKit lets you declare commands and add modifiers to create functionality in your bot. It’s kinda like [Commando](https://github.com/discordjs/commando). DDBKit relies on [DiscordBM](https://github.com/DiscordBM/DiscordBM) under the hood.
@@ -135,4 +138,5 @@ Someone should PR a linter :3
 ## Sponsoring
 If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
 Afterwards, feel free to sponsor the development of DDBKit and my other projects!
+
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/llsc12)
