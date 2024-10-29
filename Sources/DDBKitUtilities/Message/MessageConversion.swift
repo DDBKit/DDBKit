@@ -13,41 +13,53 @@ public extension Message {
     return .init(
       content: _content,
       nonce: nil,
-      tts: _tts, // we should add this soon
+      tts: _tts,
       embeds: _embeds,
-      allowed_mentions: _allowed_mentions, // we should add this soon
-      message_reference: _message_reference, // we should add this soon
-      components: _components, // we should add this soon
-      sticker_ids: _sticker_ids, // we should add this soon
-      files: _files, // we should add this soon
-      attachments: _attachments, // we should add this soon
-      flags: _flags, // we should add this soon
-      enforce_nonce: nil, // we should add this soon
-      poll: _poll // we should add this soon
+      allowed_mentions: _allowed_mentions,
+      message_reference: _message_reference,
+      components: _components,
+      sticker_ids: _sticker_ids,
+      files: _files,
+      attachments: _attachments,
+      flags: _flags,
+      enforce_nonce: nil,
+      poll: _poll
     )
   }
   var _editWebhookMessage: Payloads.EditWebhookMessage {
     return .init(
       content: _content,
       embeds: _embeds,
-      allowed_mentions: _allowed_mentions, // we should add this soon
-      components: _components, // we should add this soon
-      files: _files, // we should add this soon
-      attachments: _attachments // we should add this soon
+      allowed_mentions: _allowed_mentions,
+      components: _components,
+      files: _files,
+      attachments: _attachments
     )
   }
   
   var _interactionResponseMessage: Payloads.InteractionResponse.Message {
     return .init(
-      tts: nil, // we should add this soon
+      tts: _tts,
       content: _content,
       embeds: _embeds,
-      allowedMentions: _allowed_mentions, // we should add this soon
-      flags: _flags, // we should add this soon
-      components: _components, // we should add this soon
-      attachments: _attachments, // we should add this soon
-      files: _files, // we should add this soon
-      poll: _poll // we should add this soon
+      allowedMentions: _allowed_mentions,
+      flags: _flags,
+      components: _components,
+      attachments: _attachments,
+      files: _files,
+      poll: _poll
+    )
+  }
+  
+  var _editMessage: Payloads.EditMessage {
+    return .init(
+      content: _content,
+      embeds: _embeds,
+      flags: _flags,
+      allowed_mentions: _allowed_mentions,
+      components: _components,
+      files: _files,
+      attachments: _attachments
     )
   }
 }
