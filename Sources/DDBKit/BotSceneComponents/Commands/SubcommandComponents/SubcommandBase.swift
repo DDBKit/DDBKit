@@ -5,7 +5,7 @@
 //  Created by Lakhan Lothiyi on 07/10/2024.
 //
 
-import DiscordBM
+@_spi(UserInstallableApps) import DiscordBM
 
 public struct SubcommandBase: BaseCommand, _ExtensibleCommand {  
   var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
@@ -48,6 +48,9 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
     self.tree = (tree() as! [BaseInfoType])
     
     self.baseInfo.options = []
+    
+    self.baseInfo.integration_types = [.guildInstall]
+    self.baseInfo.contexts = [.guild]
     
     self.tree = self.tree.reduce([], { partialResult, type in
       var p = partialResult

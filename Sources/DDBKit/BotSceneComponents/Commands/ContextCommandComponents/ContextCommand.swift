@@ -5,7 +5,7 @@
 //  Created by Lakhan Lothiyi on 15/10/2024.
 //
 
-import DiscordBM
+@_spi(UserInstallableApps) import DiscordBM
 
 public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableCommand, LocalisedThrowable {
   public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
@@ -53,6 +53,9 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
       type: .init(rawValue: kind.rawValue),
       nsfw: nil
     )
+    self.baseInfo.integration_types = [.guildInstall]
+    self.baseInfo.contexts = [.guild]
+    
     self.action = action
   }
   

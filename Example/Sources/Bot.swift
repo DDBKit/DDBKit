@@ -31,7 +31,7 @@ struct MyNewBot: DiscordBotApp {
       try await bot.createInteractionResponse(to: i) {
         Message {
           MessageEmbed {
-            Title("Your command ran into a problem")
+            Title("Your interaction ran into a problem")
             Description {
               Text(error.localizedDescription)
               Codeblock("\(error)", lang: "swift")

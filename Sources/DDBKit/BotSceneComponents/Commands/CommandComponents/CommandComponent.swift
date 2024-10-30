@@ -7,7 +7,7 @@
 
 import Foundation
 import RegexBuilder
-import DiscordBM
+@_spi(UserInstallableApps) import DiscordBM
 
 /// A basic command thats easy and fast to declare and program
 public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, LocalisedThrowable {
@@ -72,6 +72,9 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
       name: commandName,
       description: "This command has no description."
     )
+    
+    self.baseInfo.integration_types = [.guildInstall]
+    self.baseInfo.contexts = [.guild]
     
     let valid = self.baseInfo.validate()
     if !valid.isEmpty {
