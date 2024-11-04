@@ -36,7 +36,7 @@ let package = Package(
     // since Discord sucks.
 //    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.57.0"),
     .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.12.1"),
-    .package(url: "https://github.com/swift-server/async-http-client", from: "1.23.0"),
+    .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.1.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -46,7 +46,6 @@ let package = Package(
       dependencies: [
         "DiscordBM",
         "Database",
-        .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
       plugins: [
 //        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins"),
@@ -56,7 +55,6 @@ let package = Package(
       name: "Database",
       dependencies: [
         "DiscordBM",
-        .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
       plugins: [
 //        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
@@ -67,7 +65,6 @@ let package = Package(
       dependencies: [
         "DDBKit",
         "DiscordBM",
-        .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
       plugins: [
 //        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
@@ -78,7 +75,6 @@ let package = Package(
       dependencies: [
         "DDBKit",
         "DiscordBM",
-        .product(name: "AsyncHTTPClient", package: "async-http-client"),
       ],
       plugins: [
 //        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")

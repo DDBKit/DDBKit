@@ -53,7 +53,6 @@ extension MyNewBot {
           throw "Failed to retrieve avatar from CDN"
         }
         
-        let firstTimestamp = Date.now
         // Image manipulation view
         struct ImageView: View {
           var nsimg: NSImage
@@ -74,13 +73,17 @@ extension MyNewBot {
           }
         }
         
+        let firstTimestamp = Date.now
+
         // Render image with overlay
         let img = await Task.detached { @MainActor in
           let renderer = ImageRenderer(content: ImageView(nsimg: nsimg))
           renderer.proposedSize = .init(width: 1024, height: 1024)
           return renderer.cgImage
         }.value
-        
+
+        let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
+
         // Convert to PNG and send as a response
         guard let img,
               let tiff = NSImage(cgImage: img, size: nsimg.size).tiffRepresentation,
@@ -90,7 +93,6 @@ extension MyNewBot {
           throw "Failed to convert modified image cgimage to png."
         }
         
-        let formatted = (Double(Int(firstTimestamp.timeIntervalSinceNow * 1000).magnitude) / 1000).formatted()
         // Send the modified image back as an attachment
         try await bot.updateOriginalInteractionResponse(of: int) {
           Message {

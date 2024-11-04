@@ -16,7 +16,9 @@ public struct OrderedList: MessageContentComponent {
     let strings = items.enumerated().map { (i, txt) in
       "\(i + 1). \(txt.textualRepresentation)"
     }
-    return strings.joined(separator: "\n")
+//    return strings.joined(separator: "\n")
+//    we don't join with a newline because any MessageContentComponent's textualRepresentation always ends in a newline
+    return strings.joined(separator: "")
   }
 }
 
@@ -29,6 +31,9 @@ public struct UnorderedList: MessageContentComponent {
     let strings = items.enumerated().map { (_, txt) in
       "- \(txt.textualRepresentation)"
     }
-    return strings.joined(separator: "\n")
+//    return strings.joined(separator: "\n")
+//    we don't join with a newline because any MessageContentComponent's textualRepresentation always ends in a newline
+    return strings.joined(separator: "")
   }
 }
+

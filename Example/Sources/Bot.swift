@@ -26,7 +26,6 @@ struct MyNewBot: DiscordBotApp {
   
   func boot() async throws {
     // register stuff
-//    RegisterExtension(<#any DDBKitExtension#>)
     AssignGlobalCatch { bot, error, i in
       try await bot.createInteractionResponse(to: i) {
         Message {

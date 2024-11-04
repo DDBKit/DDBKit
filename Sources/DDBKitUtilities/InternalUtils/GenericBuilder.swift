@@ -5,15 +5,11 @@
 //  Created by Lakhan Lothiyi on 10/10/2024.
 //
 
-protocol TupleTyped {
-  static var Empty: GenericTuple<Self> { get }
-}
-
 public struct GenericTuple<T> {
-  var values: [T]
+  public var values: [T]
   
   // Provide an empty instance of the tuple
-  static var empty: Self { .init(values: []) }
+  public static var empty: Self { .init(values: []) }
   
   // Append a new element to the tuple
   mutating func append(_ element: T) {

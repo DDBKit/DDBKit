@@ -16,7 +16,7 @@ public protocol DiscordBotApp {
   var cache: Cache { get set }
   typealias Bot = GatewayManager
   typealias Cache = DiscordCache
-  @MainActor @BotSceneBuilder var body: [BotScene] { get }
+  @MainActor @BotSceneBuilder var body: [any BotScene] { get }
   
   init() async
   /// Allows you to make configurations to the bot after initialisation and before bot connection.
