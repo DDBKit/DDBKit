@@ -16,7 +16,7 @@ extension BotInstance {
     cmds.forEach { command in
       Task(priority: .userInitiated) {
         do {
-          try await command.trigger(i)
+          try await command.trigger(i, self._bot!, self._cache!)
         } catch {
           self.handleInteractionError(error: error, interaction: i)
         }

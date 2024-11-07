@@ -13,23 +13,23 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
   @_spi(Extensions)
   public var id: (any Hashable)?
   
-  var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  public var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  public var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
   
-  var modalReceives: [String : [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  var componentReceives: [String : [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  public var modalReceives: [String : [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  public var componentReceives: [String : [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
-  var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
-  var baseInfo: Payloads.ApplicationCommandCreate
+  public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
+  public var baseInfo: Payloads.ApplicationCommandCreate
   
-  func trigger(_ i: Interaction) async throws {
+  public func trigger(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
     switch i.data {
     case .applicationCommand(let j):
       let k: DatabaseBranches = .init(i)
       do {
-        try await preAction(i)
+        try await preAction(i, c, ch)
         try await action(i, j, k)
-        try await postAction(i)
+        try await postAction(i, c, ch)
       } catch {
         if let localThrowCatch { try await localThrowCatch(error, i) }
         else { throw error }
@@ -66,10 +66,28 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
   
   // MARK: - These pre and post actions are for use internally
   
-  func preAction(_ interaction: Interaction) async throws {
+  func preAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
     // do things like sending defer, processing, idk
+    
+    // run preActions in order
+    for preAction in self.preActions {
+      try await preAction(
+        .init(info: self.baseInfo, scope: self.guildScope),
+        c, ch, i,
+        .init(i)
+      )
+    }
   }
-  func postAction(_ interaction: Interaction) async throws {
+  func postAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
     // idk maybe register something internally, just here for completeness
+    
+    // run postActions in order
+    for postAction in self.postActions {
+      try await postAction(
+        .init(info: self.baseInfo, scope: self.guildScope),
+        c, ch, i,
+        .init(i)
+      )
+    }
   }
 }

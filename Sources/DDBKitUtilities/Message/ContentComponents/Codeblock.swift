@@ -21,7 +21,7 @@ public struct Codeblock: MessageContentComponent {
 \(txt)
 ```
 
-"""
+""" // that newline on line 23 is required.
   }
 }
 

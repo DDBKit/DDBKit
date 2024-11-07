@@ -14,6 +14,7 @@ public class BotInstance {
   /// avoid this, for testing.
   private init() {
     self._bot = nil
+    self._cache = nil
     self.events = []
     self.commands = []
     self.id = try! .makeFake()
@@ -21,21 +22,23 @@ public class BotInstance {
   
   /// bot instance we keep to interact with if needed
   let _bot: GatewayManager!
+  let _cache: DiscordCache!
   
   public var globalErrorHandle: ((GatewayManager, Error, Interaction) async throws -> Void)?
   
   // declared events the user wants to receive
-  let events: [any BaseEvent]
-  let commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
+  public var events: [any BaseEvent]
+  public var commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
-  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake
   
-  init(bot: GatewayManager, events: [any BaseEvent], commands: [any BaseContextCommand]) {
+  init(bot: GatewayManager, cache: DiscordCache, events: [any BaseEvent], commands: [any BaseContextCommand]) {
     self._bot = bot
+    self._cache = cache
     self.events = events
     self.commands = commands
     // Hey! If you found your bot crashing here, your token is invalid or you forgor
@@ -77,4 +80,12 @@ public class BotInstance {
       }
     }
   }
+}
+
+@_spi(Extensions)
+public extension BotInstance {
+  /// Read-only bot gateway instance
+  var bot: GatewayManager { _bot }
+  /// Read-only gateway cache instance
+  var cache: DiscordCache { _cache }
 }

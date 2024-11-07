@@ -269,9 +269,55 @@ extension MyNewBot {
         .description("Evaluates mathematical expressions with Calculate.framework.")
       }
       .integrationType(.all, contexts: .all)
+      
+      Command("cheese") { i, cmd, reqs in
+        // defer, since database operations can be held up
+        try await bot.createInteractionResponse(to: i, type: .deferredChannelMessageWithSource())
+        // get option data
+        let bool = try cmd.requireOption(named: "bool").requireBool()
+        // get the user's prefs, this means it shares across servers.
+        let prefs = try await db.transaction(reqs.user(ofType: UserPrefs.self)) { prefs in
+          var prefs = prefs ?? .default // if the user doesn't have prefs, use default
+          prefs.theyReallyLikeCheese = bool
+          return prefs // return modified prefs to be saved
+        }! // force unwrap, we know it exists
+        // the prefs returned from the transaction are the updated prefs we returned from the closure
+        // so we can use them here in the response.
+        try await bot.createInteractionResponse(to: i) {
+          Message {
+            MessageEmbed {
+              Title("Cheese")
+              Description {
+                if prefs.theyReallyLikeCheese {
+                  Text("You like cheese.")
+                } else {
+                  Text("You don't like cheese.")
+                }
+              }
+            }
+            .setColor(prefs.theyReallyLikeCheese ? .yellow : .red)
+          }
+        }
+      }
+      .integrationType(.all, contexts: .all)
+      .isUsableInDMS(true)
+    }
+  }
+  
+  struct UserPrefs: DatabaseModel {
+    /// Whether the user likes cheese or not
+    var theyReallyLikeCheese: Bool
+    /// The user's XP points
+    var xp: UInt
+
+    // helpful for setting default values quickly
+    static var `default`: UserPrefs {
+      UserPrefs(theyReallyLikeCheese: false, xp: 0)
     }
   }
 }
+
+let db = Database.shared
 
 fileprivate let fuse = Fuse()
 fileprivate func fuseSearch(_ q: String, in list: [String]) async -> [Fuse.SearchResult] {

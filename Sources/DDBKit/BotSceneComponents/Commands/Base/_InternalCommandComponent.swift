@@ -6,6 +6,7 @@
 //
 
 import DiscordModels
+import DiscordGateway
 import DiscordHTTP
 
 /// Give `Command` and `ComplexCommand` conformance so they can be used the same behind the scenes
@@ -18,10 +19,10 @@ protocol BaseCommand: BaseContextCommand {
   ) async
 }
 
-protocol BaseContextCommand: BotScene { // used in context menus like users and messages, so lacks autocomplete
+public protocol BaseContextCommand: BotScene { // used in context menus like users and messages, so lacks autocomplete
   var guildScope: CommandGuildScope { get set }
   var baseInfo: Payloads.ApplicationCommandCreate { get set }
-  func trigger(_ i: Interaction) async throws
+  func trigger(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws
   
   // contains callbacks for registering to the botinstance
   var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] { get }

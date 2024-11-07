@@ -214,6 +214,14 @@ print("done!")
       .setURL("https://llsc12.me")
     }
     
+    Message {
+      MessageComponents {
+        ActionRow {
+          LinkButton(":3", url: "https://example.com")
+        }
+      }
+    }
+    
     XCTAssertEqual(msg.embeds[0].title, random ? "wagwan" : "heyyy")
   }
   

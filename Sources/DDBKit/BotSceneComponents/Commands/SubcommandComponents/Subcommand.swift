@@ -8,12 +8,9 @@
 import DiscordBM
 
 /// A subcommand to a base or group
-public struct Subcommand: BaseInfoType, _ExtensibleCommand, IdentifiableCommand, LocalisedThrowable {
+public struct Subcommand: BaseInfoType, IdentifiableCommand, LocalisedThrowable {
   public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
-  
-  var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  
+ 
   @_spi(Extensions)
   public var id: (any Hashable)?
 
@@ -23,11 +20,9 @@ public struct Subcommand: BaseInfoType, _ExtensibleCommand, IdentifiableCommand,
   
   var detail: CommandDescription!
   
-  func trigger(_ i: Interaction, _ j: Interaction.ApplicationCommand, _ k: DatabaseBranches) async throws {
+  func trigger(_ i: Interaction, _ j: Interaction.ApplicationCommand) async throws {
     do {
-      try await preAction(i)
-      try await action(i, j, k)
-      try await postAction(i)
+      try await action(i, j, .init(i))
     } catch {
       if let localThrowCatch { try await localThrowCatch(error, i) }
       else { throw error }
@@ -61,14 +56,5 @@ public struct Subcommand: BaseInfoType, _ExtensibleCommand, IdentifiableCommand,
     
     // return these choices
     _ = try? await client.createInteractionResponse(id: i.id, token: i.token, payload: .autocompleteResult(.init(choices: autocompletionsValues ?? [])))
-  }
-  
-  // MARK: - These pre and post actions are for use internally
-  
-  func preAction(_ interaction: Interaction) async throws {
-    // do things like sending defer, processing, idk
-  }
-  func postAction(_ interaction: Interaction) async throws {
-    // idk maybe register something internally, just here for completeness
   }
 }

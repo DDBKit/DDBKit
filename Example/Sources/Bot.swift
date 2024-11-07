@@ -40,6 +40,8 @@ struct MyNewBot: DiscordBotApp {
         }
       }
     }
+    
+    RegisterExtension(ExampleExtension())
   }
   
   var body: [any BotScene] {

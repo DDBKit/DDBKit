@@ -11,24 +11,25 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
   var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
   var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
   
-  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
-  var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
+  public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   
-  var baseInfo: Payloads.ApplicationCommandCreate
+  public var baseInfo: Payloads.ApplicationCommandCreate
   
   var tree: [BaseInfoType]
   
   // this is called when a command under this base is called
-  func trigger(_ i: Interaction) async throws {
+  public func trigger(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
     // do preprocessing work to find where which closure requires calling in the registered subcommands
     switch i.data {
     case .applicationCommand(var j):
-      let k: DatabaseBranches = .init(i)
       guard let (command, options) = try? self.findChild(i) else { return }
       j.options = options ?? j.options
-      try await command.trigger(i, j, k)
+      try await self.preAction(i, c, ch)
+      try await command.trigger(i, j)
+      try await self.postAction(i, c, ch)
     default: break
     }
   }
@@ -87,6 +88,33 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
     let valid = self.baseInfo.validate()
     if !valid.isEmpty {
       preconditionFailure("[\(name)] Failed validation\n\n\(valid)")
+    }
+  }
+  
+  // MARK: - These pre and post actions are for use internally
+  
+  func preAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+    // do things like sending defer, processing, idk
+    
+    // run preActions in order
+    for preAction in self.preActions {
+      try await preAction(
+        .init(info: self.baseInfo, scope: self.guildScope),
+        c, ch, i,
+        .init(i)
+      )
+    }
+  }
+  func postAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+    // idk maybe register something internally, just here for completeness
+    
+    // run postActions in order
+    for postAction in self.postActions {
+      try await postAction(
+        .init(info: self.baseInfo, scope: self.guildScope),
+        c, ch, i,
+        .init(i)
+      )
     }
   }
 }

@@ -8,22 +8,22 @@
 import Foundation
 
 public struct IdentifyEvent: BaseEvent {
-  var action: (T?) async -> Void
+  public var action: (T?) async -> Void
   public typealias T = Gateway.Identify
-  var eventType: Gateway.Event.EventType? = .identify
+  public var eventType: Gateway.Event.EventType? = .identify
   public init(_ action: @escaping (T?) async -> Void) { self.action = action }
 }
 
 public struct HelloEvent: BaseEvent {
-  var action: (T?) async -> Void
+  public var action: (T?) async -> Void
   public typealias T = Gateway.Hello
-  var eventType: Gateway.Event.EventType? = .hello
+  public var eventType: Gateway.Event.EventType? = .hello
   public init(_ action: @escaping (T?) async -> Void) { self.action = action }
 }
 
 public struct ReadyEvent: BaseEvent {
-  var action: (T?) async -> Void
+  public var action: (T?) async -> Void
   public typealias T = Gateway.Ready
-  var eventType: Gateway.Event.EventType? = .ready
+  public var eventType: Gateway.Event.EventType? = .ready
   public init(_ action: @escaping (T?) async -> Void) { self.action = action }
 }

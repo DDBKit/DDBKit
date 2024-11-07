@@ -24,7 +24,7 @@ extension DiscordBotApp {
     BotSceneBuilder.expandScenes(self.body).map { type(of: $0) }.forEach { if $0 == Group.self { fatalError("Groups found in scene data after expansion. This is a bug. Please report this in an issue.") } }
     
     // BotInstance contains all of our commands and events, it handles dispatching data to the bot
-    let instance: BotInstance = .init(bot: self.bot, events: sceneData.events, commands: sceneData.commands)
+    var instance: BotInstance = .init(bot: self.bot, cache: self.cache, events: sceneData.events, commands: sceneData.commands)
     
     // we should store the reference somewhere useful for use later
     _BotInstances[instance.id] = instance
@@ -51,6 +51,12 @@ extension DiscordBotApp {
         result[guild, default: []].append(commandInfo)  // append
       }
     
+    // extensions setup.
+    let extensions = instance.extensions
+    for ext in extensions {
+      try await ext.onBoot(&instance) // is ok to be async as everything is still on the main actor rn.
+    }
+    // every extension has now had an opportunity to configure the bot instance
       
     for guildCommandsGroup in targettedCommands {
       try await bot.client
@@ -90,5 +96,5 @@ internal extension DiscordBotApp {
 }
 
 public extension DiscordBotApp {
-  func boot() async throws { }
+  func boot() async throws { } // default implementation
 }

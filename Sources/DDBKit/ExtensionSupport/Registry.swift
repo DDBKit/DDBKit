@@ -26,5 +26,5 @@ extension BotInstance {
 }
 
 public protocol DDBKitExtension {
-  
+  func onBoot(_ instance: inout BotInstance) async throws
 }
