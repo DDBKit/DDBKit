@@ -60,19 +60,19 @@ public extension BaseContextCommand {
 
 @_spi(Extensions)
 public extension ExtensibleCommand {
-  func preAction(_ action: @escaping (BaseContextCommand, GatewayManager, DiscordCache, Interaction, DatabaseBranches) -> Void) -> Self {
+  func preAction(_ action: @escaping (BaseContextCommand, GatewayManager, DiscordCache, Interaction, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.preActions.append(action)
     return copy
   }
   
-  func postAction(_ action: @escaping (BaseContextCommand, GatewayManager, DiscordCache, Interaction, DatabaseBranches) -> Void) -> Self {
+  func postAction(_ action: @escaping (BaseContextCommand, GatewayManager, DiscordCache, Interaction, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.postActions.append(action)
     return copy
   }
   
-  func catchAction(_ action: @escaping (any Error, BaseContextCommand, GatewayManager, DiscordCache, Interaction, DatabaseBranches) -> Void) -> Self {
+  func catchAction(_ action: @escaping (any Error, BaseContextCommand, GatewayManager, DiscordCache, Interaction, DatabaseBranches) async throws -> Void) -> Self {
     var copy = self
     copy.errorActions.append(action)
     return copy
