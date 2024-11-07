@@ -12,9 +12,7 @@ import DiscordBM
 public struct SubcommandGroup: BaseInfoType {
   var commands: [Subcommand] // this carries the instances so we keep trigger intact
   var baseInfo: ApplicationCommand.Option
-  
-  var detail: CommandDescription!
-  
+    
   public init(_ name: String, @SubcommandBuilder _ tree: () -> [Subcommand]) {
     self.commands = []
     self.baseInfo = .init(
@@ -26,14 +24,6 @@ public struct SubcommandGroup: BaseInfoType {
       options: self.commands.map(\.baseInfo)
     )
     // modify names of objects so they show tree path in name for ease of access
-    self.commands = tree().reduce([], { partialResult, cmd in
-      var p = partialResult
-      p += {
-        var cmd = cmd
-        cmd.detail.info.name = "\(self.detail.info.name) \(cmd.baseInfo.name)"
-        return [cmd]
-      }()
-      return p
-    })
+    self.commands = tree()
   }
 }

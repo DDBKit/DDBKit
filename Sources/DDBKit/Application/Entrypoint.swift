@@ -18,10 +18,11 @@ extension DiscordBotApp {
   @MainActor // eventloop runs on main actor
   public func run() async throws {
     // first init the environment to capture events and process commands
-    let sceneData = readScene(scenes: BotSceneBuilder.expandScenes(self.body))
+    let expandedScenes = BotSceneBuilder.expandScenes(self.body)
+    let sceneData = readScene(scenes: expandedScenes)
     
     // just a sanity check, ensure there are no groups in the scene when expanding
-    BotSceneBuilder.expandScenes(self.body).map { type(of: $0) }.forEach { if $0 == Group.self { fatalError("Groups found in scene data after expansion. This is a bug. Please report this in an issue.") } }
+    expandedScenes.map { type(of: $0) }.forEach { if $0 == Group.self { fatalError("Groups found in scene data after expansion. This is a bug. Please report this in an issue.") } }
     
     // BotInstance contains all of our commands and events, it handles dispatching data to the bot
     var instance: BotInstance = .init(bot: self.bot, cache: self.cache, events: sceneData.events, commands: sceneData.commands)

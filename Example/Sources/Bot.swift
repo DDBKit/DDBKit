@@ -41,7 +41,7 @@ struct MyNewBot: DiscordBotApp {
       }
     }
     
-    RegisterExtension(ExampleExtension())
+    RegisterExtension(PrintAllCommandsExtension())
   }
   
   var body: [any BotScene] {
@@ -60,6 +60,7 @@ struct MyNewBot: DiscordBotApp {
       _ = try JSONDecoder().decode(Egg.self, from: data)
     }
     .integrationType(.all, contexts: .all)
+    .logUsages()
   }
   
   var bot: Bot

@@ -7,10 +7,13 @@
 
 @_spi(UserInstallableApps) import DiscordBM
 
-public struct SubcommandBase: BaseCommand, _ExtensibleCommand {  
-  var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleCommand {
+  public var id: (any Hashable)?
   
+  var preActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  var postActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  var errorActions: [(any Error, BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+
   public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
   public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
@@ -28,7 +31,7 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
       guard let (command, options) = try? self.findChild(i) else { return }
       j.options = options ?? j.options
       try await self.preAction(i, c, ch)
-      try await command.trigger(i, j)
+      try await command.trigger(i, j, self, c, ch, self.errorActions)
       try await self.postAction(i, c, ch)
     default: break
     }
@@ -36,7 +39,10 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
   
   func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: any DiscordClient) async {
     /// same as trigger, we dont use the pruned options from findChild(:) since BotInstance recursively tracks the option with focused set to true.
-    guard let (command, _) = try? self.findChild(i) else { return print("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.") }
+    guard let (command, _) = try? self.findChild(i) else {
+      GS.s.logger.debug("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.")
+      return
+    }
     await command.autocompletion(i, cmd: cmd, opt: opt, client: client)
   }
   
@@ -52,25 +58,6 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
     
     self.baseInfo.integration_types = [.guildInstall]
     self.baseInfo.contexts = [.guild]
-    
-    self.tree = self.tree.reduce([], { partialResult, type in
-      var p = partialResult
-      p += {
-        var type = type
-        if var group = type as? SubcommandGroup {
-          group.detail = .init(info: self.baseInfo, scope: self.guildScope)
-          group.detail.info.name = "\(group.detail.info.name) \(group.baseInfo.name)"
-          type = group
-        }
-        if var cmd = type as? Subcommand {
-          cmd.detail = .init(info: self.baseInfo, scope: self.guildScope)
-          cmd.detail.info.name = "\(cmd.detail.info.name) \(cmd.baseInfo.name)"
-          type = cmd
-        }
-        return [type]
-      }()
-      return p
-    })
         
     for object in self.tree {
       // begin by finding subcommands and registering them, or finding groups and registering them with their subcommands
@@ -99,7 +86,7 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
     // run preActions in order
     for preAction in self.preActions {
       try await preAction(
-        .init(info: self.baseInfo, scope: self.guildScope),
+        self,
         c, ch, i,
         .init(i)
       )
@@ -111,7 +98,7 @@ public struct SubcommandBase: BaseCommand, _ExtensibleCommand {
     // run postActions in order
     for postAction in self.postActions {
       try await postAction(
-        .init(info: self.baseInfo, scope: self.guildScope),
+        self,
         c, ch, i,
         .init(i)
       )
@@ -130,7 +117,10 @@ extension SubcommandBase {
       }
     }()
     // ensure the options exist before we continue
-    guard let options, !options.isEmpty else { print("[\(self.baseInfo.name)] SubcommandBase triggered with no options, skipped eval."); throw SubcommandError.noOptions } // options in this command cannot be empty, its literally impossible
+    guard let options, !options.isEmpty else {
+      GS.s.logger.debug("[\(self.baseInfo.name)] SubcommandBase triggered with no options, skipped eval.")
+      throw SubcommandError.noOptions
+    } // options in this command cannot be empty, its literally impossible
     // this is a variable to store the pruned tree
     var optionsTree: [Interaction.ApplicationCommand.Option]? = nil
 
@@ -160,7 +150,10 @@ extension SubcommandBase {
       }
     }
     
-    guard let subcommand = currentObject as? Subcommand else { print("[\(self.baseInfo.name)] SubcommandBase triggered and failed to find subcommand."); throw SubcommandError.noChildFound }
+    guard let subcommand = currentObject as? Subcommand else {
+      GS.s.logger.debug("[\(self.baseInfo.name)] SubcommandBase triggered and failed to find subcommand.")
+      throw SubcommandError.noChildFound
+    } // also not possible since the command existed when being registered on discord and yet its not here
     return (subcommand, optionsTree)
   }
   

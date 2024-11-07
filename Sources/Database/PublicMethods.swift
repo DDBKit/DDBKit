@@ -23,7 +23,7 @@ extension Database {
     /// try a while loop and break out of it if theres an opportunity to do the transaction
     while true {
       if transactions[id] != nil {
-        print("DB: existing transaction, awaiting")
+        // awaiting due to existing transaction
         _ = await transactions[id]?.result
       } else {
         break

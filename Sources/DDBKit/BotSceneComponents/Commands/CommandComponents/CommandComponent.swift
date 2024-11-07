@@ -18,9 +18,10 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   @_spi(Extensions)
   public var id: (any Hashable)?
   
-  public var preActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  public var postActions: [(CommandDescription, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  
+  var preActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  var postActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+  var errorActions: [(any Error, BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
+
   public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
   public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
   
@@ -56,7 +57,11 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
         try await postAction(i, c, ch)
       } catch {
         if let localThrowCatch { try await localThrowCatch(error, i) }
-        else { throw error }
+          // run error actions in order
+        for errorAction in self.errorActions {
+          try? await errorAction( error, self, c, ch, i, k)
+        }
+        if localThrowCatch == nil { throw error }
       }
     default: break
     }
@@ -91,7 +96,7 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
     // run preActions in order
     for preAction in self.preActions {
       try await preAction(
-        .init(info: self.baseInfo, scope: self.guildScope),
+        self,
         c, ch, i,
         .init(i)
       )
@@ -103,7 +108,7 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
     // run postActions in order
     for postAction in self.postActions {
       try await postAction(
-        .init(info: self.baseInfo, scope: self.guildScope),
+        self,
         c, ch, i,
         .init(i)
       )

@@ -50,7 +50,7 @@ extension BotInstance {
         if let globalErrorHandle { try await globalErrorHandle(_bot, error, interaction) }
         else { throw error }
       } catch(let uncaughtError) {
-        print("[Uncaught Error] \(uncaughtError)\n\n\(interaction)")
+        GS.s.logger.error("\(uncaughtError)\n\n\(interaction)")
       }
     }
   }

@@ -8,24 +8,30 @@
 import DiscordBM
 
 /// A subcommand to a base or group
-public struct Subcommand: BaseInfoType, IdentifiableCommand, LocalisedThrowable {
+public struct Subcommand: BaseInfoType, LocalisedThrowable {
   public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
- 
-  @_spi(Extensions)
-  public var id: (any Hashable)?
-
+  
   var options: [Option] = []
   var baseInfo: ApplicationCommand.Option
   var action: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void
   
-  var detail: CommandDescription!
-  
-  func trigger(_ i: Interaction, _ j: Interaction.ApplicationCommand) async throws {
+  func trigger(
+    _ i: Interaction,
+    _ j: Interaction.ApplicationCommand,
+    _ cmd: BaseContextCommand,
+    _ c: GatewayManager,
+    _ ch: DiscordCache,
+    _ errorActions: [(any Error, BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void]
+  ) async throws {
     do {
       try await action(i, j, .init(i))
     } catch {
       if let localThrowCatch { try await localThrowCatch(error, i) }
-      else { throw error }
+        // run error actions in order
+      for errorAction in errorActions {
+        try? await errorAction(error, cmd, c, ch, i, .init(i))
+      }
+      if localThrowCatch == nil { throw error }
     }
   }
   
