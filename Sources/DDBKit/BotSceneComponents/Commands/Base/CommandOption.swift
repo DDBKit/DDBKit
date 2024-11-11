@@ -19,6 +19,8 @@ public protocol ChoiceOption: Option { }
 /// Signifies that a type can have ranges
 public protocol RangedOption: Option { }
 
+public protocol LengthLimitedOption: Option { }
+
 /// Signifies that a type can have autocompletions provided
 public protocol AutocompletableOption: Option { }
 /// setting protocols public requires that their properties be public to match
@@ -41,7 +43,7 @@ internal protocol _AutocompletableOption: Option, AutocompletableOption { // swi
 // ApplicationCommand.Option.Kind
 
 /// A string option
-public struct StringOption: Option, _AutocompletableOption, ChoiceOption {
+public struct StringOption: Option, _AutocompletableOption, ChoiceOption, LengthLimitedOption {
   internal var autocompletion: ((Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand) async -> [ApplicationCommand.Option.Choice])?
   @_spi(Extensions) public var optionData: ApplicationCommand.Option
   
@@ -175,8 +177,57 @@ public extension ChoiceOption {
 }
 
 public extension RangedOption {
+  // use range and closedrange types to set min and max values
   
+  /// Sets the ranged values for the option
+  /// - Parameter range: Range
+  /// - Returns: Self
+  func range(_ range: Range<Int>) -> Self {
+    var copy = self
+    copy.optionData.min_value = .int(range.lowerBound)
+    copy.optionData.max_value = .int(range.upperBound)
+    return copy
+  }
+  /// Sets the ranged values for the option
+  /// - Parameter range: ClosedRange
+  /// - Returns: Self
+  func min(_ range: ClosedRange<Int>) -> Self {
+    var copy = self
+    copy.optionData.min_value = .int(range.lowerBound)
+    copy.optionData.max_value = .int(range.upperBound)
+    return copy
+  }
+  
+  /// Sets the ranged values for the option
+  /// - Parameter range: Range
+  /// - Returns: Self
+  func range(_ range: Range<Double>) -> Self {
+    var copy = self
+    copy.optionData.min_value = .double(range.lowerBound)
+    copy.optionData.max_value = .double(range.upperBound)
+    return copy
+  }
+  /// Sets the ranged values for the option
+  /// - Parameter range: ClosedRange
+  /// - Returns: Self
+  func min(_ range: ClosedRange<Double>) -> Self {
+    var copy = self
+    copy.optionData.min_value = .double(range.lowerBound)
+    copy.optionData.max_value = .double(range.upperBound)
+    return copy
+  }
 }
+
+public extension LengthLimitedOption {
+  /// Sets the length range of the option
+  func length(_ range: Range<Int>) -> Self {
+    var copy = self
+    copy.optionData.min_length = range.lowerBound
+    copy.optionData.max_length = range.upperBound
+    return copy
+  }
+}
+
 // ApplicationCommand.Option(
 //    type: <#T##ApplicationCommand.Option.Kind#>,
 //    name: <#T##String#>,

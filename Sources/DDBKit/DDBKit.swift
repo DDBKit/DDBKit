@@ -2,7 +2,7 @@
 @_exported import AsyncHTTPClient
 import Logging
 
-// the following was borrowed
+// the following was borrowed from discordbm 
 
 internal class GS: @unchecked Sendable {
   
