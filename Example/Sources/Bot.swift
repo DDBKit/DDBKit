@@ -43,7 +43,6 @@ struct MyNewBot: DiscordBotApp {
         }
       }
     }
-    
   }
   
   var body: [any BotScene] {

@@ -1,6 +1,5 @@
 @_exported import DiscordBM
 @_exported import AsyncHTTPClient
-@_exported import DDBKitUtilities
 import Logging
 
 // the following was borrowed from discordbm 

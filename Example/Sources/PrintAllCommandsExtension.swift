@@ -19,17 +19,17 @@ struct PrintAllCommandsExtension: DDBKitExtension {
 extension ExtensibleCommand {
   func logUsages() -> Self {
     self
-      .boot { cmd, _ in
-        print("\(cmd.baseInfo.name) command exists!")
-      }
-      .catchAction { error, cmd, _, _, i, _ in
-        print("\(cmd.baseInfo.name) command errored for \(i.member?.user?.username ?? "unknown user") with error: \(error)")
-      }
-      .preAction { cmd, _, _, i, _ in
-        print("\(cmd.baseInfo.name) command started by \(i.member?.user?.username ?? "unknown user")")
-      }
-      .postAction { cmd, _, _, i, _ in
-        print("\(cmd.baseInfo.name) command completed for \(i.member?.user?.username ?? "unknown user")")
-      }
+//      .boot { cmd, _ in
+//        print("\(cmd.baseInfo.name) command exists!")
+//      }
+//      .catchAction { error, cmd, _, _, i, _ in
+//        print("\(cmd.baseInfo.name) command errored for \(i.member?.user?.username ?? "unknown user") with error: \(error)")
+//      }
+//      .preAction { cmd, _, _, i, _ in
+//        print("\(cmd.baseInfo.name) command started by \(i.member?.user?.username ?? "unknown user")")
+//      }
+//      .postAction { cmd, _, _, i, _ in
+//        print("\(cmd.baseInfo.name) command completed for \(i.member?.user?.username ?? "unknown user")")
+//      }
   }
 }

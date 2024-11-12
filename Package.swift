@@ -45,19 +45,13 @@ let package = Package(
       name: "DDBKit",
       dependencies: [
         "DiscordBM"
-      ],
-      plugins: [
-//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins"),
       ]
     ),
     .target(
       name: "Database",
       dependencies: [
-        "DiscordBM",
         "DDBKit",
-      ],
-      plugins: [
-//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+        "DiscordBM",
       ]
     ),
     .target(
@@ -65,9 +59,6 @@ let package = Package(
       dependencies: [
         "DDBKit",
         "DiscordBM",
-      ],
-      plugins: [
-//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
       ]
     ),
     .target(
@@ -75,9 +66,6 @@ let package = Package(
       dependencies: [
         "DDBKit",
         "DiscordBM",
-      ],
-      plugins: [
-//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
       ]
     ),
     .testTarget(
