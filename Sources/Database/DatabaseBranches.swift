@@ -1,12 +1,16 @@
 //
 //  DatabaseBranches.swift
-//  DDBKit
+//  Database
 //
 //  Created by Lakhan Lothiyi on 17/09/2024.
 //
 
 import DiscordModels
-import Database
+import DDBKit
+
+extension InteractionExtras {
+  public var branches: DatabaseBranches { DatabaseBranches(self.interaction) }
+}
 
 /// This struct contains pre-made requests based on the current interaction.
 /// It's not advised to instanciate this yourself.

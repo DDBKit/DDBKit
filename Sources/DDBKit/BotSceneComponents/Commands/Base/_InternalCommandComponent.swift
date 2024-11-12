@@ -22,12 +22,14 @@ protocol BaseCommand: BaseContextCommand {
 public protocol BaseContextCommand: BotScene { // used in context menus like users and messages, so lacks autocomplete
   var guildScope: CommandGuildScope { get set }
   var baseInfo: Payloads.ApplicationCommandCreate { get set }
-  func trigger(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws
+  func trigger(_ i: Interaction, _ instance: BotInstance) async throws
   
   // contains callbacks for registering to the botinstance
-  var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] { get }
-  var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] { get }
+  var modalReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] { get }
+  var componentReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] { get }
 }
+
+
 
 /// This protocol provides a way to identify commands, this is only used
 /// within the bot itself and is not exposed to discord. Best used in context

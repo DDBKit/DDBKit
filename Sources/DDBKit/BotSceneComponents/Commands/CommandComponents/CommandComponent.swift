@@ -11,6 +11,7 @@ import RegexBuilder
 
 /// A basic command thats easy and fast to declare and program
 public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, LocalisedThrowable {
+  var actions: ActionInterceptions = .init()
   
   @_spi(Extensions)
   public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
@@ -18,12 +19,8 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   @_spi(Extensions)
   public var id: (any Hashable)?
   
-  var preActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var postActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var errorActions: [(any Error, BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-
-  public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  public var modalReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
   
   // autocompletion related things
   func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async {
@@ -47,31 +44,27 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   public var baseInfo: Payloads.ApplicationCommandCreate
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
 
-  public func trigger(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
-    switch i.data {
-    case .applicationCommand(let j):
-      let k: DatabaseBranches = .init(i)
-      do {
-        try await preAction(i, c, ch)
-        try await action(i, j, k)
-        try await postAction(i, c, ch)
-      } catch {
-        if let localThrowCatch { try await localThrowCatch(error, i) }
-          // run error actions in order
-        for errorAction in self.errorActions {
-          try? await errorAction( error, self, c, ch, i, k)
-        }
-        if localThrowCatch == nil { throw error }
+  public func trigger(_ i: Interaction, _ instance: BotInstance) async throws {
+    let e = InteractionExtras(instance, i)
+    do {
+      try await preAction(i, e)
+      try await action(i, e)
+      try await postAction(i, e)
+    } catch {
+      if let localThrowCatch { try await localThrowCatch(error, i) }
+        // run error actions in order
+      for errorAction in self.actions.errorActions {
+        try? await errorAction(error, self, i, e)
       }
-    default: break
+      if localThrowCatch == nil { throw error }
     }
   }
   
   // we let the user define action, but we control the before and after actions.
   // we internally execute proxyAction which executes before, user-def and after actions.
-  var action: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void
+  var action: (Interaction, InteractionExtras) async throws -> Void
   
-  public init(_ commandName: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void) {
+  public init(_ commandName: String, action: @escaping (Interaction, InteractionExtras) async throws -> Void) {
     let name = commandName.trimmingCharacters(in: .whitespacesAndNewlines)
     self.action = action
     self.baseInfo = .init(
@@ -90,27 +83,25 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   
   // MARK: - These pre and post actions are for use internally
   
-  func preAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+  func preAction(_ i: Interaction, _ e: InteractionExtras) async throws {
     // do things like sending defer, processing, idk
     
     // run preActions in order
-    for preAction in self.preActions {
+    for preAction in self.actions.preActions {
       try await preAction(
         self,
-        c, ch, i,
-        .init(i)
+        i, e
       )
     }
   }
-  func postAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+  func postAction(_ i: Interaction, _ e: InteractionExtras) async throws {
     // idk maybe register something internally, just here for completeness
     
     // run postActions in order
-    for postAction in self.postActions {
+    for postAction in self.actions.postActions {
       try await postAction(
         self,
-        c, ch, i,
-        .init(i)
+        i, e
       )
     }
   }

@@ -58,7 +58,16 @@ extension DiscordBotApp {
       try await ext.onBoot(&instance) // is ok to be async as everything is still on the main actor rn.
     }
     // every extension has now had an opportunity to configure the bot instance
-      
+    
+    // now run boot of all modifiers in commands
+    for command in sceneData.commands {
+      if let cmd = command as? _ExtensibleCommand {
+        for boot in cmd._bootActions {
+          try await boot(command, instance)
+        }
+      }
+    }
+    
     for guildCommandsGroup in targettedCommands {
       try await bot.client
         .bulkSetGuildApplicationCommands(

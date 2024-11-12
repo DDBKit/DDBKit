@@ -10,12 +10,10 @@
 public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleCommand {
   public var id: (any Hashable)?
   
-  var preActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var postActions: [(BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-  var errorActions: [(any Error, BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void] = []
-
-  public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  var actions: ActionInterceptions = .init()
+  
+  public var modalReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
   
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   
@@ -24,16 +22,21 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
   var tree: [BaseInfoType]
   
   // this is called when a command under this base is called
-  public func trigger(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+  public func trigger(_ i: Interaction, _ instance: BotInstance) async throws {
     // do preprocessing work to find where which closure requires calling in the registered subcommands
-    switch i.data {
-    case .applicationCommand(var j):
-      guard let (command, options) = try? self.findChild(i) else { return }
-      j.options = options ?? j.options
-      try await self.preAction(i, c, ch)
-      try await command.trigger(i, j, self, c, ch, self.errorActions)
-      try await self.postAction(i, c, ch)
-    default: break
+    guard let (command, options) = try? self.findChild(i)
+    else { return GS.s.logger.debug("[\(self.baseInfo.name)] SubcommandBase triggered and failed to find subcommand.") }
+    
+    let e = InteractionExtras(instance, i)
+    do {
+      try await preAction(i, e)
+      try await command.trigger(i, e, actions, self)
+      try await postAction(i, e)
+    } catch {
+        // run error actions in order
+      for errorAction in self.actions.errorActions {
+        try? await errorAction(error, self, i, e)
+      }
     }
   }
   
@@ -80,27 +83,25 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
   
   // MARK: - These pre and post actions are for use internally
   
-  func preAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+  func preAction(_ i: Interaction, _ e: InteractionExtras) async throws {
     // do things like sending defer, processing, idk
     
     // run preActions in order
-    for preAction in self.preActions {
+    for preAction in self.actions.preActions {
       try await preAction(
         self,
-        c, ch, i,
-        .init(i)
+        i, e
       )
     }
   }
-  func postAction(_ i: Interaction, _ c: GatewayManager, _ ch: DiscordCache) async throws {
+  func postAction(_ i: Interaction, _ e: InteractionExtras) async throws {
     // idk maybe register something internally, just here for completeness
     
     // run postActions in order
-    for postAction in self.postActions {
+    for postAction in self.actions.postActions {
       try await postAction(
         self,
-        c, ch, i,
-        .init(i)
+        i, e
       )
     }
   }

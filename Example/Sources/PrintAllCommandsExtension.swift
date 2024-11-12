@@ -19,7 +19,7 @@ struct PrintAllCommandsExtension: DDBKitExtension {
 extension ExtensibleCommand {
   func logUsages() -> Self {
     self
-      .boot { cmd in
+      .boot { cmd, _ in
         print("\(cmd.baseInfo.name) command exists!")
       }
       .catchAction { error, cmd, _, _, i, _ in

@@ -44,8 +44,7 @@ let package = Package(
     .target(
       name: "DDBKit",
       dependencies: [
-        "DiscordBM",
-        "Database",
+        "DiscordBM"
       ],
       plugins: [
 //        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins"),
@@ -55,6 +54,7 @@ let package = Package(
       name: "Database",
       dependencies: [
         "DiscordBM",
+        "DDBKit",
       ],
       plugins: [
 //        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")

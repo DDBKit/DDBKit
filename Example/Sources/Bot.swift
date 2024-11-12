@@ -1,5 +1,6 @@
 // hi mom
 import DDBKit
+@_spi(Extensions) import DDBKitFoundation
 import DDBKitUtilities
 import Foundation
 import NIOCore
@@ -25,7 +26,9 @@ struct MyNewBot: DiscordBotApp {
   }
   
   func boot() async throws {
-    // register stuff
+    let confExtension = Configurator()
+    RegisterExtension(confExtension)
+    
     AssignGlobalCatch { bot, error, i in
       try await bot.createInteractionResponse(to: i) {
         Message {
@@ -41,26 +44,33 @@ struct MyNewBot: DiscordBotApp {
       }
     }
     
-    RegisterExtension(PrintAllCommandsExtension())
   }
   
   var body: [any BotScene] {
     
-    Commands
-    #if !os(Linux)
-    manipulation
-    coremlCommands
-    #endif
+//    Commands
+//    #if !os(Linux)
+//    manipulation
+//    coremlCommands
+//    #endif
     
-    Command("failable") { i, _, _ in
+    Command("failable") { i, e in
       struct Egg: Decodable {
         var gm: String
       }
       let data = "{}".data(using: .utf8)!
       _ = try JSONDecoder().decode(Egg.self, from: data)
+      
     }
     .integrationType(.all, contexts: .all)
-    .logUsages()
+    .furtherReading {
+      Text("This command will always fail.")
+    }
+    
+Command("ping") { i, e in
+  try await bot.createInteractionResponse(to: i, "Pong!")
+}
+    
   }
   
   var bot: Bot

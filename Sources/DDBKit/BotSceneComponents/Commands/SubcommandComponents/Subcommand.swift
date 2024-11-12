@@ -13,29 +13,23 @@ public struct Subcommand: BaseInfoType, LocalisedThrowable {
   
   var options: [Option] = []
   var baseInfo: ApplicationCommand.Option
-  var action: (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void
+  var action: (Interaction, InteractionExtras) async throws -> Void
   
   func trigger(
     _ i: Interaction,
-    _ j: Interaction.ApplicationCommand,
-    _ cmd: BaseContextCommand,
-    _ c: GatewayManager,
-    _ ch: DiscordCache,
-    _ errorActions: [(any Error, BaseContextCommand, any DiscordGateway.GatewayManager, DiscordGateway.DiscordCache, Interaction, DatabaseBranches) async throws -> Void]
+    _ e: InteractionExtras,
+    _ actions: ActionInterceptions,
+    _ cmdInstance: BaseContextCommand
   ) async throws {
     do {
-      try await action(i, j, .init(i))
+      try await action(i, e)
     } catch {
       if let localThrowCatch { try await localThrowCatch(error, i) }
-        // run error actions in order
-      for errorAction in errorActions {
-        try? await errorAction(error, cmd, c, ch, i, .init(i))
-      }
-      if localThrowCatch == nil { throw error }
+      else { throw error }
     }
   }
   
-  public init(_ name: String, action: @escaping (Interaction, Interaction.ApplicationCommand, DatabaseBranches) async throws -> Void) {
+  public init(_ name: String, action: @escaping (Interaction, InteractionExtras) async throws -> Void) {
     self.action = action
     
     self.baseInfo = .init(

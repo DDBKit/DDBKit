@@ -15,4 +15,10 @@ public extension DiscordBotApp {
     // use this in the boot function of your bot app.
     _BotInstances[self.bot.client.appId!]!.globalErrorHandle = errorHandle
   }
+  
+  @_spi(Extensions)
+  func getExtension<T>(_ type: T.Type) -> T where T: DDBKitExtension {
+    _BotInstances[self.bot.client.appId!]!.extensions.first(where: { $0 is T }) as! T
+    // if this failed, you forgot to register the extension lol.
+  }
 }
