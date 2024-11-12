@@ -25,8 +25,8 @@ public protocol BaseContextCommand: BotScene { // used in context menus like use
   func trigger(_ i: Interaction, _ instance: BotInstance) async throws
   
   // contains callbacks for registering to the botinstance
-  var modalReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] { get }
-  var componentReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] { get }
+  var modalReceives: [String: [(InteractionExtras) async throws -> Void]] { get }
+  var componentReceives: [String: [(InteractionExtras) async throws -> Void]] { get }
 }
 
 

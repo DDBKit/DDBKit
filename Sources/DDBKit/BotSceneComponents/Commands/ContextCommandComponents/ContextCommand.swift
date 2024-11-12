@@ -15,31 +15,36 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
   
   var actions: ActionInterceptions = .init()
   
-  public var modalReceives: [String : [(Interaction, InteractionExtras) async throws -> Void]] = [:]
-  public var componentReceives: [String : [(Interaction, InteractionExtras) async throws -> Void]] = [:]
+  @_spi(Extensions)
+  public var modalReceives: [String : [(InteractionExtras) async throws -> Void]] = [:]
+  @_spi(Extensions)
+  public var componentReceives: [String : [(InteractionExtras) async throws -> Void]] = [:]
   
+  @_spi(Extensions)
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
+  @_spi(Extensions)
   public var baseInfo: Payloads.ApplicationCommandCreate
   
+  @_spi(Extensions)
   public func trigger(_ i: Interaction, _ instance: BotInstance) async throws {
     let e = InteractionExtras(instance, i)
     do {
-      try await preAction(i, e)
-      try await action(i, e)
-      try await postAction(i, e)
+      try await preAction(e)
+      try await action(e)
+      try await postAction(e)
     } catch {
       if let localThrowCatch { try await localThrowCatch(error, i) }
         // run error actions in order
       for errorAction in self.actions.errorActions {
-        try? await errorAction(error, self, i, e)
+        try? await errorAction(error, self, e)
       }
       if localThrowCatch == nil { throw error }
     }
   }
   
-  var action: (Interaction, InteractionExtras) async throws -> Void
+  var action: (InteractionExtras) async throws -> Void
   
-  public init(_ name: String, kind: Kind, action: @escaping (Interaction, InteractionExtras) async throws -> Void) {
+  public init(_ name: String, kind: Kind, action: @escaping (InteractionExtras) async throws -> Void) {
     self.baseInfo = .init(
       name: name,
       name_localizations: nil,
@@ -64,26 +69,20 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
   
   // MARK: - These pre and post actions are for use internally
   
-  func preAction(_ i: Interaction, _ e: InteractionExtras) async throws {
+  func preAction(_ e: InteractionExtras) async throws {
     // do things like sending defer, processing, idk
     
     // run preActions in order
     for preAction in self.actions.preActions {
-      try await preAction(
-        self,
-        i, e
-      )
+      try await preAction(self, e)
     }
   }
-  func postAction(_ i: Interaction, _ e: InteractionExtras) async throws {
+  func postAction(_ e: InteractionExtras) async throws {
     // idk maybe register something internally, just here for completeness
     
     // run postActions in order
     for postAction in self.actions.postActions {
-      try await postAction(
-        self,
-        i, e
-      )
+      try await postAction(self, e)
     }
   }
 }

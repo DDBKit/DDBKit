@@ -11,19 +11,19 @@ import Foundation
 
 @_spi(Extensions)
 extension ExtensibleCommand {
-  public func preAction(_ action: @escaping (BaseContextCommand, Interaction, InteractionExtras) async throws -> Void) -> Self {
+  public func preAction(_ action: @escaping (BaseContextCommand, InteractionExtras) async throws -> Void) -> Self {
     var copy = self
     copy._preActions.append(action)
     return copy
   }
   
-  public func postAction(_ action: @escaping (BaseContextCommand, Interaction, InteractionExtras) async throws -> Void) -> Self {
+  public func postAction(_ action: @escaping (BaseContextCommand, InteractionExtras) async throws -> Void) -> Self {
     var copy = self
     copy._postActions.append(action)
     return copy
   }
   
-  public func catchAction(_ action: @escaping (any Error, BaseContextCommand, Interaction, InteractionExtras) async throws -> Void) -> Self {
+  public func catchAction(_ action: @escaping (any Error, BaseContextCommand, InteractionExtras) async throws -> Void) -> Self {
     var copy = self
     copy._errorActions.append(action)
     return copy
@@ -35,7 +35,7 @@ extension ExtensibleCommand {
     return copy
   }
   
-  var _errorActions: [(any Error, BaseContextCommand, Interaction, InteractionExtras) async throws -> Void] {
+  var _errorActions: [(any Error, BaseContextCommand, InteractionExtras) async throws -> Void] {
     get {
       self._self.actions.errorActions
     }
@@ -45,7 +45,7 @@ extension ExtensibleCommand {
       self = copy as! Self
     }
   }
-  var _preActions: [(BaseContextCommand, Interaction, InteractionExtras) async throws -> Void] {
+  var _preActions: [(BaseContextCommand, InteractionExtras) async throws -> Void] {
     get {
       self._self.actions.preActions
     }
@@ -55,7 +55,7 @@ extension ExtensibleCommand {
       self = copy as! Self
     }
   }
-  var _postActions: [(BaseContextCommand, Interaction, InteractionExtras) async throws -> Void] {
+  var _postActions: [(BaseContextCommand, InteractionExtras) async throws -> Void] {
     get {
       self._self.actions.postActions
     }

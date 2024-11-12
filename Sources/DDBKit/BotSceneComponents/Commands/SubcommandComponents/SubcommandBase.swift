@@ -12,8 +12,8 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
   
   var actions: ActionInterceptions = .init()
   
-  public var modalReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
+  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   
@@ -27,7 +27,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
     guard let (command, options) = try? self.findChild(i)
     else { return GS.s.logger.debug("[\(self.baseInfo.name)] SubcommandBase triggered and failed to find subcommand.") }
     
-    let e = InteractionExtras(instance, i)
+    let e = InteractionExtras(instance, i, options)
     do {
       try await preAction(i, e)
       try await command.trigger(i, e, actions, self)
@@ -35,7 +35,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
     } catch {
         // run error actions in order
       for errorAction in self.actions.errorActions {
-        try? await errorAction(error, self, i, e)
+        try? await errorAction(error, self, e)
       }
     }
   }
@@ -88,10 +88,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
     
     // run preActions in order
     for preAction in self.actions.preActions {
-      try await preAction(
-        self,
-        i, e
-      )
+      try await preAction(self, e)
     }
   }
   func postAction(_ i: Interaction, _ e: InteractionExtras) async throws {
@@ -99,10 +96,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
     
     // run postActions in order
     for postAction in self.actions.postActions {
-      try await postAction(
-        self,
-        i, e
-      )
+      try await postAction(self, e)
     }
   }
 }

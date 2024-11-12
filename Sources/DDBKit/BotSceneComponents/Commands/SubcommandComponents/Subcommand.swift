@@ -9,11 +9,12 @@ import DiscordBM
 
 /// A subcommand to a base or group
 public struct Subcommand: BaseInfoType, LocalisedThrowable {
+  @_spi(Extensions)
   public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
   
   var options: [Option] = []
   var baseInfo: ApplicationCommand.Option
-  var action: (Interaction, InteractionExtras) async throws -> Void
+  var action: (InteractionExtras) async throws -> Void
   
   func trigger(
     _ i: Interaction,
@@ -22,14 +23,14 @@ public struct Subcommand: BaseInfoType, LocalisedThrowable {
     _ cmdInstance: BaseContextCommand
   ) async throws {
     do {
-      try await action(i, e)
+      try await action(e)
     } catch {
       if let localThrowCatch { try await localThrowCatch(error, i) }
       else { throw error }
     }
   }
   
-  public init(_ name: String, action: @escaping (Interaction, InteractionExtras) async throws -> Void) {
+  public init(_ name: String, action: @escaping (InteractionExtras) async throws -> Void) {
     self.action = action
     
     self.baseInfo = .init(

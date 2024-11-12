@@ -11,13 +11,19 @@ import DiscordGateway
 import DiscordHTTP
 
 public struct InteractionExtras {
+  // core stuff
   @_spi(Extensions)
   public var instance: BotInstance
   public var interaction: Interaction
-  internal init(_ instance: BotInstance, _ interaction: Interaction) {
+  var _options: [Interaction.ApplicationCommand.Option]?
+  internal init(_ instance: BotInstance, _ interaction: Interaction, _ options: [Interaction.ApplicationCommand.Option]? = nil) {
     self.instance = instance
     self.interaction = interaction
+    self._options = options
+    // if in the case we need to override the options (eg for subcommand context correction)
+    // we set _options to the new options and options will read from it over the original options
   }
+  // public stuff
   
   public var gateway: any GatewayManager {
     self.instance.bot

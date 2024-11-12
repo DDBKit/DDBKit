@@ -8,24 +8,16 @@
 import DiscordBM
 
 public extension InteractionExtras {
-  var options: Interaction.ApplicationCommand? {
-    return switch self.interaction.data {
-    case .applicationCommand(let cmd): cmd
-    default: nil
-    }
+  var options: [Interaction.ApplicationCommand.Option]? {
+    if let _options { return _options }
+    return try? interaction.data?.requireApplicationCommand().options
   }
   
   var modal: Interaction.ModalSubmit? {
-    return switch self.interaction.data {
-    case .modalSubmit(let modal): modal
-    default: nil
-    }
+    try? interaction.data?.requireModalSubmit()
   }
   
   var component: Interaction.MessageComponent? {
-    return switch self.interaction.data {
-    case .messageComponent(let comp): comp
-    default: nil
-    }
+    try? interaction.data?.requireMessageComponent()
   }
 }

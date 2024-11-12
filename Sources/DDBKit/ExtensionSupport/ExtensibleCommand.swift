@@ -19,9 +19,9 @@ protocol _ExtensibleCommand: ExtensibleCommand {
 
 @_spi(Extensions)
 public struct ActionInterceptions {
-  var preActions: [(BaseContextCommand, Interaction, InteractionExtras) async throws -> Void] = []
-  var postActions: [(BaseContextCommand, Interaction, InteractionExtras) async throws -> Void] = []
-  var errorActions: [(any Error, BaseContextCommand, Interaction, InteractionExtras) async throws -> Void] = []
+  var preActions: [(BaseContextCommand, InteractionExtras) async throws -> Void] = []
+  var postActions: [(BaseContextCommand, InteractionExtras) async throws -> Void] = []
+  var errorActions: [(any Error, BaseContextCommand, InteractionExtras) async throws -> Void] = []
   var bootActions: [(BaseContextCommand, BotInstance) async throws -> Void] = []
 }
 

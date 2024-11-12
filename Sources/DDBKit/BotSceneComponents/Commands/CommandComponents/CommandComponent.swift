@@ -19,8 +19,9 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   @_spi(Extensions)
   public var id: (any Hashable)?
   
-  public var modalReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(Interaction, InteractionExtras) async throws -> Void]] = [:]
+  @_spi(Extensions)
+  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  @_spi(Extensions) public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   
   // autocompletion related things
   func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async {
@@ -41,20 +42,23 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   var options: [Option] = []
   
   // command data
+  @_spi(Extensions)
   public var baseInfo: Payloads.ApplicationCommandCreate
+  @_spi(Extensions)
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
 
+  @_spi(Extensions)
   public func trigger(_ i: Interaction, _ instance: BotInstance) async throws {
     let e = InteractionExtras(instance, i)
     do {
-      try await preAction(i, e)
-      try await action(i, e)
-      try await postAction(i, e)
+      try await preAction(e)
+      try await action(e)
+      try await postAction(e)
     } catch {
       if let localThrowCatch { try await localThrowCatch(error, i) }
         // run error actions in order
       for errorAction in self.actions.errorActions {
-        try? await errorAction(error, self, i, e)
+        try? await errorAction(error, self, e)
       }
       if localThrowCatch == nil { throw error }
     }
@@ -62,9 +66,9 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   
   // we let the user define action, but we control the before and after actions.
   // we internally execute proxyAction which executes before, user-def and after actions.
-  var action: (Interaction, InteractionExtras) async throws -> Void
+  var action: (InteractionExtras) async throws -> Void
   
-  public init(_ commandName: String, action: @escaping (Interaction, InteractionExtras) async throws -> Void) {
+  public init(_ commandName: String, action: @escaping (InteractionExtras) async throws -> Void) {
     let name = commandName.trimmingCharacters(in: .whitespacesAndNewlines)
     self.action = action
     self.baseInfo = .init(
@@ -83,26 +87,20 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   
   // MARK: - These pre and post actions are for use internally
   
-  func preAction(_ i: Interaction, _ e: InteractionExtras) async throws {
+  func preAction(_ e: InteractionExtras) async throws {
     // do things like sending defer, processing, idk
     
     // run preActions in order
     for preAction in self.actions.preActions {
-      try await preAction(
-        self,
-        i, e
-      )
+      try await preAction(self, e)
     }
   }
-  func postAction(_ i: Interaction, _ e: InteractionExtras) async throws {
+  func postAction(_ e: InteractionExtras) async throws {
     // idk maybe register something internally, just here for completeness
     
     // run postActions in order
     for postAction in self.actions.postActions {
-      try await postAction(
-        self,
-        i, e
-      )
+      try await postAction(self, e)
     }
   }
 }

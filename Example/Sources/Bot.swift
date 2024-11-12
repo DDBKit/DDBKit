@@ -26,11 +26,18 @@ struct MyNewBot: DiscordBotApp {
   }
   
   func boot() async throws {
+    struct GuildConfTemplate: ConfigurationTemplate {
+      @Config(
+        name: "Prefix",
+        description: "The prefix for the bot when using message commands.",
+        initialValue: "!"
+      ) var prefix: String
+    }
     let confExtension = Configurator()
     RegisterExtension(confExtension)
     
-    AssignGlobalCatch { bot, error, i in
-      try await bot.createInteractionResponse(to: i) {
+    AssignGlobalCatch { error, interaction in
+      try await interaction.respond() {
         Message {
           MessageEmbed {
             Title("Your interaction ran into a problem")
@@ -53,7 +60,7 @@ struct MyNewBot: DiscordBotApp {
 //    coremlCommands
 //    #endif
     
-    Command("failable") { i, e in
+    Command("failable") { i in
       struct Egg: Decodable {
         var gm: String
       }
@@ -63,13 +70,25 @@ struct MyNewBot: DiscordBotApp {
     }
     .integrationType(.all, contexts: .all)
     .furtherReading {
-      Text("This command will always fail.")
+      Text("This command will always fail, im not sure why you")
+      Text("Decided to run it, but it will always fail. I'm gonna")
+      Text("give you up, let you down, run around and desert you.")
     }
     
-Command("ping") { i, e in
-  try await bot.createInteractionResponse(to: i, "Pong!")
-}
+    Command("ping") { interaction in
+      try await interaction.respond(with: "Pong!")
+    }
+    .description("Ping the bot.")
     
+    SubcommandBase("sub") {
+      Subcommand("wagwan") { int in
+        print(try int.options!.requireOption(named: "wagwan"))
+        try await int.respond(with: "wagwan")
+      }
+      .addingOptions {
+        StringOption(name: "wagwan", description: "wagwan")
+      }
+    }
   }
   
   var bot: Bot

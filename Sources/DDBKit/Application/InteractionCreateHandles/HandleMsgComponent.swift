@@ -14,7 +14,7 @@ extension BotInstance {
       Task(priority: .userInitiated) {
         let e = InteractionExtras(self, i)
         do {
-          try await callback(i, e)
+          try await callback(e)
         } catch {
           self.handleInteractionError(error: error, interaction: i)
         }
