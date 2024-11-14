@@ -58,6 +58,7 @@ let package = Package(
       name: "DDBKitFoundation",
       dependencies: [
         "DDBKit",
+        "Database",
         "DiscordBM",
       ]
     ),

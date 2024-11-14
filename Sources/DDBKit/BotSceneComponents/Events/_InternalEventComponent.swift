@@ -10,19 +10,18 @@ import DiscordBM
 // this protocol is used to give all events conformance to receive events.
 public protocol BaseEvent<T>: BotScene {
   associatedtype T: Codable
-  var action: (T?) async -> Void { get set }
-  var eventType: Gateway.Event.EventType? { get }
+  var action: (T) async -> Void { get set }
+  var eventType: Gateway.Event.EventType { get }
   func typeMatchesEvent(_ event: Gateway.Event) -> Bool
 }
 
 extension BaseEvent {
   public func typeMatchesEvent(_ event: Gateway.Event) -> Bool {
-    if let eventType {
-      event.isOfType(eventType)
-    } else { false }
+    event.isOfType(eventType)
   }
   func handle(_ data: Gateway.Event.Payload?) async {
-    let ix = data?.asType(T.self)
+    guard let ix = data?.asType(T.self)
+    else { return GS.s.logger.debug("Failed to cast payload as defined type \(T.self)") }
     await self.action(ix)
   }
 }
