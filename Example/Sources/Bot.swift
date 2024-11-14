@@ -1,5 +1,6 @@
 // hi mom
 import DDBKit
+@_spi(Extensions) import DDBKitFoundation
 import DDBKitUtilities
 import Foundation
 import NIOCore
@@ -25,9 +26,18 @@ struct MyNewBot: DiscordBotApp {
   }
   
   func boot() async throws {
-    // register stuff
-    AssignGlobalCatch { bot, error, i in
-      try await bot.createInteractionResponse(to: i) {
+    struct GuildConfTemplate: ConfigurationTemplate {
+      @Config(
+        name: "Prefix",
+        description: "The prefix for the bot when using message commands.",
+        initialValue: "!"
+      ) var prefix: String
+    }
+    let confExtension = Configurator()
+    RegisterExtension(confExtension)
+    
+    AssignGlobalCatch { error, interaction in
+      try await interaction.respond() {
         Message {
           MessageEmbed {
             Title("Your interaction ran into a problem")
@@ -40,27 +50,54 @@ struct MyNewBot: DiscordBotApp {
         }
       }
     }
-    
-    RegisterExtension(PrintAllCommandsExtension())
   }
   
   var body: [any BotScene] {
     
-    Commands
-    #if !os(Linux)
-    manipulation
-    coremlCommands
-    #endif
+//    Commands
+//    #if !os(Linux)
+//    manipulation
+//    coremlCommands
+//    #endif
     
-    Command("failable") { i, _, _ in
+    Command("failable") { i in
       struct Egg: Decodable {
         var gm: String
       }
       let data = "{}".data(using: .utf8)!
       _ = try JSONDecoder().decode(Egg.self, from: data)
+      
     }
     .integrationType(.all, contexts: .all)
-    .logUsages()
+    .furtherReading {
+      Text("This command will always fail, im not sure why you")
+      Text("Decided to run it, but it will always fail. I'm gonna")
+      Text("give you up, let you down, run around and desert you.")
+    }
+    
+    Command("ping") { interaction in
+      try await interaction.respond(with: "Pong!")
+      
+    }
+    .description("Ping the bot.")
+    
+    SubcommandBase("sub") {
+      Subcommand("wagwan") { int in
+        print(try int.options!.requireOption(named: "wagwan"))
+        try await int.respond(with: "wagwan")
+      }
+      .addingOptions {
+        StringOption(name: "wagwan", description: "wagwan")
+      }
+      
+      Subcommand("gn") { int in
+        print(try int.options!.requireOption(named: "a"))
+        try await int.respond(with: "wagwan")
+      }
+      .addingOptions {
+        StringOption(name: "a", description: "b")
+      }
+    }
   }
   
   var bot: Bot

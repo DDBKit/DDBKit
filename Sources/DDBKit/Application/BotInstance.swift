@@ -24,14 +24,14 @@ public class BotInstance {
   let _bot: GatewayManager!
   let _cache: DiscordCache!
   
-  public var globalErrorHandle: ((GatewayManager, Error, Interaction) async throws -> Void)?
+  public var globalErrorHandle: ((Error, InteractionExtras) async throws -> Void)?
   
   // declared events the user wants to receive
   public var events: [any BaseEvent]
   public var commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
-  public var modalReceives: [String: [(Interaction, Interaction.ModalSubmit, DatabaseBranches) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(Interaction, Interaction.MessageComponent, DatabaseBranches) async throws -> Void]] = [:]
+  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake

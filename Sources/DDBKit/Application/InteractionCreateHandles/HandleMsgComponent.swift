@@ -12,9 +12,9 @@ extension BotInstance {
     let callbacks = (self.componentReceives[""] ?? []) + (self.componentReceives[component.custom_id] ?? [])
     callbacks.forEach { callback in
       Task(priority: .userInitiated) {
-        let dbReqs = DatabaseBranches(i)
+        let e = InteractionExtras(self, i)
         do {
-          try await callback(i, component, dbReqs)
+          try await callback(e)
         } catch {
           self.handleInteractionError(error: error, interaction: i)
         }

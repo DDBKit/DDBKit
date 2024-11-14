@@ -12,6 +12,8 @@ var _ExtensionInstances: [ApplicationSnowflake: [DDBKitExtension]] = [:]
 extension DiscordBotApp {
   public func RegisterExtension(_ e: DDBKitExtension) {
     _BotInstances[self.bot.client.appId!]!.extensions.append(e)
+    // hey bro you cant register an extension before the bot has been initialised
+    // do it in `boot() async throws` instead.
   }
 }
 extension BotInstance {
