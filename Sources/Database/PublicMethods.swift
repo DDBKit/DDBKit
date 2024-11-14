@@ -8,6 +8,15 @@
 import Foundation
 
 extension Database {
+  /// Read a model without any transaction, hence no waiting but you cannot write
+  /// data back.
+  /// - Parameter req: The request to the DB you want to perform
+  /// - Returns: The returned value
+  @discardableResult
+  public func read<T: DatabaseModel>(_ req: FetchRequest<T>) -> T? {
+    _request(req)
+  }
+  
   /// Creates a transaction where you can read and/or write to the entry.
   /// Be sure not to spend long in the transaction. Avoid doing long calculations
   /// and other tasks or else other instances awaiting a chance for reading and writing
