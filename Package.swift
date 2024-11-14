@@ -60,6 +60,7 @@ let package = Package(
         "DDBKit",
         "Database",
         "DiscordBM",
+        "DDBKitUtilities",
       ]
     ),
     .target(
