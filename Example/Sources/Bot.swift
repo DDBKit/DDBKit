@@ -88,6 +88,14 @@ struct MyNewBot: DiscordBotApp {
       .addingOptions {
         StringOption(name: "wagwan", description: "wagwan")
       }
+      
+      Subcommand("gn") { int in
+        print(try int.options!.requireOption(named: "a"))
+        try await int.respond(with: "wagwan")
+      }
+      .addingOptions {
+        StringOption(name: "a", description: "b")
+      }
     }
   }
   

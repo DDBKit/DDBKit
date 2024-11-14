@@ -101,20 +101,21 @@ struct MyNewBot: DiscordBotApp {
 }
 ```
 Congratulations! You’ve connected to Discord as your bot and reacted to an event!
+> Wanna learn the good stuff and make commands? Check out the [docs](https://ddbkit.llsc12.me/start-here/getting-started/#first-command)!
 
 > [!NOTE]
 > **Using Linux**? Run <code>swift run</code> in the project directory.
 > 
-> **If you need another entrypoint (iOS, etc.)**; you can run a DiscordBotApp instance with the <code>run() async throws</code> function available on your Bot struct. You can use this to run multiple clients at once if needed. If deploying to an iOS device or similar, it's easier to use [DiscordBotShell](https://github.com/DDBKit/DiscordBotShell).
+> **If you need another entrypoint (iOS, etc.)**; you can run a `DiscordBotApp` instance with the <code>run() async throws</code> function available on your Bot struct. You can use this to run multiple clients at once if needed. If deploying to an iOS device or similar, it's easier to use [DiscordBotShell](https://github.com/DDBKit/DiscordBotShell).
 >
 > **Don't have a bot yet?** You can create one at https://discord.com/developers/applications. Make sure your bot has the correct permissions and intents.
 
 > [!WARNING]
 > You cannot use logic in the `body` property; The property is only read once on startup.
-> Commands are registered in batch globally or per groups with [guild targets](https://github.com/llsc12/DDBKit/wiki/2.-Getting-Started#first-command).
+> Commands are registered in batch globally or per groups with [guild targets](https://ddbkit.llsc12.me/start-here/getting-started/#first-command).
 > Logic is only evaluated in defined events and commands, and their respective modifiers that accept code.
 
-You've now got a solid place to start with your bot. Check out the [wiki](https://github.com/llsc12/DDBKit/wiki) for more information!
+You've now got a solid place to start with your bot. Check out the [docs](https://ddbkit.llsc12.me/) for more information!
 
 ## Contributing
 Feel free to work on providing more abstractions and adding general utilities.
@@ -129,11 +130,10 @@ Someone should PR a linter :3
 
 ## Goals
 - [x] Using builders for composable objects (main bot logic, messages etc.)
-- [ ] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
-- [ ] Feature parity with Discord
-- [ ] Make database good
+- [x] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
+- [ ] Feature parity with Discord, though this could mean anything
+- [x] Make database good (its good enough)
 - [x] Add linter (added as GH Action)
-- [ ] Links in DocC comments of objects to more thorough wiki docs
 
 ## Sponsoring
 If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
