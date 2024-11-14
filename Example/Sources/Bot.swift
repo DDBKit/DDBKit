@@ -77,6 +77,7 @@ struct MyNewBot: DiscordBotApp {
     
     Command("ping") { interaction in
       try await interaction.respond(with: "Pong!")
+      
     }
     .description("Ping the bot.")
     
