@@ -37,7 +37,7 @@ public struct Text: MessageContentComponent {
   ) {
     self.fmt = fmt
     self.txt = components.reduce("", { partialResult, txt in
-      return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines)
+      return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines) + "\n"
     })
   }
   

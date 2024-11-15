@@ -269,14 +269,14 @@ meow meow meow meow meow meow
   func testEmbedDescNewlines() throws {
     let msg = Message {
       MessageEmbed {
-        Description {
-          Text("gm")
-          Text("gm")
-          Text("gm")
-        }
+        Description(components: {
+          for i in 1...10 {
+            Text("\(i)")
+          }
+        })
       }
     }
     
-    XCTAssertEqual(msg.embeds[0].description, "gm\ngm\ngm")
+    XCTAssertEqual(msg.embeds[0].description, "1\n2\n3\n4\n5\n6\n7\n8\n9\n10")
   }
 }
