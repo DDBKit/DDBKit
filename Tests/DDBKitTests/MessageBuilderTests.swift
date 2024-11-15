@@ -265,4 +265,18 @@ gm
 meow meow meow meow meow meow
 """)
   }
+  
+  func testEmbedDescNewlines() throws {
+    let msg = Message {
+      MessageEmbed {
+        Description {
+          Text("gm")
+          Text("gm")
+          Text("gm")
+        }
+      }
+    }
+    
+    XCTAssertEqual(msg.embeds[0].description, "gm\ngm\ngm")
+  }
 }

@@ -9,7 +9,8 @@ import Foundation
 
 extension Database {
   /// Read a model without any transaction, hence no waiting but you cannot write
-  /// data back.
+  /// data back. Do not attempt to this data back in a later transaction, because this
+  /// model could be outdated. Make changes to models in transactions.
   /// - Parameter req: The request to the DB you want to perform
   /// - Returns: The returned value
   @discardableResult
