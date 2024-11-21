@@ -16,7 +16,7 @@ final class ModelTests: XCTestCase {
         .required(true)
     }
     
-    print(modal)
+    // no easy way to equate this to intended output
     
     let gm = MessageComponents {
       ActionRow {
@@ -30,7 +30,7 @@ final class ModelTests: XCTestCase {
         TextField("moo")
       }
     }
-    print(gm)
+    // no easy way to equate this to intended output
   }
   
   func testComponents() {
@@ -56,7 +56,7 @@ final class ModelTests: XCTestCase {
         }
       }
     }
-    let obj = msg._createMessage
-    print(obj)
+    
+    // no easy way to equate this to intended output
   }
 }

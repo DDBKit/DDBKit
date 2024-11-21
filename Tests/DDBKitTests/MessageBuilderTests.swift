@@ -214,7 +214,7 @@ print("done!")
       .setURL("https://llsc12.me")
     }
     
-    Message {
+    _ = Message {
       MessageComponents {
         ActionRow {
           LinkButton(":3", url: "https://example.com")
