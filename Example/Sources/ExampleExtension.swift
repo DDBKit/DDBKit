@@ -36,8 +36,6 @@ struct ExampleExtension: DDBKitExtension {
     MessageReceiveHandle(event: event).handle()
   }
   
-  
-  
   struct MessageReceiveHandle: GatewayEventHandler {
     var event: Gateway.Event
     
@@ -59,9 +57,4 @@ public extension ExtensibleCommand {
       self = copy as! Self
     }
   }
-  
-  mutating func mutate(_ mutation: (inout BaseContextCommand) -> Void) {
-    
-  }
 }
-
