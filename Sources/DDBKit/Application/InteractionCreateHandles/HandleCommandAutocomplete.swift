@@ -10,7 +10,7 @@ import DiscordBM
 extension BotInstance {
   func handleCommandAutocomplete(_ i: Interaction, cmd: Interaction.ApplicationCommand) {
     // find all commands that fit criteria
-    let cmds = commands.filter { command in
+    let cmds = _commands.filter { command in
       command.baseInfo.name == cmd.name
     }
     cmds.forEach { command in

@@ -41,7 +41,10 @@ public struct BotSceneBuilder {
   public static func buildExpression(_ expression: BotScene) -> BotScene {
     expression
   }
-
+  
+  /// Expands groups in a scene recursively.
+  /// - Parameter scenes: Scenes to expand
+  /// - Returns: Top-level scenes devoid of groups
   public static func expandScenes(_ scenes: [BotScene]) -> [BotScene] {
     var expandedScenes = [BotScene]()
     for scene in scenes {

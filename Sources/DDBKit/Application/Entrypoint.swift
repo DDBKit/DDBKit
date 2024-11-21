@@ -17,7 +17,7 @@ extension DiscordBotApp {
   
   @MainActor // eventloop runs on main actor
   public func run() async throws {
-    // first init the environment to capture events and process commands
+    // MARK: - Run
     let expandedScenes = BotSceneBuilder.expandScenes(self.body)
     let sceneData = readScene(scenes: expandedScenes)
     
@@ -29,35 +29,24 @@ extension DiscordBotApp {
     
     // we should store the reference somewhere useful for use later
     _BotInstances[instance.id] = instance
-    try await self.boot()
+    try await self.onBoot()
     
-    // register commands
-    let allCommands = sceneData.commands
-    
-    let globalCommands = allCommands.filter({ $0.guildScope.scope == .global }).map(\.baseInfo)
-    try await bot.client
-      .bulkSetApplicationCommands(payload: globalCommands)
-      .guardSuccess()
-    
-    // don't check for scope to be local, we check if it contains guilds to target
-    let targettedCommands: [GuildSnowflake: [Payloads.ApplicationCommandCreate]] = allCommands
-      .filter({ !$0.guildScope.guilds.isEmpty })
-      .flatMap { command in
-        command.guildScope.guilds.map { guild in
-          (guild, command.baseInfo)  // pair up guilds to base info
-        }
-      }
-      .reduce(into: [GuildSnowflake: [Payloads.ApplicationCommandCreate]]()) { result, pair in
-        let (guild, commandInfo) = pair
-        result[guild, default: []].append(commandInfo)  // append
-      }
-    
-    // extensions setup.
+    // MARK: - Extensions Setup
     let extensions = instance.extensions
     for ext in extensions {
-      try await ext.onBoot(&instance) // is ok to be async as everything is still on the main actor rn.
+      // is ok to be async as everything is still on the main actor rn? probably!
+      try await ext.onBoot(&instance)
+      // now we should register all the scenes
+      let extScene = ext.register()
+      let expandedScenes = BotSceneBuilder.expandScenes(extScene)
+      let extData = readScene(scenes: expandedScenes)
+      
+      instance._commands.append(contentsOf: extData.commands)
+      instance._events.append(contentsOf: extData.events)
     }
-    // every extension has now had an opportunity to configure the bot instance
+    // every extension has now had an opportunity to configure the bot instance, and its commands were registered
+    
+    // MARK: - Command Setup
     
     // now run boot of all modifiers in commands
     for command in sceneData.commands {
@@ -68,6 +57,31 @@ extension DiscordBotApp {
       }
     }
     
+    // we want to split the commands into global and guild-scoped
+    let allCommands = instance._commands
+    
+    let globalCommands = allCommands.filter({ $0.guildScope.scope == .global }).map(\.baseInfo)
+    
+    // don't check for scope to be local, we check if it contains guilds to target
+    let targettedCommands: [GuildSnowflake: [Payloads.ApplicationCommandCreate]] = allCommands
+      .filter({ $0.guildScope.scope == .local }) // filter out global commands
+      .filter({ !$0.guildScope.guilds.isEmpty }) // filter out commands without guilds (they will never be registered now)
+      .flatMap { command in
+        command.guildScope.guilds.map { guild in
+          (guild, command.baseInfo)  // pair up guilds to base info
+        }
+      } // flatmaps into a list of guild and command info pairs
+      .reduce(into: [GuildSnowflake: [Payloads.ApplicationCommandCreate]]()) { result, pair in
+        let (guild, commandInfo) = pair
+        result[guild, default: []].append(commandInfo)  // append
+      } // reduce into a dictionary of guilds and their commands
+    
+    // MARK: - Command Registration
+    // global
+    try await bot.client
+      .bulkSetApplicationCommands(payload: globalCommands)
+      .guardSuccess()
+    // local
     for guildCommandsGroup in targettedCommands {
       try await bot.client
         .bulkSetGuildApplicationCommands(
@@ -77,11 +91,15 @@ extension DiscordBotApp {
         .guardSuccess()
     }
     
-    // then connect the bot
+    // MARK: - Connection & Events
     await bot.connect()
     
     // and finally, begin receiving events
     for await event in await self.bot.events {
+      // trigger event for all extensions
+      for ext in instance.extensions { Task { try await ext.onEvent(instance, event: event) } }
+      
+      // trigger event for all scenes in instance
       instance.sendEvent(event)
     }
   }
@@ -106,5 +124,5 @@ internal extension DiscordBotApp {
 }
 
 public extension DiscordBotApp {
-  func boot() async throws { } // default implementation
+  func onBoot() async throws { } // default implementation
 }

@@ -76,3 +76,9 @@ extension ExtensibleCommand {
     }
   }
 }
+
+extension ExtensibleCommand {
+  var _self: _ExtensibleCommand {
+    return self as! _ExtensibleCommand // will always work trust
+  }
+}

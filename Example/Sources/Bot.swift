@@ -25,7 +25,7 @@ struct MyNewBot: DiscordBotApp {
     )
   }
   
-  func boot() async throws {
+  func onBoot() async throws {
     struct GuildConfTemplate: ConfigurationTemplate {
       @Config(
         name: "Prefix",
@@ -35,6 +35,7 @@ struct MyNewBot: DiscordBotApp {
     }
     let confExtension = Configurator()
     RegisterExtension(confExtension)
+    RegisterExtension(ExampleExtension())
     
     AssignGlobalCatch { error, interaction in
       try await interaction.respond() {
