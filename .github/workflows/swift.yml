@@ -16,7 +16,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Cache Swift build directory
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-swift-${{ hashFiles('**/Package.resolved') }}
+    
     - name: Build
       run: swift build -v
+      
     - name: Run tests
       run: swift test -v
