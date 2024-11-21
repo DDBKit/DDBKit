@@ -34,8 +34,4 @@ final public class Configurator: DDBKitExtension {
     self.roleConfiguration = roleConfiguration
     self.userConfiguration = userConfiguration
   }
-  
-  public func onBoot(_ instance: inout BotInstance) async throws {
-    
-  }
 }

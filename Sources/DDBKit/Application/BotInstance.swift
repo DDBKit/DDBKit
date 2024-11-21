@@ -15,8 +15,8 @@ public class BotInstance {
   private init() {
     self._bot = nil
     self._cache = nil
-    self.events = []
-    self.commands = []
+    self._events = []
+    self._commands = []
     self.id = try! .makeFake()
   }
   
@@ -24,12 +24,14 @@ public class BotInstance {
   let _bot: GatewayManager!
   let _cache: DiscordCache!
   
+  // global error handling
   public var globalErrorHandle: ((Error, InteractionExtras) async throws -> Void)?
   
   // declared events the user wants to receive
-  public var events: [any BaseEvent]
-  public var commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
+  var _events: [any BaseEvent]
+  var _commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
+  // modal and component id receives
   public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   
@@ -39,8 +41,8 @@ public class BotInstance {
   init(bot: GatewayManager, cache: DiscordCache, events: [any BaseEvent], commands: [any BaseContextCommand]) {
     self._bot = bot
     self._cache = cache
-    self.events = events
-    self.commands = commands
+    self._events = events
+    self._commands = commands
     // Hey! If you found your bot crashing here, your token is invalid or you forgor
     self.id = bot.client.appId!
     
@@ -60,32 +62,4 @@ public class BotInstance {
       }
     }
   }
-  
-  func sendEvent(_ event: Gateway.Event) {
-    // MARK: - Interactions (cmds etc.)
-    if event.isOfType(.interactionCreate) {
-      // handle externally
-      self.handleInteractionCreate(event)
-    }
-    
-    // MARK: - Events (anything else)
-    // now that we got an event, we should look for all events that match
-    let matchedEvents = events.filter { $0.typeMatchesEvent(event) }
-    
-    // now we have all appropriate events. go through them all and trigger action
-    matchedEvents.forEach { match in
-      Task(priority: .userInitiated) {
-        /// we use a task because we don't want many of the same event doing long tasks and blocking the event queue
-        await match.handle(event.data) // FIXME: how do we get type safety based on chosen event
-      }
-    }
-  }
-}
-
-@_spi(Extensions)
-public extension BotInstance {
-  /// Read-only bot gateway instance
-  var bot: GatewayManager { _bot }
-  /// Read-only gateway cache instance
-  var cache: DiscordCache { _cache }
 }

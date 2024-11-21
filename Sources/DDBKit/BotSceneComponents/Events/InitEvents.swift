@@ -7,13 +7,6 @@
 
 import Foundation
 
-public struct IdentifyEvent: BaseEvent {
-  public var action: (T) async -> Void
-  public typealias T = Gateway.Identify
-  public var eventType: Gateway.Event.EventType = .identify
-  public init(_ action: @escaping (T) async -> Void) { self.action = action }
-}
-
 public struct HelloEvent: BaseEvent {
   public var action: (T) async -> Void
   public typealias T = Gateway.Hello
