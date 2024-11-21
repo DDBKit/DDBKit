@@ -37,7 +37,7 @@ extension DiscordBotApp {
       // is ok to be async as everything is still on the main actor rn? probably!
       try await ext.onBoot(&instance)
       // now we should register all the scenes
-      let extScene = ext.register()
+      let extScene = await ext.register()
       let expandedScenes = BotSceneBuilder.expandScenes(extScene)
       let extData = readScene(scenes: expandedScenes)
       

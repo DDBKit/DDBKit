@@ -18,9 +18,10 @@ public extension ExtensibleCommand {
     self
       .boot { cmd, i in
         let e = Self.GetExtension(of: Configurator.self, from: i)
-        e.furtherReadings[cmd.baseInfo.name] = paragraph()
+        let paragraph = paragraph()
           .reduce("") { $0 + $1.textualRepresentation }
           .trimmingCharacters(in: .whitespacesAndNewlines)
+        await e.setFurtherReadings(paragraph, for: cmd.baseInfo.name)
       }
   }
 }

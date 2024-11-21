@@ -8,7 +8,7 @@
 @_spi(Extensions) import DDBKit
 import DDBKit
 
-struct ExampleExtension: DDBKitExtension {
+actor ExampleExtension: DDBKitExtension {
   
   func onBoot(_ instance: inout BotInstance) async throws {
     // makes every command log its name when executed
