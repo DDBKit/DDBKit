@@ -9,8 +9,10 @@ import Foundation
 
 public struct OrderedList: MessageContentComponent {
   var items: [Text]
-  public init(@TextBuilder listItems: () -> [Text]) {
-    self.items = listItems()
+  public init(
+    @GenericBuilder<Text> listItems: () -> GenericTuple<Text>
+  ) {
+    self.items = listItems().values
   }
   public var textualRepresentation: String {
     let strings = items.enumerated().map { (i, txt) in
@@ -24,8 +26,8 @@ public struct OrderedList: MessageContentComponent {
 
 public struct UnorderedList: MessageContentComponent {
   var items: [Text]
-  public init(@TextBuilder listItems: () -> [Text]) {
-    self.items = listItems()
+  public init(@GenericBuilder<Text> listItems: () -> GenericTuple<Text>) {
+    self.items = listItems().values
   }
   public var textualRepresentation: String {
     let strings = items.enumerated().map { (_, txt) in

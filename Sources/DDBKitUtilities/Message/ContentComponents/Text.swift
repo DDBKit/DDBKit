@@ -9,15 +9,6 @@ import Foundation
 
 // https://www.markdownguide.org/tools/discord/
 
-@resultBuilder
-public struct TextBuilder {
-  public static func buildBlock(_ components: Text...) -> [Text] { components }
-  public static func buildOptional(_ component: [Text]?) -> Text { Text.init(components: component ?? []) }
-  public static func buildEither(first component: [Text]) -> Text { Text.init(components: component) }
-  public static func buildEither(second component: [Text]) -> Text { Text.init(components: component) }
-  public static func buildArray(_ components: [[Text]]) -> Text { Text(components: components.map { Text(components: $0) }) }
-}
-
 public struct Text: MessageContentComponent {
   var txt: String
   var fmt: FMTOptions
@@ -31,22 +22,12 @@ public struct Text: MessageContentComponent {
     self.txt = str
   }
   
-  init(
-    fmt: FMTOptions = [],
-    components: [Text]
-  ) {
-    self.fmt = fmt
-    self.txt = components.reduce("", { partialResult, txt in
-      return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines) + "\n"
-    })
-  }
-  
   public init(
     fmt: FMTOptions = [],
-    @TextBuilder components: () -> [Text]
+    @GenericBuilder<Text> components: () -> GenericTuple<Text>
   ) {
     self.fmt = fmt
-    self.txt = components().reduce("", { partialResult, txt in
+    self.txt = components().values.reduce("", { partialResult, txt in
       return partialResult + txt.textualRepresentation.trimmingCharacters(in: .newlines)
     })
   }

@@ -11,43 +11,10 @@ import DiscordModels
 public protocol MessageEmbedComponent {
 }
 
-//@resultBuilder
-//public struct MessageEmbedBuilder {
-//  public static func buildBlock(_ components: MessageEmbedComponent...) -> [MessageEmbedComponent] { components }
-//  public static func buildOptional(_ component: [any MessageEmbedComponent]?) -> any MessageEmbedComponent { EmbedTuple(component ?? []) }
-//  public static func buildEither(first component: [any MessageEmbedComponent]) -> any MessageEmbedComponent { EmbedTuple(component) }
-//  public static func buildEither(second component: [any MessageEmbedComponent]) -> any MessageEmbedComponent { EmbedTuple(component) }
-//  public static func buildArray(_ components: [[any MessageEmbedComponent]]) -> any MessageEmbedComponent { EmbedTuple(components.flatMap { $0 }) }
-//  /// used internally to allow logic
-//  public struct EmbedTuple: MessageEmbedComponent {
-//    var contained: [any MessageEmbedComponent]
-//    
-//    init(_ contained: [any MessageEmbedComponent]) {
-//      self.contained = contained
-//    }
-//  }
-//}
-
 /// Interface to building an embed and it's contents, and then
 /// making an embed object.
 public struct MessageEmbed: MessageComponent {
   public init(@GenericBuilder<MessageEmbedComponent> components: () -> GenericTuple<MessageEmbedComponent>) {
-//    // we make our array of all the built components
-//    let componentsArray = components()
-//    // this is an empty array of all the components we're about to flatten
-//    var components: [MessageEmbedComponent] = []
-//    // the r func and its call recursively expands any tuples
-//    func r(from c: [MessageEmbedComponent]) {
-//      for component in c {
-//        if let tuple = component as? MessageEmbedBuilder.EmbedTuple {
-//          r(from: tuple.contained)
-//        } else {
-//          components.append(component)
-//        }
-//      }
-//    }
-//    r(from: componentsArray)
-    
     let components: [MessageEmbedComponent] = components().values
     // begin finding components and setting variables
     self.title = Self._findLast(type: Title.self, in: components)?.text

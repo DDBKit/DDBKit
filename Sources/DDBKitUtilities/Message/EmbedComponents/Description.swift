@@ -9,8 +9,10 @@ import Foundation
 
 public struct Description: MessageEmbedComponent {
   var text: String
-  public init(@TextBuilder components: () -> [Text]) {
-    self.text = components().reduce("", { partialResult, txt in
+  public init(
+    @GenericBuilder<Text> components: () -> GenericTuple<Text>
+  ) {
+    self.text = components().values.reduce("", { partialResult, txt in
       return partialResult + txt.textualRepresentation
         .trimmingCharacters(in: .newlines) + "\n"
     }).trimmingCharacters(in: .whitespacesAndNewlines)
