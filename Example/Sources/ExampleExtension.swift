@@ -44,17 +44,3 @@ actor ExampleExtension: DDBKitExtension {
     }
   }
 }
-
-@_spi(Extensions)
-public extension ExtensibleCommand {
-  var baseInfo: Payloads.ApplicationCommandCreate {
-    get {
-      (self as! BaseContextCommand).baseInfo
-    }
-    set {
-      var copy = (self as! BaseContextCommand)
-      copy.baseInfo = newValue
-      self = copy as! Self
-    }
-  }
-}

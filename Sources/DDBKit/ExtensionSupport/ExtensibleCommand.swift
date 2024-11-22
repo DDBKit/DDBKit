@@ -24,3 +24,28 @@ public struct ActionInterceptions {
   var errorActions: [(any Error, BaseContextCommand, InteractionExtras) async throws -> Void] = []
   var bootActions: [(BaseContextCommand, BotInstance) async throws -> Void] = []
 }
+
+@_spi(Extensions)
+public extension ExtensibleCommand {
+  var baseInfo: Payloads.ApplicationCommandCreate {
+    get {
+      (self as! BaseContextCommand).baseInfo
+    }
+    set {
+      var copy = (self as! BaseContextCommand)
+      copy.baseInfo = newValue
+      self = copy as! Self
+    }
+  }
+  
+  var guildScope: CommandGuildScope {
+    get {
+      (self as! BaseContextCommand).guildScope
+    }
+    set {
+      var copy = (self as! BaseContextCommand)
+      copy.guildScope = newValue
+      self = copy as! Self
+    }
+  }
+}
