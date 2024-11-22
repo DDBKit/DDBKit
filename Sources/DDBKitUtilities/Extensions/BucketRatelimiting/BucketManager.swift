@@ -23,9 +23,6 @@ final public actor BucketRatelimiting: DDBKitExtension {
     self.defaultConfig = defaultConfig
   }
   
-  /// Required by DDBKitExtension protocol. No setup needed for rate limiting.
-  public func onBoot(_ instance: inout BotInstance) async throws {}
-  
   /// Generates a unique key for storing rate limit buckets
   /// - Parameters:
   ///   - guildId: Optional Discord guild (server) ID
@@ -38,12 +35,12 @@ final public actor BucketRatelimiting: DDBKitExtension {
     return "\(userId.rawValue):\(command)"
   }
   
-  /// Checks if a user can perform an action under rate limiting rules
+  /// Checks if a user is within rate limits and records usage if allowed
   /// - Parameters:
   ///   - guildId: Optional Discord guild (server) ID
   ///   - userId: Discord user ID
   ///   - command: Name of the command being executed
-  /// - Returns: true if the action is allowed, false if rate limited
+  /// - Throws: `Error.ratelimited` with next available use time if rate limited
   public func ratelimitChecked(guildId: GuildSnowflake?, userId: UserSnowflake, command: String) async throws {
     let bucketKey = getBucketKey(guildId: guildId, userId: userId, command: command)
     
@@ -101,14 +98,20 @@ final public actor BucketRatelimiting: DDBKitExtension {
   
   /// Internal representation of a rate limit bucket for tracking usage
   private struct Bucket {
+    /// Array of command uses with their timestamps
     var uses: [(timestamp: Date, count: Int)]
+    /// Configuration settings for this bucket
     let config: RateLimitConfig
     
+    /// Creates a new empty bucket with the specified configuration
+    /// - Parameter config: Rate limit settings for this bucket
     init(config: RateLimitConfig) {
       self.config = config
       self.uses = []
     }
     
+    /// Checks if another command use is allowed within the rate limit
+    /// - Returns: A tuple containing whether the use is allowed and when the next use will be available
     mutating func canUse() -> (allowed: Bool, nextUse: Date) {
       let now = Date()
       uses = uses.filter { now.timeIntervalSince($0.timestamp) < config.timeWindow }
@@ -124,6 +127,7 @@ final public actor BucketRatelimiting: DDBKitExtension {
       }
     }
     
+    /// Records a command use in the bucket
     mutating func recordUse() {
       uses.append((timestamp: Date(), count: 1))
     }

@@ -55,13 +55,6 @@ struct MyNewBot: DiscordBotApp {
   }
   
   var body: [any BotScene] {
-    
-//    Commands
-//    #if !os(Linux)
-//    manipulation
-//    coremlCommands
-//    #endif
-    
     Command("failable") { i in
       struct Egg: Decodable {
         var gm: String
