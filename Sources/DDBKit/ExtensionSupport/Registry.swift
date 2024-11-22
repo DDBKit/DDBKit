@@ -16,13 +16,29 @@ extension DiscordBotApp {
     // do it in `boot() async throws` instead.
   }
 }
+
 extension BotInstance {
-  var extensions: [DDBKitExtension] {
+  public var extensions: [DDBKitExtension] {
     get {
       _ExtensionInstances[self.id] ?? []
     }
     set {
       _ExtensionInstances[self.id] = newValue
+    }
+  }
+  
+  @_spi(Extensions)
+  public func getExtension<T>(of type: T.Type) -> T where T: DDBKitExtension {
+    if let t = _BotInstances[self.bot.client.appId!]?.extensions.first(where: { $0 is T }) as? T {
+      return t
+    }
+    fatalError("Extension of type \(type) not found")
+    // if this failed, you forgot to register the extension lol.
+  }
+  
+  public subscript<T>(ext type: T.Type) -> T where T: DDBKitExtension {
+    get {
+      self.getExtension(of: type)
     }
   }
 }

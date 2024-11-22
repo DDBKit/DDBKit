@@ -11,7 +11,7 @@ import DDBKitUtilities
 import Database
 import Foundation
 
-final public class Configurator: DDBKitExtension {
+final public actor Configurator: DDBKitExtension {
   public var furtherReadings: [String: String] = [:]
   // we let the user specify types for configs and we use Mirrors to build the interface that bot-users can use to configure the bot with.
   
@@ -33,5 +33,9 @@ final public class Configurator: DDBKitExtension {
     self.memberConfiguration = memberConfiguration
     self.roleConfiguration = roleConfiguration
     self.userConfiguration = userConfiguration
+  }
+  
+  func setFurtherReadings(_ s: String, for key: String) {
+    self.furtherReadings[key] = s
   }
 }

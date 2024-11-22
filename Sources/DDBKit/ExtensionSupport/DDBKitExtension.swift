@@ -8,7 +8,7 @@
 
 import DiscordModels
 
-public protocol DDBKitExtension {
+public protocol DDBKitExtension: Actor {
   /// This method is ran before the bot is connected to the gateway.
   /// It is useful for configuring the bot instance or any of it's properties before command registration.
   /// You can use this to configure your own properties for your extension, or maybe store the bot instance reference for later.
