@@ -1,7 +1,7 @@
 // hi mom
 import DDBKit
 @_spi(Extensions) import DDBKitFoundation
-import DDBKitUtilities
+@_spi(Extensions) import DDBKitUtilities
 import Foundation
 import NIOCore
 
@@ -36,6 +36,7 @@ struct MyNewBot: DiscordBotApp {
     let confExtension = Configurator()
     RegisterExtension(confExtension)
     RegisterExtension(ExampleExtension())
+    RegisterExtension(BucketRatelimiting())
     
     AssignGlobalCatch { error, interaction in
       try await interaction.respond() {
@@ -77,28 +78,16 @@ struct MyNewBot: DiscordBotApp {
     }
     
     Command("ping") { interaction in
-      try await interaction.respond(with: "Pong!")
-      
+      try await interaction.respond {
+        Message {
+          Text("Pong!")
+        }
+        .ephemeral()
+      }
     }
+    .integrationType(.all, contexts: .all)
     .description("Ping the bot.")
-    
-    SubcommandBase("sub") {
-      Subcommand("wagwan") { int in
-        print(try int.options!.requireOption(named: "wagwan"))
-        try await int.respond(with: "wagwan")
-      }
-      .addingOptions {
-        StringOption(name: "wagwan", description: "wagwan")
-      }
-      
-      Subcommand("gn") { int in
-        print(try int.options!.requireOption(named: "a"))
-        try await int.respond(with: "wagwan")
-      }
-      .addingOptions {
-        StringOption(name: "a", description: "b")
-      }
-    }
+    .ratelimited()
   }
   
   var bot: Bot
