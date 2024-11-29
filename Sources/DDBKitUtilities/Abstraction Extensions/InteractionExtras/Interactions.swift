@@ -7,8 +7,8 @@
 
 import DDBKit
 
-// MARK: Create Interaction response
 public extension InteractionExtras {
+  // MARK: Create Interaction response
   func respond(with type: Payloads.InteractionResponse) async throws {
     try await self.client.createInteractionResponse(
       id: interaction.id,
@@ -49,7 +49,8 @@ public extension InteractionExtras {
       ))
       .guardSuccess()
   }
-  
+
+  // MARK: Edit Interaction response
   func editResponse(_ msg: () -> Message) async throws {
     try await self.client.updateOriginalInteractionResponse(
       token: interaction.token,
@@ -63,6 +64,12 @@ public extension InteractionExtras {
       token: interaction.token,
       payload: .init(content: msg)
     )
+    .guardSuccess()
+  }
+  
+  // MARK: Delete Interaction response
+  func deleteResponse(with msg: String) async throws {
+    try await self.client.deleteOriginalInteractionResponse(token: interaction.token)
     .guardSuccess()
   }
 }
