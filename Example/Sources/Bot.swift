@@ -66,7 +66,7 @@ struct MyNewBot: DiscordBotApp {
     .integrationType(.all, contexts: .all)
     .furtherReading {
       Text("This command will always fail, im not sure why you")
-      Text("Decided to run it, but it will always fail. I'm gonna")
+      Text("decided to run it, but it will always fail. I'm gonna")
       Text("give you up, let you down, run around and desert you.")
     }
     

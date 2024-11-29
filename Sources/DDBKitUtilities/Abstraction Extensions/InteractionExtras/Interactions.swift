@@ -68,7 +68,7 @@ public extension InteractionExtras {
   }
   
   // MARK: Delete Interaction response
-  func deleteResponse(with msg: String) async throws {
+  func deleteResponse() async throws {
     try await self.client.deleteOriginalInteractionResponse(token: interaction.token)
     .guardSuccess()
   }
