@@ -169,8 +169,8 @@ public extension ChoiceOption {
     return copy
   }
   
-  func autocompletions(_ choices: @escaping () -> [ApplicationCommand.Option.Choice]) -> Self {
-    var copy = self as! _AutocompletableOption // will always work
+  func choices(_ choices: @escaping () -> [ApplicationCommand.Option.Choice]) -> Self {
+    var copy = self as! Option // will always work
     copy.optionData.choices = choices()
     return copy as! Self
   }
