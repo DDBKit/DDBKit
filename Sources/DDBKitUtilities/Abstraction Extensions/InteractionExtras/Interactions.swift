@@ -47,9 +47,34 @@ public extension InteractionExtras {
       payload: .channelMessageWithSource(
         .init(content: msg)
       ))
-      .guardSuccess()
+    .guardSuccess()
   }
-
+  
+  // MARK: Create Followup Response
+  func followup(with type: Payloads.ExecuteWebhook) async throws {
+    try await self.client.createFollowupMessage(
+      token: interaction.token,
+      payload: type
+    )
+    .guardSuccess()
+  }
+  
+  func followup(_ msg: () -> Message) async throws {
+    try await self.client.createFollowupMessage(
+      token: interaction.token,
+      payload: msg()._webhookResponseMessage
+    )
+    .guardSuccess()
+  }
+  
+  func followup(with msg: String) async throws {
+    try await self.client.createFollowupMessage(
+      token: interaction.token,
+      payload: .init(content: msg)
+    )
+    .guardSuccess()
+  }
+  
   // MARK: Edit Interaction response
   func editResponse(_ msg: () -> Message) async throws {
     try await self.client.updateOriginalInteractionResponse(
@@ -70,6 +95,6 @@ public extension InteractionExtras {
   // MARK: Delete Interaction response
   func deleteResponse() async throws {
     try await self.client.deleteOriginalInteractionResponse(token: interaction.token)
-    .guardSuccess()
+      .guardSuccess()
   }
 }

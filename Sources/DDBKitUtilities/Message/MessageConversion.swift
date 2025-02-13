@@ -47,9 +47,23 @@ public extension Message {
       components: _components,
       attachments: _attachments,
       files: _files,
-      poll: _poll
-    )
-  }
+			poll: _poll
+		)
+	}
+	
+	var _webhookResponseMessage: Payloads.ExecuteWebhook {
+		return .init(
+			content: _content,
+			tts: _tts,
+			embeds: _embeds,
+			allowed_mentions: _allowed_mentions,
+			components: _components,
+			files: _files,
+			attachments: _attachments,
+			flags: _flags,
+			poll: _poll
+		)
+	}
   
   var _editMessage: Payloads.EditMessage {
     return .init(
