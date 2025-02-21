@@ -191,7 +191,7 @@ public extension RangedOption {
   /// Sets the ranged values for the option
   /// - Parameter range: ClosedRange
   /// - Returns: Self
-  func min(_ range: ClosedRange<Int>) -> Self {
+  func range(_ range: ClosedRange<Int>) -> Self {
     var copy = self
     copy.optionData.min_value = .int(range.lowerBound)
     copy.optionData.max_value = .int(range.upperBound)
@@ -210,7 +210,7 @@ public extension RangedOption {
   /// Sets the ranged values for the option
   /// - Parameter range: ClosedRange
   /// - Returns: Self
-  func min(_ range: ClosedRange<Double>) -> Self {
+  func range(_ range: ClosedRange<Double>) -> Self {
     var copy = self
     copy.optionData.min_value = .double(range.lowerBound)
     copy.optionData.max_value = .double(range.upperBound)
