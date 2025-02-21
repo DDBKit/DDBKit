@@ -25,8 +25,11 @@ public struct Subcommand: BaseInfoType, LocalisedThrowable {
     do {
       try await action(e)
     } catch {
-      if let localThrowCatch { try await localThrowCatch(error, i) }
-      else { throw error }
+      if let localThrowCatch {
+        try await localThrowCatch(error, i)
+      } else {
+        throw error
+      }
     }
   }
   
@@ -45,7 +48,7 @@ public struct Subcommand: BaseInfoType, LocalisedThrowable {
   
   
   func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async {
-    guard let _ = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
+    guard opt.value != nil else { return } /// no point doing work if no value is present to derive autocompletions from
     // find autocompletable options
     let autocompletableOptions = self.options.compactMap { $0 as? _AutocompletableOption }
     

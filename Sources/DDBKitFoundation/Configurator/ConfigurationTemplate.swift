@@ -36,5 +36,5 @@ extension ConfigurationTemplate {
 }
 
 
-fileprivate let enc = JSONEncoder()
-fileprivate let dec = JSONDecoder()
+private let enc = JSONEncoder()
+private let dec = JSONDecoder()

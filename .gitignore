@@ -8,8 +8,11 @@ Payload*
 Payload
 /.vscode
 DerivedData/
-.swiftpm/configuration/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
 .netrc
+
 Example/Sources/token.swift
 Example/Sources/1984 Big Brother 2*
+
+.swp
+.swiftpm

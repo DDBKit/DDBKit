@@ -22,11 +22,6 @@ function_body_length:
   warning: 150
   error: 200
 
-type_name:
-  min_length: 1 # Allow single character type names
-  excluded: # Exclude specific type names from the rule
-    - T
-
 cyclomatic_complexity:
   warning: 20
   error: 30

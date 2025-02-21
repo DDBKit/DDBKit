@@ -6,7 +6,6 @@
 //
 
 @_spi(Extensions) import DDBKit
-import DDBKit
 import DDBKitUtilities
 import Database
 import Foundation
