@@ -126,14 +126,13 @@ Contributors should clone this repository and open `DDBKit.xcworkspace` as it lo
 
 I only ask that contributions are somewhat commented in cases of dense code or wherever fit. 
 Use `self` explicitly whenever it's used.
-Someone should PR a linter :3
 
 ## Goals
 - [x] Using builders for composable objects (main bot logic, messages etc.)
 - [x] Abstraction over common objects (eg. extending objects like Interaction with useful methods)
 - [ ] Feature parity with Discord, though this could mean anything
-- [x] Make database good (its good enough)
-- [x] Add linter (added as GH Action)
+- [ ] Make database good
+- [x] Linting
 
 ## Sponsoring
 If you really love this project, you should first support [DiscordBM's development](https://github.com/DiscordBM/DiscordBM) above all, considering it lies as the foundation of DDBKit.
