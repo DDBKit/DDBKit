@@ -151,6 +151,6 @@ public extension InteractionExtras {
   /// Returns `nil` if it was not provided for an optional option, or if DiscordBM could not get the value
   func getAttachment(from option: String) async -> DiscordChannel.Message.Attachment? {
     guard let value = await self.getString(from: option) else { return nil }
-    return try? self.attachments.values.first { $0.id.rawValue == value }
+    return self.attachments.values.first { $0.id.rawValue == value }
   }
 }

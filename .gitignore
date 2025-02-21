@@ -1,6 +1,9 @@
 *xcuserdata*
+*xcshareddata*
 *.DS_Store
 .theos
+Package.resolved
+*Package*
 Packages
 packages*
 *xcuserstate*

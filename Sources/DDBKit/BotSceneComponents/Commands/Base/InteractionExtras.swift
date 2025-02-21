@@ -17,7 +17,7 @@ public struct InteractionExtras {
   public var interaction: Interaction
   var _options: [Interaction.ApplicationCommand.Option]?
   
-  internal init(_ instance: BotInstance, _ interaction: Interaction, _ options: [Interaction.ApplicationCommand.Option]?) {
+  internal init(_ instance: BotInstance, _ interaction: Interaction, _ options: [Interaction.ApplicationCommand.Option]? = nil) {
     self.instance = instance
     self.interaction = interaction
     self._options = options

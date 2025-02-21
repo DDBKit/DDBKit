@@ -170,7 +170,7 @@ public extension ChoiceOption {
   }
   
   func choices(_ choices: @escaping () -> [ApplicationCommand.Option.Choice]) -> Self {
-    var copy = self as! Option // will always work
+    var copy = self as Option
     copy.optionData.choices = choices()
     return copy as! Self
   }
