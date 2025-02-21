@@ -1,7 +1,12 @@
-.DS_Store
-/.build
-/Packages
-xcuserdata/
+*xcuserdata*
+*.DS_Store
+.theos
+Packages
+packages*
+*xcuserstate*
+Payload*
+Payload
+/.vscode
 DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
