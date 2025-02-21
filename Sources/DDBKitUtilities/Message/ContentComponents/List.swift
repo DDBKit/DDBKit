@@ -38,4 +38,3 @@ public struct UnorderedList: MessageContentComponent {
     return strings.joined(separator: "")
   }
 }
-

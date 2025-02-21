@@ -152,7 +152,7 @@ public extension AutocompletableOption {
   /// - Parameter completion: Autocomplete handler
   func autocompletions(_ completion: @escaping (StringIntDoubleBool?) async -> [StringIntDoubleBool]) -> Self {
     var copy = self as! _AutocompletableOption // will always work
-    copy.autocompletion = { option, cmd in
+    copy.autocompletion = { option, _ in
       let options = await completion(option.value) // generally discord returns empty strings
       return options.map { .init(name: $0.asString, value: $0) }
     }

@@ -29,8 +29,6 @@ public protocol BaseContextCommand: BotScene { // used in context menus like use
   var componentReceives: [String: [(InteractionExtras) async throws -> Void]] { get }
 }
 
-
-
 /// This protocol provides a way to identify commands, this is only used
 /// within the bot itself and is not exposed to discord. Best used in context
 /// of an extension that requires binding to commands you specify.

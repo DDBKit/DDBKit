@@ -22,7 +22,6 @@ public protocol DDBKitExtension: Actor {
   @BotSceneBuilder
   func register() -> [any BotScene]
   
-  
   /// Manual event handling. Remember that this is not ran in its own `Task` context. It is ran from `MainActor`.
   /// - Parameters:
   ///   - instance: `BotInstance` reference
@@ -30,11 +29,7 @@ public protocol DDBKitExtension: Actor {
   func onEvent(_ instance: BotInstance, event: Gateway.Event) async throws
 }
 
-
-
-
 // default implementations
-
 extension DDBKitExtension {
   public func onBoot(_ instance: inout BotInstance) async throws {}
   

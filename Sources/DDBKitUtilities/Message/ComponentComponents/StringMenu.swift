@@ -101,4 +101,3 @@ public extension StringMenuOption {
     return self
   }
 }
-

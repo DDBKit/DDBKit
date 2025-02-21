@@ -16,14 +16,14 @@ public struct InteractionExtras {
   public var instance: BotInstance
   public var interaction: Interaction
   var _options: [Interaction.ApplicationCommand.Option]?
-  internal init(_ instance: BotInstance, _ interaction: Interaction, _ options: [Interaction.ApplicationCommand.Option]? = nil) {
+  
+  internal init(_ instance: BotInstance, _ interaction: Interaction, _ options: [Interaction.ApplicationCommand.Option]?) {
     self.instance = instance
     self.interaction = interaction
     self._options = options
     // if in the case we need to override the options (eg for subcommand context correction)
     // we set _options to the new options and options will read from it over the original options
   }
-  // public stuff
   
   public var gateway: any GatewayManager {
     self.instance.bot
@@ -35,7 +35,7 @@ public struct InteractionExtras {
     self.instance.cache
   }
   
-  public func getExtension<T>(_ type: T.Type) -> T where T: DDBKitExtension  {
+  public func getExtension<T>(_ type: T.Type) -> T where T: DDBKitExtension {
     self.instance.extensions.first(where: { $0 is T })! as! T
   }
 }

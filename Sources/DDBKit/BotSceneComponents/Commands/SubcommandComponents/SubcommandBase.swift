@@ -102,7 +102,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
 }
 
 extension SubcommandBase {
-  func findChild(_ i: Interaction) throws -> (Subcommand,  [Interaction.ApplicationCommand.Option]?) {
+  func findChild(_ i: Interaction) throws -> (Subcommand, [Interaction.ApplicationCommand.Option]?) {
     // get the options tree from the interaction
     let options: [Interaction.ApplicationCommand.Option]? = {
       switch i.data {
@@ -117,7 +117,7 @@ extension SubcommandBase {
       throw SubcommandError.noOptions
     } // options in this command cannot be empty, its literally impossible
     // this is a variable to store the pruned tree
-    var optionsTree: [Interaction.ApplicationCommand.Option]? = nil
+    var optionsTree: [Interaction.ApplicationCommand.Option]?
 
     // currentOption is the root option in the tree (the subcommand or subcommandgroup layer
     var currentOption = options.first!

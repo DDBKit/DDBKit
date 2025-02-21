@@ -25,7 +25,7 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   
   // autocompletion related things
   func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async {
-    guard let _ = opt.value else { return } /// no point doing work if no value is present to derive autocompletions from
+    guard opt.value != nil else { return } /// no point doing work if no value is present to derive autocompletions from
     // find autocompletable options
     let autocompletableOptions = self.options.compactMap { $0 as? _AutocompletableOption }
     

@@ -116,10 +116,8 @@ extension Database {
       }
       
       // Collecting results from each task
-      for await (key, passes) in group {
-        if passes {
-          filterPassKeys.append(key)
-        }
+      for await (key, passes) in group where passes {
+        filterPassKeys.append(key)
       }
     }
     
@@ -145,10 +143,8 @@ extension Database {
       }
       
       // Collecting results from each task
-      for await (key, passes) in group {
-        if passes {
-          filterPassKeys.append(key)
-        }
+      for await (key, passes) in group where passes {
+        filterPassKeys.append(key)
       }
     }
     

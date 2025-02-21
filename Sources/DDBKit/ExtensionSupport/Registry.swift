@@ -37,8 +37,6 @@ extension BotInstance {
   }
   
   public subscript<T>(ext type: T.Type) -> T where T: DDBKitExtension {
-    get {
-      self.getExtension(of: type)
-    }
+    self.getExtension(of: type)
   }
 }

@@ -45,9 +45,12 @@ extension BotInstance {
     Task(priority: .userInitiated) {
       do {
         let e = InteractionExtras(self, interaction)
-        if let globalErrorHandle { try await globalErrorHandle(error, e) }
-        else { throw error }
-      } catch(let uncaughtError) {
+        if let globalErrorHandle {
+          try await globalErrorHandle(error, e)
+        } else {
+          throw error
+        }
+      } catch let uncaughtError {
         GS.s.logger.error("\(uncaughtError)\n\n\(interaction)")
       }
     }

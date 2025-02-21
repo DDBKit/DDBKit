@@ -12,7 +12,7 @@ import Foundation
 public extension ExtensibleCommand {
   func ratelimited(_ config: BucketRatelimiting.RateLimitConfig? = nil) -> Self {
     self
-      .preAction { cmd, i in
+      .preAction { _, i in
         // Get the guild id and user id
         let guildId: GuildSnowflake? = i.interaction.guild_id
         guard

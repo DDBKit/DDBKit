@@ -16,9 +16,9 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
   var actions: ActionInterceptions = .init()
   
   @_spi(Extensions)
-  public var modalReceives: [String : [(InteractionExtras) async throws -> Void]] = [:]
+  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   @_spi(Extensions)
-  public var componentReceives: [String : [(InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
   
   @_spi(Extensions)
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
