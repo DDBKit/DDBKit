@@ -36,7 +36,7 @@ public struct Text: MessageContentComponent {
     "\(fmt.startKey)\(txt)\(fmt.endKey)\(txt.isEmpty ? "" : "\n")"
   }
   
-  public struct FMTOptions: OptionSet {
+	public struct FMTOptions: OptionSet, Sendable {
     public init(rawValue: UInt) { self.rawValue = rawValue }
     public let rawValue: UInt
     

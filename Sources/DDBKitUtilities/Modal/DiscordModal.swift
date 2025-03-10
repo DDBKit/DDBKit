@@ -31,10 +31,3 @@ public extension Modal {
     return copy
   }
 }
-
-
-let test = {
-  Modal("wagwan") {
-    TextField("gm")
-  }
-}()

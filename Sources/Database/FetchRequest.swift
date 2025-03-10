@@ -15,7 +15,7 @@ extension Database {
   /// ~/db/guilds/<GuildSnowflake>/<UserSnowflake>/<ModelType>.json for member specific data (data for users per guild) (done)
   /// ~/db/guilds/<GuildSnowflake>/<ChannelSnowflake>/<ModelType>.json for channel specific data
   /// ~/db/bot/<ModelType>.json
-  public struct FetchRequest<Model: DatabaseModel> {
+	public struct FetchRequest<Model: DatabaseModel>: Sendable {
     var type: Model.Type
     var datapath: URL
     var datahash: Int { datapath.hashValue }

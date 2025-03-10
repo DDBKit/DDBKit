@@ -169,10 +169,10 @@ public extension ChoiceOption {
     return copy
   }
   
-  func choices(_ choices: @escaping () -> [ApplicationCommand.Option.Choice]) -> Self {
-    var copy = self as Option
+  func choices(_ choices: () -> [ApplicationCommand.Option.Choice]) -> Self {
+    var copy = self
     copy.optionData.choices = choices()
-    return copy as! Self
+    return copy
   }
 }
 
@@ -227,23 +227,6 @@ public extension LengthLimitedOption {
     return copy
   }
 }
-
-// ApplicationCommand.Option(
-//    type: <#T##ApplicationCommand.Option.Kind#>,
-//    name: <#T##String#>,
-//    name_localizations: <#T##[DiscordLocale : String]?#>,
-//    description: <#T##String#>,
-//    description_localizations: <#T##[DiscordLocale : String]?#>,
-//    required: <#T##Bool?#>,
-//    choices: <#T##[ApplicationCommand.Option.Choice]?#>,
-//    options: <#T##[ApplicationCommand.Option]?#>,
-//    channel_types: <#T##[DiscordChannel.Kind]?#>,
-//    min_value: <#T##IntOrDouble?#>,
-//    max_value: <#T##IntOrDouble?#>,
-//    min_length: <#T##Int?#>,
-//    max_length: <#T##Int?#>,
-//    autocomplete: <#T##Bool?#>
-// )
 
 @resultBuilder
 public struct CommandOptionsBuilder {

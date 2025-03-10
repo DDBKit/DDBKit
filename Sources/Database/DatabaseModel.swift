@@ -10,4 +10,4 @@ import Foundation
 import DiscordModels
 
 /// Types conforming to it can be stored on disk.
-public protocol DatabaseModel: Codable {}
+public protocol DatabaseModel: Codable, Sendable {}

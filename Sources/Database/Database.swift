@@ -23,7 +23,7 @@ public actor Database {
   /// `Int` is a Hash of the filepath that is being used. These tasks
   /// contain the reading and writing being done to the database.
   /// Only one transaction can be active at a time
-  var transactions = [Int: Task<Any?, Never>]()
+  var transactions = [Int: Task<(any Sendable)?, Never>]()
 
   /// Reads file from the file in the db
   /// - Parameter url: URL of file to read

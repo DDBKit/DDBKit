@@ -26,7 +26,7 @@ extension Database {
   /// - Parameter req: The request to the DB you want to perform
   /// - Returns: The returned value from the transaction closure
   @discardableResult
-  public func transaction<T: DatabaseModel>(_ req: FetchRequest<T>, transaction: @escaping (T?) async -> T?) async -> T? {
+	public func transaction<T: DatabaseModel>(_ req: FetchRequest<T>, transaction: @escaping (T?) async -> T?) async -> T? {
     let id = req.datahash
     /// suspend this transaction request until the existing one is done
     
@@ -40,11 +40,11 @@ extension Database {
       }
     }
     
-    let task = Task {
+    let task = Task<(any Sendable)?, Never> {
       let current = _request(req)
       let modified = await transaction(current)
       _write(req, data: modified)
-      return modified as Any?
+      return modified
     }
     transactions[id] = task
     let retValue = await transactions[id]?.value
@@ -101,7 +101,7 @@ extension Database {
   /// - Parameter req: Dummy request to locate keys with
   /// - Parameter filter: Perform logic on each item
   /// - Returns: Filtered array of items (by keys)
-  public func findKeys<T: DatabaseModel>(around req: FetchRequest<T>, filter: @escaping (T?) -> Bool) async throws -> [String] {
+  public func findKeys<T: DatabaseModel>(around req: FetchRequest<T>, filter: @escaping @Sendable (T?) -> Bool) async throws -> [String] {
     let keys: [String] = availableKeys(around: req)
     var filterPassKeys = [String]()
     
@@ -128,7 +128,7 @@ extension Database {
   /// - Parameter req: Dummy request to locate keys with
   /// - Parameter filter: Perform logic on each item
   /// - Returns: Filtered array of items (requests to them)
-  public func findItems<T: DatabaseModel>(around req: FetchRequest<T>, filter: @escaping (T?) -> Bool) async throws -> [FetchRequest<T>] {
+  public func findItems<T: DatabaseModel>(around req: FetchRequest<T>, filter: @escaping @Sendable (T?) -> Bool) async throws -> [FetchRequest<T>] {
     let keys: [String] = availableKeys(around: req)
     var filterPassKeys = [String]()
     
@@ -155,7 +155,7 @@ extension Database {
   /// - Parameter req: Dummy request to locate keys with
   /// - Parameter filter: Perform logic on each item
   /// - Returns: Filtered array of item keys
-  public func sort<T: DatabaseModel>(on req: FetchRequest<T>, compare: @escaping (T?, T?) -> Bool) async throws -> [String] {
+	public func sort<T: DatabaseModel>(on req: FetchRequest<T>, compare: @escaping @Sendable (T?, T?) -> Bool) async throws -> [String] {
     let keys = availableKeys(around: req)
     var sortedKeys: [String] = [] // Stores sorted keys
     
