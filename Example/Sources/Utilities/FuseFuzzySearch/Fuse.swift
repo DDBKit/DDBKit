@@ -26,7 +26,7 @@ public protocol Fuseable {
     var properties: [FuseProperty] { get }
 }
 
-public class Fuse {
+public class Fuse: @unchecked Sendable {
     private var location: Int
     private var distance: Int
     private var threshold: Double
@@ -346,7 +346,7 @@ extension Fuse {
     ///   - aList: The list of string in which to search
     ///   - chunkSize: The size of a single chunk of the array. For example, if the array has `1000` items, it may be useful to split the work into 10 chunks of 100. This should ideally speed up the search logic. Defaults to `100`.
     ///   - completion: The handler which is executed upon completion
-    public func search(_ text: String, in aList: [String], chunkSize: Int = 100, completion: @escaping ([SearchResult]) -> Void) {
+    public func search(_ text: String, in aList: [String], chunkSize: Int = 100, completion: @Sendable @escaping ([SearchResult]) -> Void) {
         let pattern = self.createPattern(from: text)
         
         var items = [SearchResult]()
@@ -499,7 +499,7 @@ extension Fuse {
     ///   - aList: The list of `Fuseable` objects in which to search
     ///   - chunkSize: The size of a single chunk of the array. For example, if the array has `1000` items, it may be useful to split the work into 10 chunks of 100. This should ideally speed up the search logic. Defaults to `100`.
     ///   - completion: The handler which is executed upon completion
-    public func search(_ text: String, in aList: [Fuseable], chunkSize: Int = 100, completion: @escaping ([FusableSearchResult]) -> Void) {
+    public func search(_ text: String, in aList: [Fuseable], chunkSize: Int = 100, completion: @Sendable @escaping ([FusableSearchResult]) -> Void) {
         let pattern = self.createPattern(from: text)
         
         let group = DispatchGroup()

@@ -19,7 +19,7 @@ public extension InteractionExtras {
     .guardSuccess()
   }
   
-  func respond(_ msg: () -> Message) async throws {
+  func respond(_ msg: @Sendable () -> Message) async throws {
     try await self.client.createInteractionResponse(
       id: interaction.id,
       token: interaction.token,
@@ -30,7 +30,7 @@ public extension InteractionExtras {
     .guardSuccess()
   }
   
-  func respond(_ modal: () -> Modal) async throws {
+  func respond(_ modal: @Sendable () -> Modal) async throws {
     try await self.client.createInteractionResponse(
       id: interaction.id,
       token: interaction.token,

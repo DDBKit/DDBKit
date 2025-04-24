@@ -8,12 +8,12 @@
 @_spi(UserInstallableApps) import DiscordBM
 
 public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleCommand {
-  public var id: (any Hashable)?
+  public nonisolated(unsafe) var id: (any Hashable)?
   
   var actions: ActionInterceptions = .init()
   
-  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var modalReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
   
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
   

@@ -7,11 +7,11 @@
 
 import DiscordModels
 
-var _ExtensionInstances: [ApplicationSnowflake: [DDBKitExtension]] = [:]
 
 extension DiscordBotApp {
   public func RegisterExtension(_ e: DDBKitExtension) {
-    _BotInstances[self.bot.client.appId!]!.extensions.append(e)
+		guard let appId = self.bot.client.appId else { fatalError("Bot was not initialised before registering extension.") }
+    _BotInstances[appId]!.extensions.append(e)
     // hey bro you cant register an extension before the bot has been initialised
     // do it in `boot() async throws` instead.
   }
@@ -29,7 +29,8 @@ extension BotInstance {
   
   @_spi(Extensions)
   public func getExtension<T>(of type: T.Type) -> T where T: DDBKitExtension {
-    if let t = _BotInstances[self.bot.client.appId!]?.extensions.first(where: { $0 is T }) as? T {
+		guard let appId = self.bot.client.appId else { fatalError("Bot was not initialised before getting extension.") }
+		if let t = _BotInstances[appId]?.extensions.first(where: { $0 is T }) as? T {
       return t
     }
     fatalError("Extension of type \(type) not found")
@@ -40,3 +41,5 @@ extension BotInstance {
     self.getExtension(of: type)
   }
 }
+
+nonisolated(unsafe) var _ExtensionInstances: [ApplicationSnowflake: [DDBKitExtension]] = [:]

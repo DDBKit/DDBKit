@@ -27,7 +27,7 @@ public struct MessageAttachment: MessageComponent {
     self.filename = filename
   }
   
-  public enum UseCase {
+	public enum UseCase: Sendable {
     case attachment
     case embed
   }

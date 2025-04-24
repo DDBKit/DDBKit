@@ -11,7 +11,7 @@ import Database
 import Foundation
 
 @propertyWrapper
-public struct Config<Value: Codable>: Codable {
+public struct Config<Value: Sendable & Codable>: Codable, Sendable {
   private var value: Value
   private let name: String
   private let description: String

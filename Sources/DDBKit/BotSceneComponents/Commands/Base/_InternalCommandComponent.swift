@@ -25,8 +25,8 @@ public protocol BaseContextCommand: BotScene { // used in context menus like use
   func trigger(_ i: Interaction, _ instance: BotInstance) async throws
   
   // contains callbacks for registering to the botinstance
-  var modalReceives: [String: [(InteractionExtras) async throws -> Void]] { get }
-  var componentReceives: [String: [(InteractionExtras) async throws -> Void]] { get }
+  var modalReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] { get }
+  var componentReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] { get }
 }
 
 /// This protocol provides a way to identify commands, this is only used
@@ -49,11 +49,11 @@ extension IdentifiableCommand {
   }
 }
 
-public struct CommandGuildScope {
+public struct CommandGuildScope: Sendable {
   var scope: ScopeType
   var guilds: [GuildSnowflake]
   
-  public enum ScopeType {
+	public enum ScopeType: Sendable {
     case global
     case local
   }

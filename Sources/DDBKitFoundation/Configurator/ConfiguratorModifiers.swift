@@ -13,7 +13,7 @@ import Foundation
 
 public extension ExtensibleCommand {
   // message content builder here
-  func furtherReading(@MessageContentBuilder _ paragraph: @escaping () -> [MessageContentComponent]) -> Self {
+  func furtherReading(@MessageContentBuilder _ paragraph: @Sendable @escaping () -> [MessageContentComponent]) -> Self {
     self
       .boot { cmd, i in
         let e = Self.GetExtension(of: Configurator.self, from: i)

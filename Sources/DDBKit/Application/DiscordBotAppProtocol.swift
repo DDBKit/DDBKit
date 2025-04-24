@@ -29,4 +29,4 @@ public protocol DiscordBotApp {
   func onBoot() async throws
 }
 
-public var _BotInstances: [ApplicationSnowflake: BotInstance] = [:]
+nonisolated(unsafe) public var _BotInstances: [ApplicationSnowflake: BotInstance] = [:]

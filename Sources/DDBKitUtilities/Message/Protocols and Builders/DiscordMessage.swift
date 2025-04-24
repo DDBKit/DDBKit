@@ -10,7 +10,7 @@ import DiscordModels
 import NIOCore
 
 /// Stores things like message content, any embeds, etc
-public struct Message {
+public struct Message: Sendable {
   // MARK: - our types we keep track of the message state with
   public var content: MessageContent
   public var embeds: [MessageEmbed]
@@ -95,4 +95,4 @@ public extension Message {
 }
 
 /// All kinds of data in a `Message` object must conform to this
-public protocol MessageComponent { }
+public protocol MessageComponent: Sendable { }

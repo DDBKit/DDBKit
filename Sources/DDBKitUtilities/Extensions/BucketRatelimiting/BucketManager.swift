@@ -8,7 +8,7 @@
 import Foundation
 @_spi(Extensions) import DDBKit
 
-/// An actor that manages rate limiting for Discord bot commands using a bucket system.
+/// An extension that manages rate limiting for Discord bot commands using a bucket system.
 /// Each user (or user+guild combination) gets their own bucket to track their command usage.
 final public actor BucketRatelimiting: DDBKitExtension {
   /// Storage for all active rate limit buckets, keyed by user or guild+user identifiers

@@ -28,7 +28,7 @@ public struct Heading: MessageContentComponent {
     self.txt = txt()
   }
   
-  public enum HeadingSize: String {
+	public enum HeadingSize: String, Sendable {
     case large = "#"
     case medium = "##"
     case small = "###"

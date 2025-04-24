@@ -11,11 +11,11 @@ public struct MessagePoll: MessageComponent {
   var answers: [PollAnswer]
   var allowMultiselection: Bool = false
   var durationHours: Int
-  var emoji: Self.Emoji?
+	var emoji: PollAnswer.Emoji?
   var question: String?
   var layout: Poll.LayoutKind = .default
   
-  public init(_ question: String?, emoji: Self.Emoji? = .none, hours: Int, @GenericBuilder<PollAnswer> _ answers: () -> GenericTuple<PollAnswer>) {
+  public init(_ question: String?, emoji: PollAnswer.Emoji? = .none, hours: Int, @GenericBuilder<PollAnswer> _ answers: () -> GenericTuple<PollAnswer>) {
     self.answers = answers().values
     self.durationHours = hours
     self.emoji = emoji
@@ -29,15 +29,10 @@ public struct MessagePoll: MessageComponent {
       precondition(question != nil, "You need to provide either a question, emoji or both.")
     }
   }
-  
-  public enum Emoji {
-    case name(String)
-    case id(EmojiSnowflake)
-  }
 }
 
 // technically a component of MessagePoll but why make a folder for one thing
-public struct PollAnswer {
+public struct PollAnswer: Sendable {
   var answer: String?
   var emoji: Self.Emoji?
   var answerID: Int?
@@ -52,7 +47,7 @@ public struct PollAnswer {
     }
   }
   
-  public enum Emoji {
+	public enum Emoji: Sendable {
     case name(String)
     case id(EmojiSnowflake)
   }

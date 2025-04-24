@@ -8,7 +8,7 @@
 import DiscordBM
 
 // to easily list the two types
-public protocol SubcommandBaseTypes {
+public protocol SubcommandBaseTypes: Sendable {
 }
 
 protocol BaseInfoType: SubcommandBaseTypes {

@@ -10,7 +10,8 @@ import DiscordBM
 
 // this internal class keeps track of declared events and handles actions.
 // the entrypoint file contains a local declaration of it in the run() func.
-public class BotInstance {
+// TODO: not use unchecked sendable, pls make it sendable :c
+public final class BotInstance: @unchecked Sendable {
   /// avoid this, for testing.
   private init() {
     self._bot = nil
@@ -25,15 +26,15 @@ public class BotInstance {
   let _cache: DiscordCache!
   
   // global error handling
-  public var globalErrorHandle: ((Error, InteractionExtras) async throws -> Void)?
+  public var globalErrorHandle: (@Sendable (Error, InteractionExtras) async throws -> Void)?
   
   // declared events the user wants to receive
   var _events: [any BaseEvent]
   var _commands: [any BaseContextCommand] // basecommand inherits from basecontextcommand btw
   
   // modal and component id receives
-  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
-  public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var modalReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
   
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake

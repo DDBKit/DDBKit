@@ -10,7 +10,7 @@ import Foundation
 
 /// This protocol defines commands that can expose methods to extensions.
 @_spi(Extensions)
-public protocol ExtensibleCommand {
+public protocol ExtensibleCommand: Sendable {
 }
 
 protocol _ExtensibleCommand: ExtensibleCommand {
@@ -18,11 +18,11 @@ protocol _ExtensibleCommand: ExtensibleCommand {
 }
 
 @_spi(Extensions)
-public struct ActionInterceptions {
-  var preActions: [(BaseContextCommand, InteractionExtras) async throws -> Void] = []
-  var postActions: [(BaseContextCommand, InteractionExtras) async throws -> Void] = []
-  var errorActions: [(any Error, BaseContextCommand, InteractionExtras) async throws -> Void] = []
-  var bootActions: [(BaseContextCommand, BotInstance) async throws -> Void] = []
+public struct ActionInterceptions: Sendable {
+  var preActions: [@Sendable (BaseContextCommand, InteractionExtras) async throws -> Void] = []
+  var postActions: [@Sendable (BaseContextCommand, InteractionExtras) async throws -> Void] = []
+  var errorActions: [@Sendable (any Error, BaseContextCommand, InteractionExtras) async throws -> Void] = []
+  var bootActions: [@Sendable (BaseContextCommand, BotInstance) async throws -> Void] = []
 }
 
 @_spi(Extensions)

@@ -40,7 +40,7 @@ public struct MessageComponents: MessageComponent {
 }
 
 /// A struct that represents a component
-public protocol MessageComponentsActionRowComponent { }
+public protocol MessageComponentsActionRowComponent: Sendable { }
 protocol _MessageComponentsActionRowComponent: MessageComponentsActionRowComponent { // swiftlint:disable:this type_name
   var component: Interaction.ActionRow.Component { get }
 }

@@ -8,16 +8,16 @@
 import Foundation
 
 public struct WebhooksEvent: BaseEvent {
-  public var action: (T) async -> Void
+public var action: @Sendable (T) async -> Void
   public typealias T = Gateway.WebhooksUpdate
   public var eventType: Gateway.Event.EventType = .webhooksUpdate
-  public init(_ action: @escaping (T) async -> Void) { self.action = action }
+  public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 
 public struct ApplicationCommandPermissionsUpdateEvent: BaseEvent {
-  public var action: (T) async -> Void
+public var action: @Sendable (T) async -> Void
   public typealias T = GuildApplicationCommandPermissions
   public var eventType: Gateway.Event.EventType = .applicationCommandPermissionsUpdate
-  public init(_ action: @escaping (T) async -> Void) { self.action = action }
+  public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }

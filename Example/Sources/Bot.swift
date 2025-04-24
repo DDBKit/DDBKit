@@ -34,6 +34,7 @@ struct MyNewBot: DiscordBotApp {
       ) var prefix: String
     }
     let confExtension = Configurator()
+		
     RegisterExtension(confExtension)
     RegisterExtension(ExampleExtension())
     RegisterExtension(BucketRatelimiting())

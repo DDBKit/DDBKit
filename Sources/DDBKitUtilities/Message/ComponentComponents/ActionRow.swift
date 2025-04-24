@@ -15,7 +15,7 @@ public struct ActionRow: _ActionRowProtocol {
   }
 }
 
-public protocol ActionRowProtocol { }
+public protocol ActionRowProtocol: Sendable { }
 
 protocol _ActionRowProtocol: ActionRowProtocol { // swiftlint:disable:this type_name
   var components: [MessageComponentsActionRowComponent] { get }

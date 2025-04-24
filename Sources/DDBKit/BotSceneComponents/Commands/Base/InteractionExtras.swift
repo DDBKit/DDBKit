@@ -10,7 +10,7 @@ import DiscordModels
 import DiscordGateway
 import DiscordHTTP
 
-public struct InteractionExtras {
+public struct InteractionExtras: Sendable {
   // core stuff
   @_spi(Extensions)
   public var instance: BotInstance

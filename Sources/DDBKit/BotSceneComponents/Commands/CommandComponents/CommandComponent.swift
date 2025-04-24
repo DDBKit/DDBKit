@@ -14,14 +14,14 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   var actions: ActionInterceptions = .init()
   
   @_spi(Extensions)
-  public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
+  public var localThrowCatch: (@Sendable (any Error, DiscordModels.Interaction) async throws -> Void)?
   
   @_spi(Extensions)
-  public var id: (any Hashable)?
+  public nonisolated(unsafe) var id: (any Hashable)?
   
   @_spi(Extensions)
-  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
-  @_spi(Extensions) public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var modalReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
+  @_spi(Extensions) public var componentReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
   
   // autocompletion related things
   func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: DiscordClient) async {
@@ -66,9 +66,9 @@ public struct Command: BaseCommand, _ExtensibleCommand, IdentifiableCommand, Loc
   
   // we let the user define action, but we control the before and after actions.
   // we internally execute proxyAction which executes before, user-def and after actions.
-  var action: (InteractionExtras) async throws -> Void
+  var action: @Sendable (InteractionExtras) async throws -> Void
   
-  public init(_ commandName: String, action: @escaping (InteractionExtras) async throws -> Void) {
+  public init(_ commandName: String, action: @Sendable @escaping (InteractionExtras) async throws -> Void) {
     let name = commandName.trimmingCharacters(in: .whitespacesAndNewlines)
     self.action = action
     self.baseInfo = .init(

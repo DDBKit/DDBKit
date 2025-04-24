@@ -6,11 +6,11 @@
 //
 
 public protocol LocalisedThrowable {
-  var localThrowCatch: ((Error, Interaction) async throws -> Void)? { get set }
+  var localThrowCatch: (@Sendable (Error, Interaction) async throws -> Void)? { get set }
 }
 
 public extension LocalisedThrowable {
-  func `catch`(_ errorHandle: @escaping (Error, Interaction) async throws -> Void) -> Self {
+  func `catch`(_ errorHandle: @Sendable @escaping (Error, Interaction) async throws -> Void) -> Self {
     var copy = self
     copy.localThrowCatch = errorHandle
     return copy

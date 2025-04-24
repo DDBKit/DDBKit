@@ -10,7 +10,7 @@ import DiscordBM
 extension BotInstance {
   func handleMsgComponent(_ i: Interaction, component: Interaction.MessageComponent) {
     let callbacks = (self.componentReceives[""] ?? []) + (self.componentReceives[component.custom_id] ?? [])
-    callbacks.forEach { callback in
+		for callback in callbacks {
       Task(priority: .userInitiated) {
         let e = InteractionExtras(self, i)
         do {

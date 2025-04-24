@@ -8,7 +8,7 @@
 import DiscordBM
 import Foundation
 
-public protocol BotScene {
+public protocol BotScene: Sendable {
 }
 
 @resultBuilder

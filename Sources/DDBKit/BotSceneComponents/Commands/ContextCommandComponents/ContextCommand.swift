@@ -8,17 +8,17 @@
 @_spi(UserInstallableApps) import DiscordBM
 
 public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableCommand, LocalisedThrowable {  
-  public var localThrowCatch: ((any Error, DiscordModels.Interaction) async throws -> Void)?
+  public var localThrowCatch: (@Sendable (any Error, DiscordModels.Interaction) async throws -> Void)?
   
   @_spi(Extensions)
-  public var id: (any Hashable)?
+  public nonisolated(unsafe) var id: (any Hashable)?
   
   var actions: ActionInterceptions = .init()
   
   @_spi(Extensions)
-  public var modalReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var modalReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
   @_spi(Extensions)
-  public var componentReceives: [String: [(InteractionExtras) async throws -> Void]] = [:]
+  public var componentReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] = [:]
   
   @_spi(Extensions)
   public var guildScope: CommandGuildScope = .init(scope: .global, guilds: [])
@@ -42,9 +42,9 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
     }
   }
   
-  var action: (InteractionExtras) async throws -> Void
+  var action: @Sendable (InteractionExtras) async throws -> Void
   
-  public init(_ name: String, kind: Kind, action: @escaping (InteractionExtras) async throws -> Void) {
+  public init(_ name: String, kind: Kind, action: @Sendable @escaping (InteractionExtras) async throws -> Void) {
     self.baseInfo = .init(
       name: name,
       name_localizations: nil,

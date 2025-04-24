@@ -8,8 +8,8 @@
 import Foundation
 
 public struct InteractionCreateEvent: BaseEvent {
-  public var action: (T) async -> Void
+public var action: @Sendable (T) async -> Void
   public typealias T = Gateway.Ready
   public var eventType: Gateway.Event.EventType = .interactionCreate
-  public init(_ action: @escaping (T) async -> Void) { self.action = action }
+  public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }

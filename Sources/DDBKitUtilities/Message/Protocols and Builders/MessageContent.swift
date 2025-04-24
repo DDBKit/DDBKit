@@ -30,7 +30,7 @@ public struct MessageContentBuilder {
   }
 }
 
-public protocol MessageContentComponent {
+public protocol MessageContentComponent: Sendable {
   var textualRepresentation: String { get }
 }
 
