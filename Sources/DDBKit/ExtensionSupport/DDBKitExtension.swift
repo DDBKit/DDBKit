@@ -15,7 +15,7 @@ public protocol DDBKitExtension: Actor {
   /// - Parameter instance: Bot instance reference.
   func onBoot(_ instance: inout BotInstance) async throws
   
-  /// This is ran after `onBoot(:) async throws` and before the bot is connected to the gateway,
+  /// This is ran after `onBoot(_:) async throws` and before the bot is connected to the gateway,
   /// is where you can create your own commands and events for the bot to handle.
   /// Bear in mind that other extensions registered after this one will be able to modify your commands.
   /// - Parameter scene: Scene

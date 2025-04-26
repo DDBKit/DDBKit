@@ -9,7 +9,6 @@ import DiscordBM
 import Foundation
 
 /// This protocol defines commands that can expose methods to extensions.
-@_spi(Extensions)
 public protocol ExtensibleCommand: Sendable {
 }
 

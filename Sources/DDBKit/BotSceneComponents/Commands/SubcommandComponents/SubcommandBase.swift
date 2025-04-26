@@ -40,7 +40,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
     }
   }
   
-  func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: any DiscordClient) async {
+	public func autocompletion(_ i: Interaction, cmd: Interaction.ApplicationCommand, opt: Interaction.ApplicationCommand.Option, client: any DiscordClient) async {
     /// same as trigger, we dont use the pruned options from findChild(:) since BotInstance recursively tracks the option with focused set to true.
     guard let (command, _) = try? self.findChild(i) else {
       GS.s.logger.debug("[\(self.baseInfo.name)] Autocompletion was called and no handler found for option path.")

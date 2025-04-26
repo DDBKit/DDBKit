@@ -10,7 +10,7 @@ import DiscordGateway
 import DiscordHTTP
 
 /// Give `Command` and `ComplexCommand` conformance so they can be used the same behind the scenes
-protocol BaseCommand: BaseContextCommand {
+public protocol BaseCommand: BaseContextCommand {
   func autocompletion(
     _ i: Interaction,
     cmd: Interaction.ApplicationCommand,
