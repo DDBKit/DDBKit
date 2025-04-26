@@ -11,7 +11,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/llsc12/PrivateFrameworks", branch: "main"),
     .package(path: "./../../DDBKit"),
-//    .package(url: "https://github.com/llsc12/DDBKit", branch: "main")
+    //    .package(url: "https://github.com/llsc12/DDBKit", branch: "main")
     /// you'll want to use a version tag instead, use the below line
     /// `.package(url: "https://github.com/llsc12/DDBKit", from: "0.1.6")`
     /// i happen to also use this example project to test the package :3
@@ -29,6 +29,6 @@ let package = Package(
         .product(name: "DDBKitUtilities", package: "DDBKit"),
         .product(name: "DDBKitFoundation", package: "DDBKit"),
       ]
-    ),
+    )
   ]
 )

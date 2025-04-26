@@ -11,16 +11,19 @@ public struct MessagePoll: MessageComponent {
   var answers: [PollAnswer]
   var allowMultiselection: Bool = false
   var durationHours: Int
-	var emoji: PollAnswer.Emoji?
+  var emoji: PollAnswer.Emoji?
   var question: String?
   var layout: Poll.LayoutKind = .default
-  
-  public init(_ question: String?, emoji: PollAnswer.Emoji? = .none, hours: Int, @GenericBuilder<PollAnswer> _ answers: () -> GenericTuple<PollAnswer>) {
+
+  public init(
+    _ question: String?, emoji: PollAnswer.Emoji? = .none, hours: Int,
+    @GenericBuilder<PollAnswer> _ answers: () -> GenericTuple<PollAnswer>
+  ) {
     self.answers = answers().values
     self.durationHours = hours
     self.emoji = emoji
     self.question = question
-    
+
     precondition(hours >= 1, "Poll duration must be greater than 0")
     if question == nil {
       precondition(emoji != nil, "You need to provide either a question, emoji or both.")
@@ -46,12 +49,12 @@ public struct PollAnswer: Sendable {
       precondition(answer != nil, "You need to provide either an answer, emoji or both.")
     }
   }
-  
-	public enum Emoji: Sendable {
+
+  public enum Emoji: Sendable {
     case name(String)
     case id(EmojiSnowflake)
   }
-  
+
   var out: (Int?, Poll.Media) {
     switch emoji {
     case .none: (self.answerID, .init(text: self.answer!))
@@ -72,7 +75,7 @@ public struct PollAnswer: Sendable {
       }
     }
   }
-  
+
   /// Set an integer identifier for the poll answer to easily find it.
   /// - Parameter int: Identifier
   public func id(_ int: Int) -> Self {
@@ -82,18 +85,18 @@ public struct PollAnswer: Sendable {
   }
 }
 
-public extension MessagePoll {
+extension MessagePoll {
   /// Allow selection of multiple answers in a poll.
   /// - Parameter bool: Multiselect bool
-  func allowMultipleAnswers(_ bool: Bool = true) -> Self {
+  public func allowMultipleAnswers(_ bool: Bool = true) -> Self {
     var copy = self
     copy.allowMultiselection = true
     return copy
   }
-  
+
   /// Change the layout of the poll.
   /// - Parameter kind: Poll layout kind
-  func layout(_ kind: Poll.LayoutKind) -> Self {
+  public func layout(_ kind: Poll.LayoutKind) -> Self {
     var copy = self
     copy.layout = kind
     return copy
@@ -124,7 +127,7 @@ extension MessagePoll {
     }()
     return .init(
       question: q,
-      answers: self.answers.map(\.out).map({ .init(answer_id: $0.0, poll_media: $0.1)}),
+      answers: self.answers.map(\.out).map({ .init(answer_id: $0.0, poll_media: $0.1) }),
       duration: self.durationHours,
       allow_multiselect: self.allowMultiselection,
       layout_type: self.layout

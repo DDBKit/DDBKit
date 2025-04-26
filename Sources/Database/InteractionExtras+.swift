@@ -7,9 +7,9 @@
 
 import DDBKit
 
-public extension InteractionExtras {
+extension InteractionExtras {
   /// Exposes pre-defined database requests based on the current interaction context.
-  var dbRequests: DatabaseBranches {
+  public var dbRequests: DatabaseBranches {
     .init(self.interaction)
   }
 }

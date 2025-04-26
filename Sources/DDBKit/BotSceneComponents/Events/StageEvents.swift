@@ -8,21 +8,21 @@
 import Foundation
 
 public struct StageInstanceCreateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = StageInstance
   public var eventType: Gateway.Event.EventType = .stageInstanceCreate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct StageInstanceDeleteEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = StageInstance
   public var eventType: Gateway.Event.EventType = .stageInstanceDelete
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct StageInstanceUpdateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = StageInstance
   public var eventType: Gateway.Event.EventType = .stageInstanceUpdate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }

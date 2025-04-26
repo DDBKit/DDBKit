@@ -12,9 +12,9 @@ extension BotInstance {
     guard case .interactionCreate(let interaction) = event.data else { return }
     // get interaction types and respond as needed
     switch interaction.data {
-      // MARK: - Handling START
-      
-      // slash command
+    // MARK: - Handling START
+
+    // slash command
     case .applicationCommand(let cmd):
       // trigger base commands named `cmd.name` (autocomplete handler)
       if interaction.type == .applicationCommandAutocomplete {
@@ -24,23 +24,23 @@ extension BotInstance {
       if interaction.type == .applicationCommand {
         self.handleCommand(interaction, cmd: cmd)
       }
-      
-      // message component (buttons, pickers etc.)
+
+    // message component (buttons, pickers etc.)
     case .messageComponent(let msgComp):
       // trigger component callback
       self.handleMsgComponent(interaction, component: msgComp)
-      
-      // modals (form sheets)
+
+    // modals (form sheets)
     case .modalSubmit(let modal):
       // handle submission
       self.handleModal(interaction, modal: modal)
-      
-      // MARK: Handling END -
-      
+
+    // MARK: Handling END -
+
     default: break
     }
   }
-  
+
   func handleInteractionError(error: Error, interaction: Interaction) {
     Task(priority: .userInitiated) {
       do {

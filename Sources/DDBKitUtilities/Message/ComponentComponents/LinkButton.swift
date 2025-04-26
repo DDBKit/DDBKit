@@ -13,7 +13,7 @@ public struct LinkButton: _MessageComponentsActionRowComponent {
     .button(self.object)
   }
   var object: Interaction.ActionRow.Button
-  
+
   public init(_ label: String, url: String) {
     self.object = .init(label: label, url: url)
   }
@@ -25,29 +25,29 @@ public struct LinkButton: _MessageComponentsActionRowComponent {
   }
 }
 
-public extension LinkButton {
-  
+extension LinkButton {
+
   /// Disable the button from clicking.
   /// - Parameter bool: Disabled state
-  func disabled(_ bool: Bool = true) -> Self {
+  public func disabled(_ bool: Bool = true) -> Self {
     var copy = self
     copy.object.disabled = bool
     return copy
   }
-  
-//  /// Sets the button style.
-//  /// - Parameter style: Button style
-//  func style(_ style: Interaction.ActionRow.Button.Style) -> Self {
-//    var copy = self
-//    copy.object.style = style
-//    return copy
-//  }
-  
-//  /// Sets the button ID.
-//  /// - Parameter id: Button ID
-//  func id(_ id: String) -> Self {
-//    var copy = self
-//    copy.object.custom_id = id
-//    return copy
-//  }
+
+  //  /// Sets the button style.
+  //  /// - Parameter style: Button style
+  //  func style(_ style: Interaction.ActionRow.Button.Style) -> Self {
+  //    var copy = self
+  //    copy.object.style = style
+  //    return copy
+  //  }
+
+  //  /// Sets the button ID.
+  //  /// - Parameter id: Button ID
+  //  func id(_ id: String) -> Self {
+  //    var copy = self
+  //    copy.object.custom_id = id
+  //    return copy
+  //  }
 }

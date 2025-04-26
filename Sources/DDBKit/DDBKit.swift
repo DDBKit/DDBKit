@@ -1,20 +1,20 @@
-@_exported import DiscordBM
 @_exported import AsyncHTTPClient
+@_exported import DiscordBM
 import Logging
 
-// the following was borrowed from discordbm 
+// the following was borrowed from discordbm
 
 internal class GS: @unchecked Sendable {
-  
+
   var label: String = "DDBKit"
   var makeLogger: @Sendable (String) -> Logger = { Logger(label: $0) }
-  
+
   init() {
     self.logger = makeLogger(label)
   }
-  
+
   var logger: Logger
-  
+
   static let s = GS()
 }
 

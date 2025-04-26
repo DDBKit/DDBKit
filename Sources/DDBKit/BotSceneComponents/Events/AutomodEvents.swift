@@ -6,28 +6,27 @@
 //
 
 public struct AutoModerationRuleCreateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = AutoModerationRule
   public var eventType: Gateway.Event.EventType = .autoModerationRuleCreate
 }
 
 public struct AutoModerationRuleUpdateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = AutoModerationRule
   public var eventType: Gateway.Event.EventType = .autoModerationRuleUpdate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct AutoModerationRuleRemoveEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = AutoModerationRule
   public var eventType: Gateway.Event.EventType = .autoModerationRuleDelete
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
-
 public struct AutoModerationActionExecutionEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = AutoModerationActionExecution
   public var eventType: Gateway.Event.EventType = .autoModerationActionExecution
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }

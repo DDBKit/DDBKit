@@ -1,6 +1,6 @@
 //
 //  Description.swift
-//  
+//
 //
 //  Created by Lakhan Lothiyi on 22/04/2024.
 //
@@ -12,10 +12,14 @@ public struct Description: MessageEmbedComponent {
   public init(
     @GenericBuilder<Text> components: () -> GenericTuple<Text>
   ) {
-    self.text = components().values.reduce("", { partialResult, txt in
-      return partialResult + txt.textualRepresentation
-        .trimmingCharacters(in: .newlines) + "\n"
-    }).trimmingCharacters(in: .whitespacesAndNewlines)
+    self.text = components().values.reduce(
+      "",
+      { partialResult, txt in
+        return partialResult
+          + txt.textualRepresentation
+          .trimmingCharacters(in: .newlines) + "\n"
+      }
+    ).trimmingCharacters(in: .whitespacesAndNewlines)
   }
   public init(_ txt: String) {
     self.text = txt

@@ -1,6 +1,6 @@
 //
 //  Code.swift
-//  
+//
 //
 //  Created by Lakhan Lothiyi on 21/04/2024.
 //
@@ -12,7 +12,7 @@ public struct Code: MessageContentComponent {
   public init(_ str: String) {
     self.txt = str
   }
-  
+
   public var textualRepresentation: String {
     return "`\(txt)`\n"
   }

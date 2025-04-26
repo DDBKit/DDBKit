@@ -15,7 +15,7 @@ public struct Group: BotScene {
     self.scene = body()
   }
   var scene: [BotScene]
-  
+
   init(scene: [BotScene]) {
     self.scene = scene
   }

@@ -41,7 +41,7 @@ public struct BotSceneBuilder {
   public static func buildExpression(_ expression: BotScene) -> BotScene {
     expression
   }
-  
+
   /// Expands groups in a scene recursively.
   /// - Parameter scenes: Scenes to expand
   /// - Returns: Top-level scenes devoid of groups

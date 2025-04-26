@@ -6,6 +6,7 @@
 //
 
 import XCTest
+
 @testable import DDBKit
 @testable import DDBKitUtilities
 
@@ -15,9 +16,9 @@ final class ModelTests: XCTestCase {
       TextField("wagwan")
         .required(true)
     }
-    
+
     // no easy way to equate this to intended output
-    
+
     let gm = MessageComponents {
       ActionRow {
         if false {
@@ -32,7 +33,7 @@ final class ModelTests: XCTestCase {
     }
     // no easy way to equate this to intended output
   }
-  
+
   func testComponents() {
     struct DataStruct {
       var repo: String?
@@ -46,17 +47,24 @@ final class ModelTests: XCTestCase {
       MessageComponents {
         ActionRow {
           if let depiction = data.depiction {
-            LinkButton("View Depiction", Emoji(id: "1294780376354656377", name: "depiction"), url: depiction)
+            LinkButton(
+              "View Depiction", Emoji(id: "1294780376354656377", name: "depiction"), url: depiction)
           }
           if let repo = data.repo {
-            LinkButton("Add Repo to Sileo", Emoji(id: "1294780391542095944", name: "sileo"), url: "https://repos.slim.rocks/repo/?repoUrl=" + repo + "&manager=sileo")
-            LinkButton("Add Repo to Zebra", Emoji(name: "zebra"), url: "https://repos.slim.rocks/repo/?repoUrl=" + repo + "&manager=zebra")
-            LinkButton("Other Package Managers", Emoji(id: "1294780403055329300", name: "other"), url: "https://repos.slim.rocks/repo/?repoUrl=" + repo)
+            LinkButton(
+              "Add Repo to Sileo", Emoji(id: "1294780391542095944", name: "sileo"),
+              url: "https://repos.slim.rocks/repo/?repoUrl=" + repo + "&manager=sileo")
+            LinkButton(
+              "Add Repo to Zebra", Emoji(name: "zebra"),
+              url: "https://repos.slim.rocks/repo/?repoUrl=" + repo + "&manager=zebra")
+            LinkButton(
+              "Other Package Managers", Emoji(id: "1294780403055329300", name: "other"),
+              url: "https://repos.slim.rocks/repo/?repoUrl=" + repo)
           }
         }
       }
     }
-    
+
     // no easy way to equate this to intended output
   }
 }

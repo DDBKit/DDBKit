@@ -13,11 +13,13 @@ public struct Blockquote: MessageContentComponent {
     @MessageContentBuilder
     components: () -> [MessageContentComponent]
   ) {
-    self.txt = components().reduce("", { partialResult, txt in
-      return partialResult + txt.textualRepresentation
-    })
+    self.txt = components().reduce(
+      "",
+      { partialResult, txt in
+        return partialResult + txt.textualRepresentation
+      })
   }
-  
+
   public var textualRepresentation: String {
     txt
       .trimmingCharacters(in: .whitespacesAndNewlines)

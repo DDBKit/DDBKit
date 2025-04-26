@@ -5,14 +5,13 @@
 //  Created by Lakhan Lothiyi on 23/10/2024.
 //
 
-
 import DiscordBM
 
 /// Group subcommands under a label
 public struct SubcommandGroup: BaseInfoType {
-  var commands: [Subcommand] // this carries the instances so we keep trigger intact
+  var commands: [Subcommand]  // this carries the instances so we keep trigger intact
   var baseInfo: ApplicationCommand.Option
-    
+
   public init(_ name: String, @SubcommandBuilder _ tree: () -> [Subcommand]) {
     self.commands = []
     self.baseInfo = .init(

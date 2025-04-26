@@ -5,9 +5,9 @@
 //  Created by Lakhan Lothiyi on 17/09/2024.
 //
 
-import DiscordModels
 import DiscordGateway
 import DiscordHTTP
+import DiscordModels
 
 /// Give `Command` and `ComplexCommand` conformance so they can be used the same behind the scenes
 public protocol BaseCommand: BaseContextCommand {
@@ -19,11 +19,11 @@ public protocol BaseCommand: BaseContextCommand {
   ) async
 }
 
-public protocol BaseContextCommand: BotScene { // used in context menus like users and messages, so lacks autocomplete
+public protocol BaseContextCommand: BotScene {  // used in context menus like users and messages, so lacks autocomplete
   var guildScope: CommandGuildScope { get set }
   var baseInfo: Payloads.ApplicationCommandCreate { get set }
   func trigger(_ i: Interaction, _ instance: BotInstance) async throws
-  
+
   // contains callbacks for registering to the botinstance
   var modalReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] { get }
   var componentReceives: [String: [@Sendable (InteractionExtras) async throws -> Void]] { get }
@@ -52,8 +52,8 @@ extension IdentifiableCommand {
 public struct CommandGuildScope: Sendable {
   var scope: ScopeType
   var guilds: [GuildSnowflake]
-  
-	public enum ScopeType: Sendable {
+
+  public enum ScopeType: Sendable {
     case global
     case local
   }

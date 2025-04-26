@@ -17,11 +17,11 @@ public struct Link: MessageContentComponent {
     }
     return url + "\n"
   }
-  
+
   var url: String
   var disableLink: Bool
   var maskedText: Text?
-  
+
   public init(_ url: String, disableLinking: Bool = false) {
     self.url = url
     self.disableLink = disableLinking
@@ -29,7 +29,15 @@ public struct Link: MessageContentComponent {
   }
 }
 
-public extension Link {
-  func disableEmbedding() -> Self { var u = self; u.disableLink = true; return u }
-  func maskedWith(_ txt: () -> Text) -> Self { var u = self; u.maskedText = txt(); return u }
+extension Link {
+  public func disableEmbedding() -> Self {
+    var u = self
+    u.disableLink = true
+    return u
+  }
+  public func maskedWith(_ txt: () -> Text) -> Self {
+    var u = self
+    u.maskedText = txt()
+    return u
+  }
 }

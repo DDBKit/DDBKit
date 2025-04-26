@@ -13,7 +13,7 @@ public struct RoleMenu: _MessageComponentsActionRowComponent {
     .roleSelect(self.object)
   }
   var object: Interaction.ActionRow.SelectMenu
-  
+
   public init(_ placeholder: String? = nil) {
     self.object = .init(
       custom_id: "",
@@ -26,19 +26,19 @@ public struct RoleMenu: _MessageComponentsActionRowComponent {
   }
 }
 
-public extension RoleMenu {
-  
+extension RoleMenu {
+
   /// Disable the button from clicking.
   /// - Parameter bool: Disabled state
-  func disabled(_ bool: Bool = true) -> Self {
+  public func disabled(_ bool: Bool = true) -> Self {
     var copy = self
     copy.object.disabled = bool
     return copy
   }
-  
+
   /// Sets the number of choices to choose from.
   /// - Parameter choicesRange: Range
-  func choices(_ choicesRange: Range<Int>) -> Self {
+  public func choices(_ choicesRange: Range<Int>) -> Self {
     var copy = self
     copy.object.min_values = choicesRange.lowerBound
     copy.object.max_values = choicesRange.upperBound
@@ -46,24 +46,24 @@ public extension RoleMenu {
   }
   /// Sets the number of choices to choose from.
   /// - Parameter choicesRange: Range
-  func choices(_ choicesRange: ClosedRange<Int>) -> Self {
+  public func choices(_ choicesRange: ClosedRange<Int>) -> Self {
     var copy = self
     copy.object.min_values = choicesRange.lowerBound
     copy.object.max_values = choicesRange.upperBound
     return copy
   }
-  
+
   /// Set the default selected values of the menu.
   /// - Parameter values: Default values
-  func defaultValues(_ values: [ChannelSnowflake]) -> Self {
+  public func defaultValues(_ values: [ChannelSnowflake]) -> Self {
     var copy = self
     copy.object.default_values = values.map { .init(id: $0) }
     return copy
   }
-  
+
   /// Sets the button ID.
   /// - Parameter id: Button ID
-  func id(_ id: String) -> Self {
+  public func id(_ id: String) -> Self {
     var copy = self
     copy.object.custom_id = id
     return copy

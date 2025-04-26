@@ -8,8 +8,8 @@
 import DiscordModels
 
 // MARK: - Convert to DiscordBM message
-public extension Message {
-  var _createMessage: Payloads.CreateMessage {
+extension Message {
+  public var _createMessage: Payloads.CreateMessage {
     return .init(
       content: _content,
       nonce: nil,
@@ -26,7 +26,7 @@ public extension Message {
       poll: _poll
     )
   }
-  var _editWebhookMessage: Payloads.EditWebhookMessage {
+  public var _editWebhookMessage: Payloads.EditWebhookMessage {
     return .init(
       content: _content,
       embeds: _embeds,
@@ -36,8 +36,8 @@ public extension Message {
       attachments: _attachments
     )
   }
-  
-  var _interactionResponseMessage: Payloads.InteractionResponse.Message {
+
+  public var _interactionResponseMessage: Payloads.InteractionResponse.Message {
     return .init(
       tts: _tts,
       content: _content,
@@ -47,25 +47,25 @@ public extension Message {
       components: _components,
       attachments: _attachments,
       files: _files,
-			poll: _poll
-		)
-	}
-	
-	var _webhookResponseMessage: Payloads.ExecuteWebhook {
-		return .init(
-			content: _content,
-			tts: _tts,
-			embeds: _embeds,
-			allowed_mentions: _allowed_mentions,
-			components: _components,
-			files: _files,
-			attachments: _attachments,
-			flags: _flags,
-			poll: _poll
-		)
-	}
-  
-  var _editMessage: Payloads.EditMessage {
+      poll: _poll
+    )
+  }
+
+  public var _webhookResponseMessage: Payloads.ExecuteWebhook {
+    return .init(
+      content: _content,
+      tts: _tts,
+      embeds: _embeds,
+      allowed_mentions: _allowed_mentions,
+      components: _components,
+      files: _files,
+      attachments: _attachments,
+      flags: _flags,
+      poll: _poll
+    )
+  }
+
+  public var _editMessage: Payloads.EditMessage {
     return .init(
       content: _content,
       embeds: _embeds,

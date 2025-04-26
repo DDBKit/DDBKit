@@ -5,37 +5,47 @@
 //  Created by Lakhan Lothiyi on 11/11/2024.
 //
 
-
 import DiscordBM
 import Foundation
 
 @_spi(Extensions)
 extension ExtensibleCommand {
-  public func preAction(_ action: @Sendable @escaping (BaseContextCommand, InteractionExtras) async throws -> Void) -> Self {
+  public func preAction(
+    _ action: @Sendable @escaping (BaseContextCommand, InteractionExtras) async throws -> Void
+  ) -> Self {
     var copy = self
     copy._preActions.append(action)
     return copy
   }
-  
-  public func postAction(_ action: @Sendable @escaping (BaseContextCommand, InteractionExtras) async throws -> Void) -> Self {
+
+  public func postAction(
+    _ action: @Sendable @escaping (BaseContextCommand, InteractionExtras) async throws -> Void
+  ) -> Self {
     var copy = self
     copy._postActions.append(action)
     return copy
   }
-  
-  public func catchAction(_ action: @Sendable @escaping (any Error, BaseContextCommand, InteractionExtras) async throws -> Void) -> Self {
+
+  public func catchAction(
+    _ action: @Sendable @escaping (any Error, BaseContextCommand, InteractionExtras) async throws ->
+      Void
+  ) -> Self {
     var copy = self
     copy._errorActions.append(action)
     return copy
   }
-  
-  public func boot(_ action: @Sendable @escaping (BaseContextCommand, BotInstance) async throws -> Void) -> Self {
+
+  public func boot(
+    _ action: @Sendable @escaping (BaseContextCommand, BotInstance) async throws -> Void
+  ) -> Self {
     var copy = self
     copy._bootActions.append(action)
     return copy
   }
-  
-  var _errorActions: [@Sendable (any Error, BaseContextCommand, InteractionExtras) async throws -> Void] {
+
+  var _errorActions:
+    [@Sendable (any Error, BaseContextCommand, InteractionExtras) async throws -> Void]
+  {
     get {
       self._self.actions.errorActions
     }
@@ -79,6 +89,6 @@ extension ExtensibleCommand {
 
 extension ExtensibleCommand {
   var _self: _ExtensibleCommand {
-    return self as! _ExtensibleCommand // will always work trust
+    return self as! _ExtensibleCommand  // will always work trust
   }
 }

@@ -14,17 +14,21 @@ public struct Codeblock: MessageContentComponent {
     self.txt = str
     self.lang = lang
   }
-  
+
   public var textualRepresentation: String {
     return """
-```\(lang)
-\(txt)
-```
+      ```\(lang)
+      \(txt)
+      ```
 
-""" // that newline on line 23 is required.
+      """   // that newline on line 23 is required.
   }
 }
 
-public extension Codeblock {
-  func language(_ lang: String) -> Self { var c = self; c.lang = lang; return c }
+extension Codeblock {
+  public func language(_ lang: String) -> Self {
+    var c = self
+    c.lang = lang
+    return c
+  }
 }

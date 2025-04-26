@@ -8,21 +8,21 @@
 import Foundation
 
 public struct EntitlementCreateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Entitlement
   public var eventType: Gateway.Event.EventType = .entitlementCreate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct EntitlementUpdateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Entitlement
   public var eventType: Gateway.Event.EventType = .entitlementUpdate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct EntitlementDeleteEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Entitlement
   public var eventType: Gateway.Event.EventType = .entitlementDelete
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }

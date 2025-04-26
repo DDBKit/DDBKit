@@ -6,16 +6,15 @@
 //
 
 @_spi(Extensions)
-public extension BotInstance {
+extension BotInstance {
   /// Read-only bot gateway instance
-  var bot: GatewayManager { _bot }
+  public var bot: GatewayManager { _bot }
   /// Read-only gateway cache instance
-  var cache: DiscordCache { _cache }
-  
-  
+  public var cache: DiscordCache { _cache }
+
   // exposed
-  
-  var events: [any BaseEvent] {
+
+  public var events: [any BaseEvent] {
     get {
       _events
     }
@@ -23,9 +22,9 @@ public extension BotInstance {
       _events = newValue
     }
   }
-  
+
   // we want to expose commands as `ExtensibleCommand` for ease of use
-  var commands: [any ExtensibleCommand] {
+  public var commands: [any ExtensibleCommand] {
     get {
       _commands.map { $0 as! any ExtensibleCommand }
     }

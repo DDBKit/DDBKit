@@ -15,7 +15,7 @@ public struct HelloEvent: BaseEvent {
 }
 
 public struct ReadyEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Gateway.Ready
   public var eventType: Gateway.Event.EventType = .ready
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }

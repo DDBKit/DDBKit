@@ -6,5 +6,5 @@
 //
 
 extension BotInstance {
-  
+
 }

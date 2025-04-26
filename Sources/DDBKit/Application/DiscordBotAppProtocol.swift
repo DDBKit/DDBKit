@@ -5,9 +5,9 @@
 //  Created by Lakhan Lothiyi on 22/03/2024.
 //
 
+import AsyncHTTPClient
 import DiscordBM
 import Foundation
-import AsyncHTTPClient
 
 /// This protocol is applied to the struct that your bot runs with.
 @MainActor
@@ -19,10 +19,10 @@ public protocol DiscordBotApp {
   /// Useful typealiases
   typealias Bot = GatewayManager
   typealias Cache = DiscordCache
-  
+
   /// Scenes
   @MainActor @BotSceneBuilder var body: [any BotScene] { get }
-  
+
   /// Initialization
   init() async
   /// Allows you to make configurations to the bot after initialisation and before bot connection.

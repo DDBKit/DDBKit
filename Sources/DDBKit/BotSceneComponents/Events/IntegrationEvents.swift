@@ -8,21 +8,21 @@
 import Foundation
 
 public struct IntegrationCreateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Gateway.IntegrationCreate
   public var eventType: Gateway.Event.EventType = .integrationCreate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct IntegrationUpdateEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Gateway.IntegrationCreate
   public var eventType: Gateway.Event.EventType = .integrationUpdate
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }
 }
 
 public struct IntegrationDeleteEvent: BaseEvent {
-public var action: @Sendable (T) async -> Void
+  public var action: @Sendable (T) async -> Void
   public typealias T = Gateway.IntegrationDelete
   public var eventType: Gateway.Event.EventType = .integrationDelete
   public init(_ action: @Sendable @escaping (T) async -> Void) { self.action = action }

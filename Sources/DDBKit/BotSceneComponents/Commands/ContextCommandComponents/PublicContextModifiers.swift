@@ -5,58 +5,56 @@
 //  Created by Lakhan Lothiyi on 15/10/2024.
 //
 
-
-import Foundation
 @_spi(UserInstallableApps) import DiscordModels
+import Foundation
 
 // misc modifiers go here
 
-public extension Context {
+extension Context {
   /// Whether or not this command can be used in DMs.
-  func isUsableInDMS(_ usable: Bool) -> Self {
+  public func isUsableInDMS(_ usable: Bool) -> Self {
     var copy = self
     copy.baseInfo.dm_permission = usable
     return copy
   }
-  
-  func defaultPermissionRequirement(_ perms: [Permission]) -> Self {
+
+  public func defaultPermissionRequirement(_ perms: [Permission]) -> Self {
     var copy = self
-    copy.baseInfo.default_member_permissions = Optional(perms).map({ .init($0) }) // Optional is part of a weird type requirement
+    copy.baseInfo.default_member_permissions = Optional(perms).map({ .init($0) })  // Optional is part of a weird type requirement
     return copy
   }
-  
+
   /// Whether or not this command is NSFW.
-  func isNSFW(_ nsfw: Bool) -> Self {
+  public func isNSFW(_ nsfw: Bool) -> Self {
     var copy = self
     copy.baseInfo.nsfw = nsfw
     return copy
   }
-  
+
   /// How and where this command can be utilised.
-  func integrationType(_ type: IType, contexts: IContexts) -> Self {
+  public func integrationType(_ type: IType, contexts: IContexts) -> Self {
     var copy = self
     copy.baseInfo.integration_types = type.map(\.value)
     copy.baseInfo.contexts = contexts.map(\.value)
     return copy
   }
-  
-  typealias IType = [Self.IntegrationKind]
-  typealias IContexts = [Self.ContextKind]
-  
-  struct IntegrationTypeOptions: OptionSet, Sendable {
+
+  public typealias IType = [Self.IntegrationKind]
+  public typealias IContexts = [Self.ContextKind]
+
+  public struct IntegrationTypeOptions: OptionSet, Sendable {
     public let rawValue: UInt
     public init(rawValue: UInt) {
       self.rawValue = rawValue
     }
-    static let guildInstall    = IntegrationTypeOptions(rawValue: 1 << 0)
-    static let userInstall  = IntegrationTypeOptions(rawValue: 1 << 1)
+    static let guildInstall = IntegrationTypeOptions(rawValue: 1 << 0)
+    static let userInstall = IntegrationTypeOptions(rawValue: 1 << 1)
   }
-  
-  
-  enum IntegrationKind {
-    case guildInstall // 0
-    case userInstall // 1
-    
+
+  public enum IntegrationKind {
+    case guildInstall  // 0
+    case userInstall  // 1
+
     var value: DiscordApplication.IntegrationKind {
       return switch self {
       case .guildInstall: .guildInstall
@@ -64,11 +62,11 @@ public extension Context {
       }
     }
   }
-  enum ContextKind {
-    case guild // 0
-    case botDm // 1
-    case privateChannel // 2
-    
+  public enum ContextKind {
+    case guild  // 0
+    case botDm  // 1
+    case privateChannel  // 2
+
     var value: Interaction.ContextKind {
       switch self {
       case .guild: .guild
@@ -77,14 +75,14 @@ public extension Context {
       }
     }
   }
-  
+
   /// Scopes this command to global use or local to a set of servers.
   /// Intended to make development and testing easier.
   /// This will only be used on registration of a command at launch.
   /// - Parameters:
   ///   - scope: The local or global scope
   ///   - guilds: The guild snowflakes to add onto the array of guilds to target
-  func guildScope(
+  public func guildScope(
     _ scope: CommandGuildScope.ScopeType,
     _ guilds: [GuildSnowflake] = []
   ) -> Self {
@@ -93,51 +91,57 @@ public extension Context {
     copy.guildScope.guilds.append(contentsOf: guilds)
     return copy
   }
-  
+
   /// Receive modals under this custom ID.
   /// - Parameters:
   ///   - id: Modal custom ID
   ///   - event: Event callback
-  func modal(on id: String, _ event: @Sendable @escaping (InteractionExtras) async throws -> Void) -> Self {
+  public func modal(
+    on id: String, _ event: @Sendable @escaping (InteractionExtras) async throws -> Void
+  ) -> Self {
     var copy = self
     copy.modalReceives.append(event, to: id)
     return copy
   }
-  
+
   /// Receive all modal events, intended for manual handling control.
   /// - Parameters:
   ///   - event: Event callback
-  func modal(_ event: @Sendable @escaping (InteractionExtras) async throws -> Void) -> Self {
+  public func modal(_ event: @Sendable @escaping (InteractionExtras) async throws -> Void) -> Self {
     var copy = self
     copy.modalReceives.append(event, to: "")
     return copy
   }
-  
+
   /// Receive component interactions under this custom ID.
   /// - Parameters:
   ///   - id: Modal custom ID
   ///   - event: Event callback
-  func component(on id: String, _ event: @Sendable @escaping (InteractionExtras) async throws -> Void) -> Self {
+  public func component(
+    on id: String, _ event: @Sendable @escaping (InteractionExtras) async throws -> Void
+  ) -> Self {
     var copy = self
     copy.componentReceives.append(event, to: id)
     return copy
   }
-  
+
   /// Receive all component interaction events, intended for manual handling control.
   /// - Parameters:
   ///   - event: Event callback
-  func component(_ event: @Sendable @escaping (InteractionExtras) async throws -> Void) -> Self {
+  public func component(_ event: @Sendable @escaping (InteractionExtras) async throws -> Void)
+    -> Self
+  {
     var copy = self
     copy.componentReceives.append(event, to: "")
     return copy
   }
 }
 
-public extension Context.IType {
+extension Context.IType {
   /// Specifies guild and user installs
-  static var all: Self { [.guildInstall, .userInstall] }
+  public static var all: Self { [.guildInstall, .userInstall] }
 }
-public extension Context.IContexts {
+extension Context.IContexts {
   /// Specifies bot DMs, guilds, and user DMs
-  static var all: Self { [.botDm, .guild, .privateChannel] }
+  public static var all: Self { [.botDm, .guild, .privateChannel] }
 }

@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
 import XCTest
+
 @testable @_spi(Extension) import DDBKit
 @testable import DDBKitUtilities
 @testable import Database
@@ -39,17 +39,17 @@ final class MessageBuilderTests: XCTestCase {
         }
       }
     }
-    
+
     let expected1 = """
-Italic: *true story*
-Bold: **true story**
-Strikethrough: ~~true story~~
-Bold + Strikethrough: **~~true story~~**
-"""
-    
+      Italic: *true story*
+      Bold: **true story**
+      Strikethrough: ~~true story~~
+      Bold + Strikethrough: **~~true story~~**
+      """
+
     XCTAssertEqual(msg.content.textualRepresentation, expected1)
   }
-  
+
   func testMessageBuilderComplexContent() throws {
     let msg = Message {
       MessageContent {
@@ -74,17 +74,17 @@ Bold + Strikethrough: **~~true story~~**
           }
       }
     }
-    
+
     let expected = """
-# __Welcome to *The Test*!__
-## We're testing the Message DSL
-~~Actually scratch that~~
-[**check out this!**](<https://llsc12.me>)
-"""
-    
+      # __Welcome to *The Test*!__
+      ## We're testing the Message DSL
+      ~~Actually scratch that~~
+      [**check out this!**](<https://llsc12.me>)
+      """
+
     XCTAssertEqual(msg.content.textualRepresentation, expected)
   }
-  
+
   func testMessageBuilderLineBreaksContent() throws {
     let msg = Message {
       MessageContent {
@@ -96,16 +96,16 @@ Bold + Strikethrough: **~~true story~~**
         Text("text 2")
       }
     }
-    
+
     let expected = """
-1, 2, 3, 4
-text 1
-text 2
-"""
-    
+      1, 2, 3, 4
+      text 1
+      text 2
+      """
+
     XCTAssertEqual(msg.content.textualRepresentation, expected)
   }
-  
+
   func testMessageBuilderContentConditionalBranches() throws {
     let random = Bool.random()
     let msg = Message {
@@ -120,85 +120,86 @@ text 2
         Text("text 2")
       }
     }
-    
+
     let expected1 = """
-text 1
-text 2
-"""
-    
+      text 1
+      text 2
+      """
+
     let expected2 = """
-1, 2, 3, 4
-text 1
-text 2
-"""
+      1, 2, 3, 4
+      text 1
+      text 2
+      """
     if random {
       XCTAssertEqual(msg.content.textualRepresentation, expected2)
     } else {
       XCTAssertEqual(msg.content.textualRepresentation, expected1)
     }
   }
-  
+
   func testMessageBuilderComplexBlocksContent() throws {
-let msg = Message {
-  MessageContent {
-    Heading {
-      Text {
-        Text("Welcome to ")
-        Text("The Test")
-          .italic()
-        Text("!")
-      }
-      .underlined()
-    }
-    Heading("We're testing the Message DSL")
-      .medium()
-    Text("Actually scratch that")
-      .strikethrough()
-    Link("https://llsc12.me")
-      .disableEmbedding()
-      .maskedWith {
-        Text("check out this!")
-          .bold()
-      }
-    Blockquote {
-      Heading {
-        Text("Blockquote!")
+    let msg = Message {
+      MessageContent {
+        Heading {
+          Text {
+            Text("Welcome to ")
+            Text("The Test")
+              .italic()
+            Text("!")
+          }
           .underlined()
+        }
+        Heading("We're testing the Message DSL")
+          .medium()
+        Text("Actually scratch that")
+          .strikethrough()
+        Link("https://llsc12.me")
+          .disableEmbedding()
+          .maskedWith {
+            Text("check out this!")
+              .bold()
+          }
+        Blockquote {
+          Heading {
+            Text("Blockquote!")
+              .underlined()
+          }
+          .medium()
+          Text("yep, we got em")
+        }
+        Code("wagwan")
+        Codeblock(
+          """
+          for i in 0...10 {
+            print(i)
+          }
+          print("done!")
+          """
+        )
+        .language("swift")
       }
-      .medium()
-      Text("yep, we got em")
     }
-    Code("wagwan")
-    Codeblock("""
-for i in 0...10 {
-  print(i)
-}
-print("done!")
-"""
-    )
-    .language("swift")
-  }
-}
-    
+
     let expected = """
-# __Welcome to *The Test*!__
-## We're testing the Message DSL
-~~Actually scratch that~~
-[**check out this!**](<https://llsc12.me>)
-> ## __Blockquote!__
-> yep, we got em
-`wagwan`
-```swift
-for i in 0...10 {
-  print(i)
-}
-print("done!")
-```
-"""
-    
+      # __Welcome to *The Test*!__
+      ## We're testing the Message DSL
+      ~~Actually scratch that~~
+      [**check out this!**](<https://llsc12.me>)
+      > ## __Blockquote!__
+      > yep, we got em
+      `wagwan`
+      ```swift
+      for i in 0...10 {
+        print(i)
+      }
+      print("done!")
+      ```
+      """
+
     XCTAssertEqual(msg.content.textualRepresentation, expected)
   }
-  
+
   func testMessageBuilderEmbedConditionalBranches() throws {
     let random = Bool.random()
     let msg = Message {
@@ -213,7 +214,7 @@ print("done!")
       .setColor(.cyan)
       .setURL("https://llsc12.me")
     }
-    
+
     _ = Message {
       MessageComponents {
         ActionRow {
@@ -221,10 +222,10 @@ print("done!")
         }
       }
     }
-    
+
     XCTAssertEqual(msg.embeds[0].title, random ? "wagwan" : "heyyy")
   }
-  
+
   func testMessageBuilderEmbedLoops() throws {
     let msg = Message {
       MessageEmbed {
@@ -235,10 +236,10 @@ print("done!")
       .setColor(.cyan)
       .setURL("https://llsc12.me")
     }
-    
+
     XCTAssertEqual(msg.embeds[0].fields?.count, 10)
   }
-  
+
   func testLooping() {
     let msg = Message {
       MessageContent {
@@ -246,7 +247,7 @@ print("done!")
         for i in 0...5 {
           Text("\(i)")
         }
-        
+
         Text {
           for _ in 0...5 {
             Text("meow ")
@@ -254,18 +255,20 @@ print("done!")
         }
       }
     }
-    XCTAssertEqual(msg.content.textualRepresentation, """
-gm
-0
-1
-2
-3
-4
-5
-meow meow meow meow meow meow
-""")
+    XCTAssertEqual(
+      msg.content.textualRepresentation,
+      """
+      gm
+      0
+      1
+      2
+      3
+      4
+      5
+      meow meow meow meow meow meow
+      """)
   }
-  
+
   func testEmbedDescNewlines() throws {
     let msg = Message {
       MessageEmbed {
@@ -276,7 +279,7 @@ meow meow meow meow meow meow
         })
       }
     }
-    
+
     XCTAssertEqual(msg.embeds[0].description, "1\n2\n3\n4\n5\n6\n7\n8\n9\n10")
   }
 }

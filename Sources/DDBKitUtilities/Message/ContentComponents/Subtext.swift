@@ -12,7 +12,7 @@ public struct Subtext: MessageContentComponent {
   public init(_ str: String) {
     self.txt = str
   }
-  
+
   public var textualRepresentation: String {
     return "-# \(txt)\n"
   }

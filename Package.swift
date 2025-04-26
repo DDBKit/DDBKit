@@ -1,8 +1,8 @@
 // swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
-import PackageDescription
 import CompilerPluginSupport
+import PackageDescription
 
 let package = Package(
   name: "DDBKit",
@@ -34,8 +34,8 @@ let package = Package(
   dependencies: [
     // We only use exact version tags to ensure the package doesn't break with a minor update
     // since Discord sucks.
-//    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.57.0"),
-    .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.13.0"),
+    //    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.57.0"),
+    .package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.13.0")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -77,6 +77,6 @@ let package = Package(
         "DDBKitUtilities",
         "DDBKitFoundation",
       ]
-    )
+    ),
   ]
 )

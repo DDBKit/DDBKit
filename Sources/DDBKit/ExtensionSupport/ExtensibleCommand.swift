@@ -20,13 +20,14 @@ protocol _ExtensibleCommand: ExtensibleCommand {
 public struct ActionInterceptions: Sendable {
   var preActions: [@Sendable (BaseContextCommand, InteractionExtras) async throws -> Void] = []
   var postActions: [@Sendable (BaseContextCommand, InteractionExtras) async throws -> Void] = []
-  var errorActions: [@Sendable (any Error, BaseContextCommand, InteractionExtras) async throws -> Void] = []
+  var errorActions:
+    [@Sendable (any Error, BaseContextCommand, InteractionExtras) async throws -> Void] = []
   var bootActions: [@Sendable (BaseContextCommand, BotInstance) async throws -> Void] = []
 }
 
 @_spi(Extensions)
-public extension ExtensibleCommand {
-  var baseInfo: Payloads.ApplicationCommandCreate {
+extension ExtensibleCommand {
+  public var baseInfo: Payloads.ApplicationCommandCreate {
     get {
       (self as! BaseContextCommand).baseInfo
     }
@@ -36,8 +37,8 @@ public extension ExtensibleCommand {
       self = copy as! Self
     }
   }
-  
-  var guildScope: CommandGuildScope {
+
+  public var guildScope: CommandGuildScope {
     get {
       (self as! BaseContextCommand).guildScope
     }

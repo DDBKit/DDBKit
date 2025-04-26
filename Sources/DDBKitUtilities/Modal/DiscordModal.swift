@@ -16,16 +16,21 @@ public struct Modal {
     return _modal
   }
   var _modal: Payloads.InteractionResponse.Modal
-  
-  public init( _ title: String, @GenericBuilder<MessageComponentsActionRowComponent> _ inputs: () -> GenericTuple<MessageComponentsActionRowComponent>) {
-    let fields = inputs().values.map { $0 as! TextField } // we dont use compact map and optional casting to ensure good code
+
+  public init(
+    _ title: String,
+    @GenericBuilder<MessageComponentsActionRowComponent> _ inputs: () -> GenericTuple<
+      MessageComponentsActionRowComponent
+    >
+  ) {
+    let fields = inputs().values.map { $0 as! TextField }  // we dont use compact map and optional casting to ensure good code
     let inputs = fields.map(\.object)
     self._modal = .init(custom_id: "", title: title, textInputs: inputs)
   }
 }
 
-public extension Modal {
-  func id(_ id: String) -> Self {
+extension Modal {
+  public func id(_ id: String) -> Self {
     var copy = self
     copy._modal.custom_id = id
     return copy

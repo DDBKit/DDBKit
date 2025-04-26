@@ -5,8 +5,8 @@
 //  Created by Lakhan Lothiyi on 22/04/2024.
 //
 
-import Foundation
 import DiscordModels
+import Foundation
 
 public protocol MessageEmbedComponent {
 }
@@ -14,7 +14,9 @@ public protocol MessageEmbedComponent {
 /// Interface to building an embed and it's contents, and then
 /// making an embed object.
 public struct MessageEmbed: MessageComponent {
-  public init(@GenericBuilder<MessageEmbedComponent> components: () -> GenericTuple<MessageEmbedComponent>) {
+  public init(
+    @GenericBuilder<MessageEmbedComponent> components: () -> GenericTuple<MessageEmbedComponent>
+  ) {
     let components: [MessageEmbedComponent] = components().values
     // begin finding components and setting variables
     self.title = Self._findLast(type: Title.self, in: components)?.text
@@ -45,25 +47,26 @@ public struct MessageEmbed: MessageComponent {
       return nil
     }()
   }
-  
-  static func _findLast<T: MessageEmbedComponent>(type: T.Type, in components: [MessageEmbedComponent]) -> T? {
-    (components.last(where: {$0 is T}) as? T)
+
+  static func _findLast<T: MessageEmbedComponent>(
+    type: T.Type, in components: [MessageEmbedComponent]
+  ) -> T? {
+    (components.last(where: { $0 is T }) as? T)
   }
-  
-  
-  var title: String? // component
+
+  var title: String?  // component
   var kind: Embed.Kind?
-  var description: String? // component
+  var description: String?  // component
   var url: String?
   var timestamp: Date?
   var color: DiscordColor?
-  var footer: Embed.Footer? // component
-  var image: Embed.Media? // component
-  var thumbnail: Embed.Media? // component
-  var video: Embed.Media? // component
+  var footer: Embed.Footer?  // component
+  var image: Embed.Media?  // component
+  var thumbnail: Embed.Media?  // component
+  var video: Embed.Media?  // component
   var provider: Embed.Provider?
   var author: Embed.Author?
-  var fields: [Embed.Field]? // component
+  var fields: [Embed.Field]?  // component
 }
 
 extension MessageEmbed {
@@ -86,11 +89,37 @@ extension MessageEmbed {
   }
 }
 
-public extension MessageEmbed {
-  func setKind(_ kind: Embed.Kind) -> Self { var e = self; e.kind = kind; return e }
-  func setTimestamp(_ date: Date = .now) -> Self { var e = self; e.timestamp = date; return e }
-  func setColor(_ color: DiscordColor?) -> Self { var e = self; e.color = color; return e }
-  func setURL(_ url: String) -> Self { var e = self; e.url = url; return e }
-  func setProvider(_ name: String, url: String? = nil) -> Self { var e = self; e.provider = .init(name: name, url: url); return e }
-  func setAuthor(_ name: String, url: String? = nil, icon_url: Embed.DynamicURL? = nil) -> Self { var e = self; e.author = .init(name: name, url: url, icon_url: icon_url); return e }
+extension MessageEmbed {
+  public func setKind(_ kind: Embed.Kind) -> Self {
+    var e = self
+    e.kind = kind
+    return e
+  }
+  public func setTimestamp(_ date: Date = .now) -> Self {
+    var e = self
+    e.timestamp = date
+    return e
+  }
+  public func setColor(_ color: DiscordColor?) -> Self {
+    var e = self
+    e.color = color
+    return e
+  }
+  public func setURL(_ url: String) -> Self {
+    var e = self
+    e.url = url
+    return e
+  }
+  public func setProvider(_ name: String, url: String? = nil) -> Self {
+    var e = self
+    e.provider = .init(name: name, url: url)
+    return e
+  }
+  public func setAuthor(_ name: String, url: String? = nil, icon_url: Embed.DynamicURL? = nil)
+    -> Self
+  {
+    var e = self
+    e.author = .init(name: name, url: url, icon_url: icon_url)
+    return e
+  }
 }

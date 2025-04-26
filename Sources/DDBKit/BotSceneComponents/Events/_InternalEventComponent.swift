@@ -31,8 +31,8 @@ extension BaseEvent {
 
 // i couldn't find a better way to do this
 
-public extension Gateway.Event.Payload {
-  func asType<T>(_ type: T.Type) -> T? { // swiftlint:disable:this cyclomatic_complexity function_body_length
+extension Gateway.Event.Payload {
+  public func asType<T>(_ type: T.Type) -> T? {  // swiftlint:disable:this cyclomatic_complexity function_body_length
     switch self {
     case .heartbeat(let lastSequenceNumber):
       return lastSequenceNumber as? T
@@ -188,9 +188,8 @@ public extension Gateway.Event.Payload {
   }
 }
 
-
 extension Gateway.Event {
-  func isOfType(_ type: EventType) -> Bool { // swiftlint:disable:this cyclomatic_complexity function_body_length
+  func isOfType(_ type: EventType) -> Bool {  // swiftlint:disable:this cyclomatic_complexity function_body_length
     switch self.data {
     case .heartbeat:
       return type == .heartbeat
@@ -341,12 +340,12 @@ extension Gateway.Event {
     case .autoModerationActionExecution:
       return type == .autoModerationActionExecution
     case .__undocumented:
-      return false // Handle undocumented case, if necessary
+      return false  // Handle undocumented case, if necessary
     case .none:
       return false
     }
   }
-  
+
   public enum EventType: Sendable {
     case heartbeat
     case identify
@@ -423,4 +422,4 @@ extension Gateway.Event {
     case autoModerationRuleDelete
     case autoModerationActionExecution
   }
-} // swiftlint:disable:this file_length
+}  // swiftlint:disable:this file_length

@@ -17,7 +17,9 @@ protocol BaseInfoType: SubcommandBaseTypes {
 
 @resultBuilder
 public struct SubcommandBaseBuilder {
-  public static func buildBlock(_ components: SubcommandBaseTypes...) -> [SubcommandBaseTypes] { components }
+  public static func buildBlock(_ components: SubcommandBaseTypes...) -> [SubcommandBaseTypes] {
+    components
+  }
 }
 @resultBuilder
 public struct SubcommandBuilder {
