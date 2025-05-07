@@ -61,7 +61,7 @@ extension InteractionExtras {
     .guardSuccess()
   }
 
-  public func followup(_ msg: () -> Message) async throws {
+  public func followup(_ msg: @Sendable () -> Message) async throws {
     try await self.client.createFollowupMessage(
       token: interaction.token,
       payload: msg()._webhookResponseMessage
@@ -78,7 +78,7 @@ extension InteractionExtras {
   }
 
   // MARK: Edit Interaction response
-  public func editResponse(_ msg: () -> Message) async throws {
+  public func editResponse(_ msg: @Sendable () -> Message) async throws {
     try await self.client.updateOriginalInteractionResponse(
       token: interaction.token,
       payload: msg()._editWebhookMessage

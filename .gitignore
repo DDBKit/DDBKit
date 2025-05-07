@@ -14,8 +14,8 @@ DerivedData/
 
 .netrc
 
-Example/Sources/token.swift
-Example/Sources/1984 Big Brother 2*
+Example/Sources/ExampleBot/token.swift
+Example/Sources/ExampleBot/1984 Big Brother 2*
 
 .swp
 .swiftpm

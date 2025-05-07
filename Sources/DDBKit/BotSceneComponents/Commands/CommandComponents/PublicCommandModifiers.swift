@@ -161,6 +161,8 @@ extension Command {
     copy.componentReceives.append(event, to: "")
     return copy
   }
+	
+	// TODO: support more methods of modal and component capture
 }
 
 extension Command.IType {

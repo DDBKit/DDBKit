@@ -1,5 +1,5 @@
 @_exported import AsyncHTTPClient
-@_exported import DiscordBM
+@_exported @_spi(UserInstallableApps) import DiscordBM
 import Logging
 
 // the following was borrowed from discordbm

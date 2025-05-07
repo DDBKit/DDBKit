@@ -27,6 +27,7 @@ struct MyNewBot: DiscordBotApp {
   func onBoot() async throws {
     // Register extensions
     RegisterExtension(BucketRatelimiting())
+    RegisterExtension(HelpGeneration())
 
     AssignGlobalCatch { error, interaction in
       // handle errors thrown from commands etc
@@ -57,10 +58,28 @@ struct MyNewBot: DiscordBotApp {
     .integrationType(.all, contexts: .all)
     .description("Ping the bot.")
     .ratelimited()
-
-    Command("fail") { interaction in
-      throw "test error"
-    }
+		
+		Commands
+		Manipulation
+		
+		SystemStatistics
+		
+		Command("test1") { interaction in }
+		Command("test2") { interaction in }
+		Command("test3") { interaction in }
+		Command("test4") { interaction in }
+		Command("test5") { interaction in }
+		Command("test6") { interaction in }
+		Command("test7") { interaction in }
+		Command("test8") { interaction in }
+		Command("test9") { interaction in }
+		Command("test10") { interaction in }
+		Command("test11") { interaction in }
+		Command("test12") { interaction in }
+		Command("test13") { interaction in }
+		Command("test14") { interaction in }
+		Command("test15") { interaction in }
+		Command("test16") { interaction in }
   }
 
   var bot: Bot
