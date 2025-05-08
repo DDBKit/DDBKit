@@ -11,6 +11,8 @@ import DDBKitUtilities
 import Database
 import Foundation
 
+var cc = CCColorCube()
+
 #if !os(Linux)
 	@preconcurrency import SwiftUI
 
@@ -255,6 +257,7 @@ import Foundation
 					// Defer the response
 					try await int.respond(with: .deferredChannelMessageWithSource())
 
+					// the calls to get guild member wont work if the bot isnt in the guild.
 					func getUserId(
 						from int: InteractionExtras,
 					) -> UserSnowflake? {
@@ -268,12 +271,17 @@ import Foundation
 					func fetchAvatar(for id: UserSnowflake, in guildId: GuildSnowflake?)
 						async throws -> String?
 					{
-						if let guildId, await cache.guilds[guildId] != nil {
-							let member = try await bot.client.getGuildMember(
+						if let guildId, await self.cache.guilds[guildId] != nil { // ensure bot is in guild before attempting
+							let member = try? await bot.client.getGuildMember(
 								guildId: guildId,
 								userId: id
 							).decode()
-							return member.avatar ?? member.user?.avatar
+							if let av = member?.avatar ?? member?.user?.avatar {
+								return av
+							} else {
+								let av = try await fetchAvatar(for: id, in: nil)
+								return av
+							}
 						} else {
 							let user = try await bot.client.getUser(id: id).decode()
 							return user.avatar
@@ -308,27 +316,34 @@ import Foundation
 						throw "Failed to convert image to png."
 					}
 
-					let palette = CCColorCube().extractColors(
-						from: nsimg,
-						flags: [.onlyDistinctColors, CCFlags.avoidWhite, .avoidBlack],
-						count: 1
-					)
-					let color = palette?.first
-					guard let color else { throw "Failed to get color from image." }
+					let colors =
+						cc.extractColors(
+							from: nsimg,
+							flags: [CCFlags.onlyDistinctColors],
+						) ?? []
 
-					let hex = color.hex
+					let colorsProminent =
+						cc.extractColors(
+							from: nsimg,
+							flags: [
+								CCFlags.onlyDistinctColors, CCFlags.orderByBrightness,
+								CCFlags.avoidWhite, .avoidBlack,
+							],
+							count: 1
+						) ?? []
+
+					guard !colors.isEmpty, let color = colorsProminent.first else {
+						throw "Failed to get color from image."
+					}
+
 					let rgb: (r: Int, g: Int, b: Int) = (
 						Int(color.rgb.r),
 						Int(color.rgb.g),
-						Int(color.rgb.b) // still in range of 0 to 255
+						Int(color.rgb.b)  // still in range of 0 to 255
 					)
 
 					let img = await Task.detached { @MainActor in
-						let view = Color.init(
-							red: Double(rgb.r) / 255,
-							green: Double(rgb.g) / 255,
-							blue: Double(rgb.b) / 255
-						)
+						let view = ColorGrid(colors: colors)
 						let renderer = ImageRenderer(content: view)
 						renderer.proposedSize = .init(width: 1024, height: 1024)
 						return renderer.cgImage
@@ -356,11 +371,15 @@ import Foundation
 							MessageEmbed {
 								Title("Profile Color")
 								Description {
-									Text("Looks like `\(hex)`")
+									UnorderedList {
+										for color in colors {
+											Text(color.hex)
+										}
+									}
 								}
 								Thumbnail(.attachment(name: "color.png"))
 								Image(.attachment(name: "img.png"))
-								Footer("Took \(formatted)s to render")
+								Footer("Took \(formatted)s to analyse and render")
 							}
 							.setColor(.init(red: rgb.r, green: rgb.g, blue: rgb.b) ?? .gray)
 						}
@@ -369,12 +388,39 @@ import Foundation
 				.description("Get profile color of a user")
 				.addingOptions {
 					UserOption(name: "user", description: "Profile to look at")
-					BoolOption(
-						name: "serverpfp",
-						description: "Whether to use server pfp (unimplemented)"
-					)
 				}
 				.integrationType(.all, contexts: .all)
+			}
+		}
+	}
+
+	struct ColorGrid: View {
+		let colors: [NSColor]
+		var body: some View {
+			// sqrt the number of colors to get the number of rows and columns, overestimate and never underestimate
+			let rows = Int(ceil(sqrt(Double(colors.count))))
+			let columns = Int(ceil(Double(colors.count) / Double(rows)))
+
+			let colorGrid = colors.chunks(ofCount: columns)
+
+			VStack(spacing: 0) {
+				ForEach(colorGrid, id: \.self) { row in
+					HStack(spacing: 0) {
+						ForEach(row, id: \.self) { color in
+							Color(color)
+								.overlay {
+									Text(color.hex)
+										.aspectRatio(1, contentMode: .fit)
+										.minimumScaleFactor(0.001)
+										.foregroundColor(.white)
+										.padding(5)
+										.font(.system(size: 256))
+										.fontDesign(.rounded)
+										.shadow(radius: 5)
+								}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -543,41 +589,41 @@ import Foundation
 			return value
 		}
 	}
+
+	enum MiscUtils {}
+
+	extension MiscUtils {
+		static func getUserID(from int: InteractionExtras) -> UserSnowflake? {
+			int.interaction.member?.user?.id ?? int.interaction.user?.id
+				?? int.interaction.message?.author?.id
+		}
+	}
+
+	extension NSBitmapImageRep {
+		var png: Data? { representation(using: .png, properties: [:]) }
+	}
+	extension Data {
+		var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
+	}
+	extension NSImage {
+		var pngData: Data? { tiffRepresentation?.bitmap?.png }
+	}
+	extension NSColor {
+		var hex: String {
+			let rgb = usingColorSpace(.deviceRGB) ?? .black
+			return String(
+				format: "#%02X%02X%02X",
+				Int(rgb.redComponent * 255),
+				Int(rgb.greenComponent * 255),
+				Int(rgb.blueComponent * 255)
+			)
+		}
+		var rgb: (r: UInt8, g: UInt8, b: UInt8) {
+			let rgb = usingColorSpace(.deviceRGB) ?? .black
+			return (
+				UInt8(rgb.redComponent * 255), UInt8(rgb.greenComponent * 255),
+				UInt8(rgb.blueComponent * 255)
+			)
+		}
+	}
 #endif
-
-enum MiscUtils {}
-
-extension MiscUtils {
-	static func getUserID(from int: InteractionExtras) -> UserSnowflake? {
-		int.interaction.member?.user?.id ?? int.interaction.user?.id
-			?? int.interaction.message?.author?.id
-	}
-}
-
-extension NSBitmapImageRep {
-	var png: Data? { representation(using: .png, properties: [:]) }
-}
-extension Data {
-	var bitmap: NSBitmapImageRep? { NSBitmapImageRep(data: self) }
-}
-extension NSImage {
-	var pngData: Data? { tiffRepresentation?.bitmap?.png }
-}
-extension NSColor {
-	var hex: String {
-		let rgb = usingColorSpace(.deviceRGB) ?? .black
-		return String(
-			format: "#%02X%02X%02X",
-			Int(rgb.redComponent * 255),
-			Int(rgb.greenComponent * 255),
-			Int(rgb.blueComponent * 255)
-		)
-	}
-	var rgb: (r: UInt8, g: UInt8, b: UInt8) {
-		let rgb = usingColorSpace(.deviceRGB) ?? .black
-		return (
-			UInt8(rgb.redComponent * 255), UInt8(rgb.greenComponent * 255),
-			UInt8(rgb.blueComponent * 255)
-		)
-	}
-}
