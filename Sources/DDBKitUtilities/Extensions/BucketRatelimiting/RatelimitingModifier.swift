@@ -27,7 +27,7 @@ extension ExtensibleCommand {
         let name = (self as! BaseContextCommand).baseInfo.name
 
         // Check the ratelimit
-        try await ratelimiter.ratelimitChecked(guildId: guildId, userId: userId, command: name)
-      }
+				try await ratelimiter.ratelimitChecked(guildId: guildId, userId: userId, command: name, config: config)
+			}
   }
 }
