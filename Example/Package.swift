@@ -29,8 +29,16 @@ let package = Package(
 		.executableTarget(
 			name: "ExampleBot",
 			dependencies: [
-				.product(name: "Dictionary", package: "PrivateFrameworks"),
-				.product(name: "Calculate", package: "PrivateFrameworks"),
+				.product(
+					name: "Dictionary",
+					package: "PrivateFrameworks",
+					condition: .when(platforms: [.macOS, .iOS, .tvOS])
+				),
+				.product(
+					name: "Calculate",
+					package: "PrivateFrameworks",
+					condition: .when(platforms: [.macOS, .iOS, .tvOS])
+				),
 				.product(name: "DDBKit", package: "DDBKit"),
 				.product(name: "Database", package: "DDBKit"),
 				.product(name: "DDBKitUtilities", package: "DDBKit"),
@@ -39,7 +47,11 @@ let package = Package(
 					name: "SoulverCore",
 					condition: .when(platforms: [.macOS, .iOS, .tvOS])
 				),
-				.product(name: "ColorCube", package: "ColorCube"),
+				.product(
+					name: "ColorCube",
+					package: "ColorCube",
+					condition: .when(platforms: [.macOS, .iOS, .tvOS])
+				),
 			]
 		),
 		.binaryTarget(

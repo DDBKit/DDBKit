@@ -5,15 +5,17 @@
 //  Created by Lakhan Lothiyi on 26/04/2025.
 //
 
+#if !os(Linux)
 import ColorCube
+#endif
 import DDBKit
 import DDBKitUtilities
 import Database
 import Foundation
 
-var cc = CCColorCube()
 
 #if !os(Linux)
+var cc = CCColorCube()
 	@preconcurrency import SwiftUI
 
 	extension MyNewBot {

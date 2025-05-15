@@ -5,15 +5,13 @@
 //  Created by Lakhan Lothiyi on 16/10/2024.
 //
 
-import DDBKit
-import DDBKitUtilities
-import Darwin
 import Foundation
-import MachO
 
 enum Speedtest {
 	static func isInstalled() -> Bool {
 		FileManager.default.fileExists(atPath: "/usr/local/bin/speedtest")
+			|| FileManager.default.fileExists(atPath: "/opt/homebrew/bin/speedtest")
+			|| FileManager.default.fileExists(atPath: "/usr/bin/speedtest")
 	}
 
 	static let dec = JSONDecoder()
@@ -38,7 +36,17 @@ enum Speedtest {
 		let process = Process()
 		let pipe = Pipe()
 
-		process.executableURL = URL(fileURLWithPath: "/usr/local/bin/speedtest")
+		if FileManager.default.fileExists(atPath: "/usr/local/bin/speedtest") {
+			process.executableURL = .init(fileURLWithPath: "/usr/local/bin/speedtest")
+		} else if FileManager.default.fileExists(
+			atPath: "/opt/homebrew/bin/speedtest"
+		) {
+			process.executableURL = .init(
+				fileURLWithPath: "/opt/homebrew/bin/speedtest"
+			)
+		} else {
+			process.executableURL = .init(fileURLWithPath: "/usr/bin/speedtest")
+		}
 		process.arguments = ["--json", type.rawValue]
 		if let id {
 			process.arguments?.append(contentsOf: ["--server", id])

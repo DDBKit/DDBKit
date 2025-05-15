@@ -64,7 +64,9 @@ struct MyNewBot: DiscordBotApp {
 		.ratelimited()
 
 		Commands
+		#if !os(Linux)
 		Manipulation
+		#endif
 
 		SystemStatistics
 

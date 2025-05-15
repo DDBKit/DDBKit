@@ -8,9 +8,16 @@
 
 import DDBKit
 import DDBKitUtilities
-import Darwin
 import Foundation
-import MachO
+
+#if canImport(Darwin)
+	import Darwin
+#elseif canImport(Glibc)
+	import Glibc
+#endif
+#if canImport(MachO)
+	import MachO
+#endif
 
 enum SystemMetrics {
 	struct SystemMetricsData {
@@ -20,72 +27,180 @@ enum SystemMetrics {
 	}
 
 	static func getProcessMetrics() -> SystemMetricsData? {
-		// Memory statistics
-		var taskInfo = mach_task_basic_info()
-		var count =
-			mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size) / 4
-		let kerr: kern_return_t = withUnsafeMutablePointer(
-			to:
-				&taskInfo
-		) {
-			$0.withMemoryRebound(to: integer_t.self, capacity: 1) {
-				task_info(
-					mach_task_self_,
-					task_flavor_t(MACH_TASK_BASIC_INFO),
-					$0,
-					&count
-				)
-			}
-		}
-
-		guard kerr == KERN_SUCCESS else {
-			return nil
-		}
-
-		let residentMemoryBytes = Int(taskInfo.resident_size) / 10
-		let virtualMemoryBytes = Int(taskInfo.virtual_size) / 10
-
-		guard kerr == KERN_SUCCESS else {
-			return nil
-		}
-
-		// CPU usage
-		let cpu = (getCPUUsage(for: getpid()) ?? 0) / 100
-
-		return SystemMetricsData(
-			virtualMemoryBytes: virtualMemoryBytes,
-			residentMemoryBytes: residentMemoryBytes,
-			cpuUsage: cpu
-		)
-	}
-
-	static func getCPUUsage(for pid: Int32) -> Double? {
-		let process = Process()
-		let pipe = Pipe()
-
-		process.executableURL = URL(fileURLWithPath: "/bin/ps")
-		process.arguments = ["-p", "\(pid)", "-o", "%cpu"]
-		process.standardOutput = pipe
-
-		do {
-			try process.run()
-			process.waitUntilExit()
-
-			let data = pipe.fileHandleForReading.readDataToEndOfFile()
-			if let output = String(data: data, encoding: .utf8) {
-				let lines = output.split(separator: "\n")
-				if lines.count > 1 {
-					let cpuString = lines[1].trimmingCharacters(
-						in: .whitespacesAndNewlines
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+			// Memory statistics (macOS implementation)
+			var taskInfo = mach_task_basic_info()
+			var count =
+				mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size) / 4
+			let kerr: kern_return_t = withUnsafeMutablePointer(
+				to: &taskInfo
+			) {
+				$0.withMemoryRebound(to: integer_t.self, capacity: 1) {
+					task_info(
+						mach_task_self_,
+						task_flavor_t(MACH_TASK_BASIC_INFO),
+						$0,
+						&count
 					)
-					return Double(cpuString)
 				}
 			}
-		} catch {
-			print("Error running ps command: \(error)")
+
+			guard kerr == KERN_SUCCESS else {
+				return nil
+			}
+
+			let residentMemoryBytes = Int(taskInfo.resident_size) / 10
+			let virtualMemoryBytes = Int(taskInfo.virtual_size) / 10
+
+			// CPU usage
+			let cpu = (getCPUUsage(for: getpid()) ?? 0) / 100
+
+			return SystemMetricsData(
+				virtualMemoryBytes: virtualMemoryBytes,
+				residentMemoryBytes: residentMemoryBytes,
+				cpuUsage: cpu
+			)
+		#elseif os(Linux)
+			// Linux implementation
+			let pid = getpid()
+
+			// Process memory information from /proc/[pid]/status
+			guard let memory = getLinuxProcessMemory(for: pid) else {
+				return nil
+			}
+
+			// CPU usage
+			let cpu = (getLinuxCPUUsage(for: pid) ?? 0)
+
+			return SystemMetricsData(
+				virtualMemoryBytes: memory.virtualMemoryBytes,
+				residentMemoryBytes: memory.residentMemoryBytes,
+				cpuUsage: cpu
+			)
+		#else
+			// Unsupported platform
+			return nil
+		#endif
+	}
+
+	#if os(Linux)
+		private static func getLinuxProcessMemory(for pid: Int32) -> (
+			virtualMemoryBytes: Int, residentMemoryBytes: Int
+		)? {
+			let statusPath = "/proc/\(pid)/status"
+
+			guard
+				let statusContent = try? String(
+					contentsOfFile: statusPath,
+					encoding: .utf8
+				)
+			else {
+				return nil
+			}
+
+			let lines = statusContent.split(separator: "\n")
+			var vmSize: Int?
+			var vmRSS: Int?
+
+			for line in lines {
+				if line.hasPrefix("VmSize:") {
+					let parts = line.split(separator: ":")
+					if parts.count > 1 {
+						let valueStr = parts[1].trimmingCharacters(in: .whitespaces)
+						if let value = extractKilobytes(from: valueStr) {
+							vmSize = value * 1024 / 10  // Convert to bytes then divide by 10 to match macOS scale
+						}
+					}
+				} else if line.hasPrefix("VmRSS:") {
+					let parts = line.split(separator: ":")
+					if parts.count > 1 {
+						let valueStr = parts[1].trimmingCharacters(in: .whitespaces)
+						if let value = extractKilobytes(from: valueStr) {
+							vmRSS = value * 1024 / 10  // Convert to bytes then divide by 10 to match macOS scale
+						}
+					}
+				}
+			}
+
+			if let vmSize = vmSize, let vmRSS = vmRSS {
+				return (vmSize, vmRSS)
+			}
+
+			return nil
 		}
 
-		return nil
+		private static func extractKilobytes(from string: String) -> Int? {
+			let components = string.split(separator: " ")
+			guard components.count >= 1, let value = Int(components[0]) else {
+				return nil
+			}
+			return value
+		}
+
+		private static func getLinuxCPUUsage(for pid: Int32) -> Double? {
+			// We'll use the same approach as the macOS version for consistency
+			let process = Process()
+			let pipe = Pipe()
+
+			process.executableURL = URL(fileURLWithPath: "/usr/bin/ps")
+			process.arguments = ["-p", "\(pid)", "-o", "%cpu"]
+			process.standardOutput = pipe
+
+			do {
+				try process.run()
+				process.waitUntilExit()
+
+				let data = pipe.fileHandleForReading.readDataToEndOfFile()
+				if let output = String(data: data, encoding: .utf8) {
+					let lines = output.split(separator: "\n")
+					if lines.count > 1 {
+						let cpuString = lines[1].trimmingCharacters(
+							in: .whitespacesAndNewlines
+						)
+						return Double(cpuString)
+					}
+				}
+			} catch {
+				print("Error running ps command: \(error)")
+			}
+
+			return nil
+		}
+	#endif
+
+	static func getCPUUsage(for pid: Int32) -> Double? {
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+			let process = Process()
+			let pipe = Pipe()
+
+			process.executableURL = URL(fileURLWithPath: "/bin/ps")
+			process.arguments = ["-p", "\(pid)", "-o", "%cpu"]
+			process.standardOutput = pipe
+
+			do {
+				try process.run()
+				process.waitUntilExit()
+
+				let data = pipe.fileHandleForReading.readDataToEndOfFile()
+				if let output = String(data: data, encoding: .utf8) {
+					let lines = output.split(separator: "\n")
+					if lines.count > 1 {
+						let cpuString = lines[1].trimmingCharacters(
+							in: .whitespacesAndNewlines
+						)
+						return Double(cpuString)
+					}
+				}
+			} catch {
+				print("Error running ps command: \(error)")
+			}
+
+			return nil
+		#elseif os(Linux)
+			return getLinuxCPUUsage(for: pid)
+		#else
+			return nil
+		#endif
 	}
 
 	static func swiftVersion() -> String {

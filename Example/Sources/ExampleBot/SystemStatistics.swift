@@ -7,9 +7,7 @@
 
 import DDBKit
 import DDBKitUtilities
-import Darwin
 import Foundation
-import MachO
 
 let _processStartDate: Date = {
 	return .now
