@@ -35,7 +35,7 @@ let package = Package(
 		// We only use exact version tags to ensure the package doesn't break with a minor update
 		// since Discord sucks.
 		//    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.57.0"),
-		.package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.13.0")
+		.package(url: "https://github.com/DiscordBM/DiscordBM", exact: "1.13.3")
 	],
 	targets: [
 		// Targets are the basic building blocks of a package, defining a module or a test suite.
