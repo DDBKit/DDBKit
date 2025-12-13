@@ -29,7 +29,8 @@ internal protocol _AutocompletableOption: Option, AutocompletableOption {  // sw
   var autocompletion:
     (
       @Sendable (
-        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand
+        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand,
+        Interaction
       ) async -> [ApplicationCommand.Option.Choice]
     )?
   { get set }
@@ -55,7 +56,8 @@ public struct StringOption: Option, _AutocompletableOption, ChoiceOption,
   internal var autocompletion:
     (
       @Sendable (
-        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand
+        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand,
+        Interaction
       ) async -> [ApplicationCommand.Option.Choice]
     )?
   @_spi(Extensions) public var optionData: ApplicationCommand.Option
@@ -72,7 +74,8 @@ public struct IntOption: Option, _AutocompletableOption, ChoiceOption,
   internal var autocompletion:
     (
       @Sendable (
-        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand
+        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand,
+        Interaction
       ) async -> [ApplicationCommand.Option.Choice]
     )?
   @_spi(Extensions) public var optionData: ApplicationCommand.Option
@@ -150,7 +153,8 @@ public struct DoubleOption: Option, _AutocompletableOption, ChoiceOption,
   internal var autocompletion:
     (
       @Sendable (
-        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand
+        Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand,
+        Interaction
       ) async -> [ApplicationCommand.Option.Choice]
     )?
   @_spi(Extensions) public var optionData: ApplicationCommand.Option
@@ -189,8 +193,12 @@ extension AutocompletableOption {
   /// Allows configuration of a callback that provides autocomplete to users, return an array of `choice` objects.
   /// - Parameter completion: Autocomplete handler
   public func autocompletions(
-    _ completion: @Sendable @escaping
-    (Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand)
+    _ completion:
+      @Sendable @escaping
+    (
+      Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand,
+      Interaction
+    )
       async -> [ApplicationCommand.Option.Choice]
 
   ) -> Self {
@@ -200,14 +208,32 @@ extension AutocompletableOption {
     return copy as! Self
   }
 
+  /// Allows configuration of a callback that provides autocomplete to users, return an array of `choice` objects.
+  /// - Parameter completion: Autocomplete handler
+  public func autocompletions(
+    _ completion:
+      @Sendable @escaping
+    (Interaction.ApplicationCommand.Option, Interaction.ApplicationCommand)
+      async -> [ApplicationCommand.Option.Choice]
+
+  ) -> Self {
+    var copy = self as! _AutocompletableOption  // will always work
+    copy.autocompletion = { option, cmd, interaction in
+      return await completion(option, cmd)
+    }  // set autocompletion callback on self
+    copy.optionData.autocomplete = true
+    return copy as! Self
+  }
+
   /// Allows configuration of a callback that provides autocomplete to users, return an array of choices.
   /// - Parameter completion: Autocomplete handler
   public func autocompletions(
-    _ completion: @Sendable @escaping (StringIntDoubleBool?) async ->
+    _ completion:
+      @Sendable @escaping (StringIntDoubleBool?) async ->
       [StringIntDoubleBool]
   ) -> Self {
     var copy = self as! _AutocompletableOption  // will always work
-    copy.autocompletion = { option, _ in
+    copy.autocompletion = { option, _, _ in
       let options = await completion(option.value)  // generally discord returns empty strings
       return options.map { .init(name: $0.asString, value: $0) }
     }
