@@ -43,7 +43,6 @@ let package = Package(
       name: "MyNewBot",
       dependencies: [
         .product(name: "DDBKit", package: "DDBKit"),
-        .product(name: "Database", package: "DDBKit"),
         .product(name: "DDBKitUtilities", package: "DDBKit"),
         .product(name: "DDBKitFoundation", package: "DDBKit"),
       ]
@@ -91,7 +90,6 @@ struct MyNewBot: DiscordBotApp {
     }
     
     MessageCreateEvent { msg in
-      guard let msg else { return }
       print("[\(msg.author?.username ?? "unknown")] \(msg.content)")
     }
   }
