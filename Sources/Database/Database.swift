@@ -11,7 +11,7 @@ import Foundation
 // this database library is for storing data associated with entities
 // such as discord users, servers, channels and such.
 public actor Database {
-  public static var shared = Database()
+  public nonisolated(unsafe) static var shared = Database()
   init(basePath: URL? = nil) {
     precondition(
       Bundle.main.executableURL != nil,

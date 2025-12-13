@@ -61,7 +61,7 @@ public struct Subcommand: BaseInfoType, LocalisedThrowable {
     let option = autocompletableOptions.first(where: { $0.optionData.name == opt.name })
     // run autocompletions callback
 
-    let autocompletionsValues = await option?.autocompletion?(opt, cmd)
+    let autocompletionsValues = await option?.autocompletion?(opt, cmd, i)
 
     // return these choices
     _ = try? await client.createInteractionResponse(
