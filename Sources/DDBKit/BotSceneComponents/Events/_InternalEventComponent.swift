@@ -10,7 +10,7 @@ import DiscordBM
 // this protocol is used to give all events conformance to receive events.
 public protocol BaseEvent<T>: BotScene {
   associatedtype T: Codable
-  var action: (T) async -> Void { get set }
+  var action: @Sendable (T) async -> Void { get set }
   var eventType: Gateway.Event.EventType { get }
   func typeMatchesEvent(_ event: Gateway.Event) -> Bool
 }
