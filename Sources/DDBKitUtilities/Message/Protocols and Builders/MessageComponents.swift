@@ -7,35 +7,13 @@
 
 import DiscordBM
 
-@resultBuilder
-public struct MessageComponentsActionRowsBuilder {
-  public static func buildBlock(_ components: ActionRowProtocol...) -> [ActionRowProtocol] {
-    components
-  }
-  public static func buildOptional(_ component: [any ActionRowProtocol]?) -> any ActionRowProtocol {
-    FlattenedComponent(components: component ?? [])
-  }
-  public static func buildEither(first component: [any ActionRowProtocol]) -> any ActionRowProtocol
-  { FlattenedComponent(components: component) }
-  public static func buildEither(second component: [any ActionRowProtocol]) -> any ActionRowProtocol
-  { FlattenedComponent(components: component) }
-
-  /// Used internally to flatten conditional branches to components. reduces code complexity.
-  public struct FlattenedComponent: _ActionRowProtocol {
-    var components: [any MessageComponentsActionRowComponent]
-    init(components: [any ActionRowProtocol]) {
-      self.components = (components as! [_ActionRowProtocol]).flatMap(\.components)
-    }
-  }
-}
-
 public struct MessageComponents: MessageComponent {
 
   public init(
-    @MessageComponentsActionRowsBuilder
-    rows: () -> [ActionRowProtocol]
+    @GenericBuilder<ActionRowProtocol>
+    rows: () -> GenericTuple<ActionRowProtocol>
   ) {
-    self.rows = rows()
+    self.rows = rows().values
   }
 
   init() {
