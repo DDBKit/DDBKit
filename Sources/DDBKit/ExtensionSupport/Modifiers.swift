@@ -27,7 +27,8 @@ extension ExtensibleCommand {
   }
 
   public func catchAction(
-    _ action: @Sendable @escaping (any Error, BaseContextCommand, InteractionExtras) async throws ->
+    _ action:
+      @Sendable @escaping (any Error, BaseContextCommand, InteractionExtras) async throws ->
       Void
   ) -> Self {
     var copy = self

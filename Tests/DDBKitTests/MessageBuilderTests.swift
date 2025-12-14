@@ -282,17 +282,17 @@ final class MessageBuilderTests: XCTestCase {
 
     XCTAssertEqual(msg.embeds[0].description, "1\n2\n3\n4\n5\n6\n7\n8\n9\n10")
   }
-	
-	func testDescriptionEmbed() {
-		let msg = Message {
-			MessageEmbed {
-				Description("Hello, world!")
-				Description {
-					Text("Hello, world!")
-				}
-			}
-		}
 
-		XCTAssertEqual(msg.embeds[0].description, "Hello, world!")
-	}
+  func testDescriptionEmbed() {
+    let msg = Message {
+      MessageEmbed {
+        Description("Hello, world!")
+        Description {
+          Text("Hello, world!")
+        }
+      }
+    }
+
+    XCTAssertEqual(msg.embeds[0].description, "Hello, world!")
+  }
 }
