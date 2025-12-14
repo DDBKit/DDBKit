@@ -70,7 +70,7 @@ public struct MessageEmbed: MessageComponent {
 }
 
 extension MessageEmbed {
-  var embed: Embed {
+  public var _embed: Embed {
     return .init(
       title: self.title,
       type: self.kind,

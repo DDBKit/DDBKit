@@ -25,7 +25,7 @@ public struct Message: Sendable {
     self.content.textualRepresentation.isEmpty ? nil : self.content.textualRepresentation
   }
   var _tts: Bool?  // set by modifier
-  var _embeds: [Embed] { self.embeds.map(\.embed) }
+  var _embeds: [Embed] { self.embeds.map(\._embed) }
   var _allowed_mentions: Payloads.AllowedMentions?
   var _message_reference: DiscordChannel.Message.MessageReference?
   var _components: [Interaction.ActionRow]? {
