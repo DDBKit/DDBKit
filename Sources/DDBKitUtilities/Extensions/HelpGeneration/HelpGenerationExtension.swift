@@ -15,7 +15,7 @@ public actor HelpGeneration: DDBKitExtension {
 
   var info: [String: HelpGenerationExtendedInfo] = [:]
   var baseInfo: [String: Payloads.ApplicationCommandCreate] = [:]
-  var listApplicationCommands: [ApplicationCommand] = []
+  var listApplicationCommands: [String: ApplicationCommand] = [:]
 
   public func onBoot(_ instance: inout BotInstance) async throws {
     self.instance = instance
@@ -41,23 +41,28 @@ public actor HelpGeneration: DDBKitExtension {
     .description("Lists all commands or get help about a specific command.")
     .integrationType(.all, contexts: .all)
     .component { i in
-      //			guard i.component?.custom_id.starts(with: "help-") == true,
-      //				let requestedPage = Int(i.component!.custom_id.dropFirst(5))
-      //			else { return }
-      //
-      //			let commands = await self.info.keys.chunks(ofCount: 10).map({$0}).chunks(ofCount: 3).map({$0})
-
+      guard let componentID = i.component?.custom_id,
+        componentID.starts(with: "help-"),
+        let requestedPage = Int(componentID.dropFirst(5))
+      else { return }
+      let message = await self.generatePagedHelpMessage(for: requestedPage)
+      try await i.editResponse { message }
     }
 
     ReadyEvent { ready in
-      let cmdsdata = try? await self.instance.bot.client.listApplicationCommands()
+      let cmdsdata = try? await self.instance.bot.client
+        .listApplicationCommands()
       let cmds = try? cmdsdata?.decode()
       await self.setApplicationCommands(cmds ?? [])
     }
   }
 
   func setApplicationCommands(_ commands: [ApplicationCommand]) {
-    self.listApplicationCommands = commands
+    self.listApplicationCommands = commands.reduce(into: [:]) {
+      partialResult,
+      command in
+      partialResult[command.name] = command
+    }
   }
 
   func generatePagedHelpMessage(for page: Int) -> Message {
@@ -73,14 +78,29 @@ public actor HelpGeneration: DDBKitExtension {
         )
 
         for command in pages[page] {
-          let baseInfo = self.baseInfo[command]!
-          Field("</\(baseInfo.name):2046185065514240342>") {
-            Text(baseInfo.description ?? "")
+          if let baseInfo = self.baseInfo[command],
+            let id = self.listApplicationCommands[command]?.id
+          {
+            Field("</\(baseInfo.name):\("id.rawValue")>") {
+              Text(baseInfo.description ?? "")
+            }
+            .inline()
           }
-          .inline()
         }
       }
       .setColor(.blue)
+
+      MessageComponents {
+        ActionRow {
+          Button("<")
+            .disabled(page == 0)
+            .id("help-\(max(page - 1, 0))")
+
+          Button(">")
+            .disabled(page >= pageCount - 1)
+            .id("help-\(min(page + 1, pageCount - 1))")
+        }
+      }
     }
   }
 }
