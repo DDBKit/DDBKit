@@ -81,7 +81,7 @@ public actor HelpGeneration: DDBKitExtension {
           if let baseInfo = self.baseInfo[command],
             let id = self.listApplicationCommands[command]?.id
           {
-            Field("</\(baseInfo.name):\("id.rawValue")>") {
+            Field("</\(baseInfo.name):\(id.rawValue)>") {
               Text(baseInfo.description ?? "")
             }
             .inline()
