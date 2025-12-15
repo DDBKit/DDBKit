@@ -29,6 +29,10 @@ extension InteractionExtras {
   }
 
   public var attachments: [AttachmentSnowflake: DiscordChannel.Message.Attachment] {
-    resolvedCommand?.attachments ?? [:]
+    let commandAttachments = Array((resolvedCommand?.attachments ?? [:]).values)
+    let messagesAttachments = resolvedCommand?.messages?.values.compactMap(\.attachments).flatMap { $0 } ?? []
+    return (commandAttachments + messagesAttachments).reduce(into: [:]) { partialResult, attachment in
+      partialResult[attachment.id] = attachment
+    }
   }
 }
