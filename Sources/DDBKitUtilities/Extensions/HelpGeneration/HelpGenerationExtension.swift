@@ -42,11 +42,14 @@ public actor HelpGeneration: DDBKitExtension {
     .integrationType(.all, contexts: .all)
     .component { i in
       guard let componentID = i.component?.custom_id,
-        componentID.starts(with: "help-"),
-        let requestedPage = Int(componentID.dropFirst(5))
-      else { return }
+        componentID.starts(with: "helpgeneration-"),
+        let requestedPage = componentID.split(separator: "-").last
+          .flatMap({ Int($0) })
+      else {
+        return
+      }
       let message = await self.generatePagedHelpMessage(for: requestedPage)
-      try await i.editResponse { message }
+      try await i.updateResponse { message }
     }
 
     ReadyEvent { ready in
@@ -94,11 +97,11 @@ public actor HelpGeneration: DDBKitExtension {
         ActionRow {
           Button("<")
             .disabled(page == 0)
-            .id("help-\(max(page - 1, 0))")
+            .id("helpgeneration-\(max(page - 1, 0))")
 
           Button(">")
             .disabled(page >= pageCount - 1)
-            .id("help-\(min(page + 1, pageCount - 1))")
+            .id("helpgeneration-\(min(page + 1, pageCount - 1))")
         }
       }
     }

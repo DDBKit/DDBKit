@@ -76,6 +76,17 @@ extension InteractionExtras {
     )
     .guardSuccess()
   }
+  
+  // MARK: Update Interaction response
+  
+  public func updateResponse(_ msg: @Sendable () -> Message) async throws {
+    try await self.client.createInteractionResponse(
+      id: interaction.id,
+      token: interaction.token,
+      payload: .updateMessage(msg()._interactionResponseMessage)
+    )
+    .guardSuccess()
+  }
 
   // MARK: Edit Interaction response
   public func editResponse(_ msg: @Sendable () -> Message) async throws {

@@ -39,29 +39,43 @@ public final class BotInstance: @unchecked Sendable {
   /// Unique stable identifier for the app
   public let id: ApplicationSnowflake
 
-  init(
-    bot: GatewayManager, cache: DiscordCache, events: [any BaseEvent],
-    commands: [any BaseContextCommand]
-  ) {
+  init(bot: GatewayManager, cache: DiscordCache) {
     self._bot = bot
     self._cache = cache
-    self._events = events
-    self._commands = commands
+    self._events = []
+    self._commands = []
     // Hey! If you found your bot crashing here, your token is invalid or you forgor
     self.id = bot.client.appId!
+  }
 
-    // register modal and component id receives
-    commands.forEach { cmd in
+  /// Register events (non-async)
+  @MainActor
+  public func registerEvents(_ events: [any BaseEvent]) {
+    self._events.append(contentsOf: events)
+  }
+
+  /// Register commands and wire their modal/component callbacks. This also runs boot actions for extensible commands.
+  @MainActor
+  public func registerCommands(_ commands: [any BaseContextCommand]) async throws {
+    self._commands.append(contentsOf: commands)
+
+    // wire modal and component receives
+    for cmd in commands {
       cmd.modalReceives.keys.forEach { key in
         (cmd.modalReceives[key] ?? []).forEach { value in
           self.modalReceives.append(value, to: key)
         }
       }
-    }
-    commands.forEach { cmd in
       cmd.componentReceives.keys.forEach { key in
         (cmd.componentReceives[key] ?? []).forEach { value in
           self.componentReceives.append(value, to: key)
+        }
+      }
+
+      // run boot actions if command is extensible
+      if let extCmd = cmd as? _ExtensibleCommand {
+        for boot in extCmd._bootActions {
+          try await boot(cmd, self)
         }
       }
     }

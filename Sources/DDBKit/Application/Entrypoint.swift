@@ -31,8 +31,11 @@ extension DiscordBotApp {
     }
 
     // BotInstance contains all of our commands and events, it handles dispatching data to the bot
-    var instance: BotInstance = .init(
-      bot: self.bot, cache: self.cache, events: sceneData.events, commands: sceneData.commands)
+    var instance: BotInstance = .init(bot: self.bot, cache: self.cache)
+
+    // register initial scenes
+    instance.registerEvents(sceneData.events)
+    try await instance.registerCommands(sceneData.commands)
 
     // we should store the reference somewhere useful for use later
     _BotInstances[instance.id] = instance
@@ -48,21 +51,13 @@ extension DiscordBotApp {
       let expandedScenes = BotSceneBuilder.expandScenes(extScene)
       let extData = readScene(scenes: expandedScenes)
 
-      instance._commands.append(contentsOf: extData.commands)
-      instance._events.append(contentsOf: extData.events)
+      // register extension scenes (ensures their modal/component callbacks and boot actions run)
+      instance.registerEvents(extData.events)
+      try await instance.registerCommands(extData.commands)
     }
     // every extension has now had an opportunity to configure the bot instance, and its commands were registered
 
     // MARK: - Command Setup
-
-    // now run boot of all modifiers in commands
-    for command in sceneData.commands {
-      if let cmd = command as? _ExtensibleCommand {
-        for boot in cmd._bootActions {
-          try await boot(command, instance)
-        }
-      }
-    }
 
     // we want to split the commands into global and guild-scoped
     let allCommands = instance._commands
