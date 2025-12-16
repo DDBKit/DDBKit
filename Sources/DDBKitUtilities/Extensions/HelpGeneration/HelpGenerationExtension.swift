@@ -49,7 +49,7 @@ public actor HelpGeneration: DDBKitExtension {
         return
       }
       let message = await self.generatePagedHelpMessage(for: requestedPage)
-      try await i.editResponse { message }
+      try await i.updateResponse { message }
     }
 
     ReadyEvent { ready in
