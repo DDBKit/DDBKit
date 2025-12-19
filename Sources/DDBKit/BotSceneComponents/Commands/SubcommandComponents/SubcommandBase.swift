@@ -40,6 +40,7 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
       for errorAction in self.actions.errorActions {
         try? await errorAction(error, self, e)
       }
+      throw error;
     }
   }
 
