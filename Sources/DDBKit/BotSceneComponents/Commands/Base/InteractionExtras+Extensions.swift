@@ -12,6 +12,9 @@ extension InteractionExtras {
     if case .applicationCommand(let cmd) = self.interaction.data {
       return cmd.resolved
     }
+    if case .modalSubmit(let modal) = self.interaction.data {
+      return modal.resolved
+    }
     return nil
   }
 
