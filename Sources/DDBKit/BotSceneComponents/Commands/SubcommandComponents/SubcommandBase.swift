@@ -40,6 +40,8 @@ public struct SubcommandBase: BaseCommand, IdentifiableCommand, _ExtensibleComma
       for errorAction in self.actions.errorActions {
         try? await errorAction(error, self, e)
       }
+	  // rethrowing the error after running error actions
+	  // no local catch for subcommand base so just rethrow
       throw error;
     }
   }

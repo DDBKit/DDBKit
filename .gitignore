@@ -20,3 +20,4 @@ Example/Sources/ExampleBot/1984 Big Brother 2*
 .swp
 .swiftpm
 .build
+Example/Sources/ExampleBot/token.swift
