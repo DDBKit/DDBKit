@@ -48,7 +48,7 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
   var action: @Sendable (InteractionExtras) async throws -> Void
 
   public init(
-    _ name: String, kind: Kind, action: @Sendable @escaping (InteractionExtras) async throws -> Void
+    _ name: String, kind: ApplicationCommand.Kind, action: @Sendable @escaping (InteractionExtras) async throws -> Void
   ) {
     self.baseInfo = .init(
       name: name,
@@ -58,18 +58,13 @@ public struct Context: BaseContextCommand, _ExtensibleCommand, IdentifiableComma
       options: [],
       default_member_permissions: nil,
       dm_permission: nil,
-      type: .init(rawValue: kind.rawValue),
+	  type: kind,
       nsfw: nil
     )
     self.baseInfo.integration_types = [.guildInstall]
     self.baseInfo.contexts = [.guild]
 
     self.action = action
-  }
-
-  public enum Kind: UInt {
-    case user = 2  // ApplicationCommand.Kind.user.rawValue
-    case message = 3  // ApplicationCommand.Kind.message.rawValue
   }
 
   // MARK: - These pre and post actions are for use internally
