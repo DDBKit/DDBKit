@@ -48,6 +48,8 @@ extension Gateway.Event.Payload {
 	  return nil
 	case .invalidSession(let canResume):
 	  return canResume as? T
+	case .rateLimited(let rateLimited):
+	  return rateLimited as? T
 	case .channelCreate(let discordChannel):
 	  return discordChannel as? T
 	case .channelUpdate(let discordChannel):
@@ -225,6 +227,8 @@ extension Gateway.Event {
 	  return type == .resumed
 	case .invalidSession:
 	  return type == .invalidSession
+	case .rateLimited:
+	  return type == .rateLimited
 	case .channelCreate:
 	  return type == .channelCreate
 	case .channelUpdate:
@@ -395,6 +399,7 @@ extension Gateway.Event {
 	case resume
 	case resumed
 	case invalidSession
+	case rateLimited
 	case channelCreate
 	case channelUpdate
 	case channelDelete

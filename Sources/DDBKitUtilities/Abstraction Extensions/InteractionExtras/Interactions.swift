@@ -150,7 +150,7 @@ extension InteractionExtras {
   /// Returns `nil` if it was not provided for an optional option, or if DiscordBM could not get the value
   public func getInteger(from option: String) async -> Int? {
     guard let value = try? self.options?.option(named: option)?.requireInt() else { return nil }
-    return value
+    return Int(value)
   }
 
   /// Get the value given for a double option.

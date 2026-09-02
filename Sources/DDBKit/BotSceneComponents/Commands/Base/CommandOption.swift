@@ -267,8 +267,8 @@ extension RangedOption {
   /// - Returns: Self
   public func range(_ range: Range<Int>) -> Self {
     var copy = self
-    copy.optionData.min_value = .int(range.lowerBound)
-    copy.optionData.max_value = .int(range.upperBound)
+    copy.optionData.min_value = .int(Int64(range.lowerBound))
+    copy.optionData.max_value = .int(Int64(range.upperBound))
     return copy
   }
   /// Sets the ranged values for the option
@@ -276,8 +276,8 @@ extension RangedOption {
   /// - Returns: Self
   public func range(_ range: ClosedRange<Int>) -> Self {
     var copy = self
-    copy.optionData.min_value = .int(range.lowerBound)
-    copy.optionData.max_value = .int(range.upperBound)
+    copy.optionData.min_value = .int(Int64(range.lowerBound))
+    copy.optionData.max_value = .int(Int64(range.upperBound))
     return copy
   }
 
@@ -305,8 +305,16 @@ extension LengthLimitedOption {
   /// Sets the length range of the option
   public func length(_ range: Range<Int>) -> Self {
     var copy = self
-    copy.optionData.min_length = range.lowerBound
-    copy.optionData.max_length = range.upperBound
+    copy.optionData.min_length = Int64(range.lowerBound)
+    copy.optionData.max_length = Int64(range.upperBound)
+    return copy
+  }
+
+  /// Sets the length range of the option
+  public func length(_ range: ClosedRange<Int>) -> Self {
+    var copy = self
+    copy.optionData.min_length = Int64(range.lowerBound)
+    copy.optionData.max_length = Int64(range.upperBound)
     return copy
   }
 }
